@@ -58,6 +58,11 @@ function renderCharacters() {
 
         const card = document.createElement("div");
         card.className = "directory-card";
+        card.style.cursor = "pointer";
+
+card.addEventListener("click", () => {
+    window.location.href = `character.html?id=${character.id}`;
+});
 
         const type = document.createElement("div");
         type.className = "card-type";
