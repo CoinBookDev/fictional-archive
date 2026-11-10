@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Characters | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>FICTIONAL ARCHIVE</h2>
+            <p>THE DATABASE PROJECT</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="franchises.html">Franchises</a>
+            <a href="characters.html" class="active">Characters</a>
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                ARCHIVE / CHARACTERS
+            </div>
+
+            <div class="topbar-right">
+                DATABASE STATUS: <span>ONLINE</span>
+            </div>
+        </header>
+
+        <section class="page-content">
+
+            <div class="page-heading">
+                <div>
+                    <p class="section-label">DATABASE DIRECTORY</p>
+                    <h1>Characters</h1>
+                    <p>Explore character identities across fictional universes.</p>
+                </div>
+            </div>
+
+            <div class="directory-controls">
+                <input
+                    type="text"
+                    id="characterSearch"
+                    placeholder="Search characters..."
+                >
+
+                <span id="characterCount">LOADING...</span>
+            </div>
+
+            <div id="characterDirectory" class="directory-grid">
+                <p>Loading characters...</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/characters.js"></script>
+
+</body>
+</html>
