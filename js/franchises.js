@@ -23,9 +23,10 @@ function renderFranchises() {
 
     filteredFranchises.forEach(franchise => {
 
-        const card = document.createElement("article");
+        const card = document.createElement("a");
 
-        card.className = "directory-card";
+card.className = "directory-card";
+card.href = `franchise.html?id=${franchise.id}`;
 
         card.innerHTML = `
             <div class="card-type">
