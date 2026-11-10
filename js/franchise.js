@@ -4,7 +4,7 @@ const franchiseId = Number(parameters.get("id"));
 
 async function loadFranchise() {
 
-    const { data: franchise, error } = await supabase
+    const { data: franchise, error } = await window.supabaseClient
         .from("franchises")
         .select("*")
         .eq("id", franchiseId)
