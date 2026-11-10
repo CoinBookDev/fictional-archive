@@ -11,7 +11,7 @@ async function loadFranchises() {
 
     try {
 
-        const { data, error } = await supabase
+       const { data, error } = await window.supabaseClient
             .from("franchises")
             .select("id, name, abbreviation, owner, description")
             .order("name");
