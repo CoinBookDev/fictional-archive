@@ -56,13 +56,13 @@ document.getElementById("characterSpecies").textContent =
 document.getElementById("characterFirstAppearance").textContent =
     JSON.stringify(character.first_appearence);
 
-    document.getElementById("characterGender").textContent =
+    document.getElementById("characterAlias").textContent =
     characters.Alias || "Unknown";
 
-document.getElementById("characterNationality").textContent =
+document.getElementById("CharacterStatus").textContent =
     characters.Status || "Unknown";
 
-document.getElementById("characterOccupation").textContent =
+document.getElementById("characterGender").textContent =
     characters.Gender || "Unknown";
 
     const { data: versions, error: versionError } = await window.supabaseClient
