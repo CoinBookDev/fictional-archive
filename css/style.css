@@ -549,3 +549,185 @@ a {
         gap: 10px;
     }
 }
+
+/* =================================
+   CHARACTER PROFILE
+================================= */
+
+.character-hero {
+    min-height: 420px;
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 85% 50%, #34302a 0%, transparent 55%),
+        linear-gradient(120deg, #151b25, #0d1118);
+    border: 1px solid var(--border);
+    margin-top: 35px;
+}
+
+.character-hero-content {
+    padding: 55px;
+    position: relative;
+    z-index: 2;
+}
+
+.character-hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 22px;
+}
+
+.character-hero-content > p:not(.eyebrow) {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.9;
+    max-width: 500px;
+}
+
+.character-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.character-meta span {
+    border: 1px solid var(--border);
+    padding: 9px 13px;
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+.character-hero-image {
+    height: 100%;
+    min-height: 420px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-hero-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #151b25 0%, transparent 45%);
+    pointer-events: none;
+}
+
+.character-hero-image img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    object-position: center;
+}
+
+#characterImagePlaceholder {
+    font-family: 'Playfair Display', serif;
+    font-size: 110px;
+    color: rgba(197, 164, 109, 0.2);
+}
+
+.character-hero-image img[hidden] {
+    display: none;
+}
+
+.character-hero + .profile-stats {
+    margin-top: 18px;
+}
+
+.character-hero ~ .profile-stats .stat-card {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border);
+    padding: 20px 25px;
+}
+
+.character-hero ~ .profile-stats .stat-card:last-child {
+    border-right: none;
+}
+
+.character-hero ~ .profile-stats .stat-card h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    margin-top: 10px;
+}
+
+.character-hero ~ .profile-section {
+    margin-top: 65px;
+}
+
+.character-hero ~ .profile-section .section-heading {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+}
+
+.character-hero ~ .profile-section .profile-list-item {
+    background: var(--surface);
+    padding: 25px;
+    transition: 0.25s;
+}
+
+.character-hero ~ .profile-section .profile-list-item:hover {
+    background: var(--surface-light);
+    border-color: var(--gold-muted);
+    transform: translateY(-3px);
+}
+
+.character-hero ~ .profile-section .profile-list-item h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.character-hero ~ .profile-section .profile-list-item p {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+.character-hero ~ .profile-section .profile-list-item span {
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+}
+
+@media (max-width: 800px) {
+
+    .character-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .character-hero-content {
+        padding: 35px;
+    }
+
+    .character-hero-image {
+        min-height: 250px;
+    }
+
+    .character-hero-image::after {
+        background: linear-gradient(180deg, #151b25, transparent 40%);
+    }
+
+    .character-hero ~ .profile-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .character-hero ~ .profile-stats .stat-card {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+}
