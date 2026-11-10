@@ -20,7 +20,7 @@ async function loadFranchises() {
             throw error;
         }
 
-        console.log("FRANCHISE DATA:", data);
+        directory.innerHTML = "<p>SUPABASE REQUEST SUCCESSFUL</p>";
 
         franchises = data;
 
