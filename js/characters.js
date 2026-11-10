@@ -15,6 +15,8 @@ async function loadCharacters() {
             .from("characters")
             .select("*")
             .order("name");
+        console.log("CHARACTER DATA:", data);
+        console.log("CHARACTER DATABASE ERROR:", error);
 
         if (error) {
             throw error;
