@@ -43,12 +43,11 @@ if (character.image_url) {
     imagePlaceholder.textContent =
         character.name.substring(0, 2).toUpperCase();
 }
-    document.getElementById("characterSpecies").textContent =
-        character.species || "Unknown";
+document.getElementById("characterSpecies").textContent =
+    "DEBUG: " + JSON.stringify(character.species);
 
-    document.getElementById("characterFirstAppearance").textContent =
-        character.first_appearence || "Unknown";
-
+document.getElementById("characterFirstAppearance").textContent =
+    "DEBUG: " + JSON.stringify(character.first_appearence);
     console.log("CHARACTER:", character);
 
 document.getElementById("characterSpecies").textContent =
