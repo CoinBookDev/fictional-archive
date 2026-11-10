@@ -49,6 +49,14 @@ if (character.image_url) {
     document.getElementById("characterFirstAppearance").textContent =
         character.first_appearence || "Unknown";
 
+    console.log("CHARACTER:", character);
+
+document.getElementById("characterSpecies").textContent =
+    JSON.stringify(character.species);
+
+document.getElementById("characterFirstAppearance").textContent =
+    JSON.stringify(character.first_appearence);
+
     const { data: versions, error: versionError } = await window.supabaseClient
         .from("character_versions")
         .select("*")
