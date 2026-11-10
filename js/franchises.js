@@ -1,7 +1,4 @@
-document.body.insertAdjacentHTML(
-    "afterbegin",
-    "<p style='color:red'>FRANCHISES.JS IS RUNNING</p>"
-);
+alert("FRANCHISES.JS STARTED");
 const directory = document.getElementById("franchiseDirectory");
 const searchInput = document.getElementById("franchiseSearch");
 const franchiseCount = document.getElementById("franchiseCount");
