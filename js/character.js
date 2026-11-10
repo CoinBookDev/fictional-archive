@@ -56,6 +56,15 @@ document.getElementById("characterSpecies").textContent =
 document.getElementById("characterFirstAppearance").textContent =
     JSON.stringify(character.first_appearence);
 
+    document.getElementById("characterGender").textContent =
+    characters.Alias || "Unknown";
+
+document.getElementById("characterNationality").textContent =
+    characters.Status || "Unknown";
+
+document.getElementById("characterOccupation").textContent =
+    characters.Gender || "Unknown";
+
     const { data: versions, error: versionError } = await window.supabaseClient
         .from("character_versions")
         .select("*")
