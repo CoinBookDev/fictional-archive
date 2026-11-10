@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Character Profile | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>FICTIONAL ARCHIVE</h2>
+            <p>THE DATABASE PROJECT</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="franchises.html">Franchises</a>
+            <a href="characters.html">Characters</a>
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                ARCHIVE / CHARACTERS / PROFILE
+            </div>
+
+            <div class="topbar-right">
+                DATABASE STATUS: <span>ONLINE</span>
+            </div>
+        </header>
+
+        <section class="page-content">
+
+            <div class="profile-header">
+                <p id="characterCode" class="section-label">
+                    CHARACTER PROFILE
+                </p>
+
+                <h1 id="characterName">Loading...</h1>
+
+                <p id="characterDescription">
+                    Loading character information...
+                </p>
+            </div>
+
+            <div class="profile-stats">
+
+                <div class="stat-card">
+                    <span>SPECIES</span>
+                    <h2 id="characterSpecies">-</h2>
+                </div>
+
+                <div class="stat-card">
+                    <span>FIRST APPEARANCE</span>
+                    <h2 id="characterFirstAppearance">-</h2>
+                </div>
+
+                <div class="stat-card">
+                    <span>VERSIONS</span>
+                    <h2 id="versionCount">0</h2>
+                </div>
+
+            </div>
+
+            <section class="profile-section">
+
+                <div class="section-heading">
+                    <h2>CHARACTER VERSIONS</h2>
+                </div>
+
+                <div id="characterVersions">
+                    Loading versions...
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/character.js"></script>
+
+</body>
+</html>
