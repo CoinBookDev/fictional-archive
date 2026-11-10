@@ -1,211 +1,96 @@
-alert("SCRIPT STARTED"); 
 
-const directory = document.getElementById("franchiseDirectory"); 
+const directory = document.getElementById("franchiseDirectory");
+const searchInput = document.getElementById("franchiseSearch");
+const franchiseCount = document.getElementById("franchiseCount");
 
-const searchInput = document.getElementById("franchiseSearch"); 
+let franchises = [];
 
-const franchiseCount = document.getElementById("franchiseCount"); 
+async function loadFranchises() {
 
-  
+    directory.innerHTML = "<p>Loading franchises...</p>";
 
-let franchises = []; 
+    try {
 
-  
+        const { data, error } = await supabase
+            .from("franchises")
+            .select("id, name, abbreviation, owner, description")
+            .order("name");
 
-  
+        if (error) {
+            throw error;
+        }
 
-async function loadFranchises() { 
+        franchises = data;
 
-  
+        renderFranchises();
 
-    directory.innerHTML = "<p>Testing database connection...</p>"; 
+    } catch (error) {
 
-  
+        directory.innerHTML =
+            `<p>DATABASE ERROR: ${error.message}</p>`;
 
-    try { 
+        franchiseCount.textContent = "DATABASE ERROR";
 
-  
+        console.error("FRANCHISE ERROR:", error);
 
-        const { data, error } = await supabase 
+    }
 
-            .from("franchises") 
+}
 
-            .select("*"); 
+function renderFranchises() {
 
-  
+    const search = searchInput.value.toLowerCase();
 
-        if (error) { 
+    const filteredFranchises = franchises.filter(franchise => {
 
-            throw error; 
+        return (
+            franchise.name.toLowerCase().includes(search) ||
+            (franchise.owner || "").toLowerCase().includes(search)
+        );
 
-        } 
+    });
 
-  
+    franchiseCount.textContent =
+        `${filteredFranchises.length} FRANCHISES FOUND`;
 
-        directory.innerHTML = "<p>SUPABASE REQUEST SUCCESSFUL</p>"; 
+    directory.innerHTML = "";
 
-  
+    filteredFranchises.forEach(franchise => {
 
-        franchises = data; 
+        const card = document.createElement("a");
 
-  
+        card.className = "directory-card";
+        card.href = `franchise.html?id=${franchise.id}`;
 
-        renderFranchises(); 
+        const type = document.createElement("div");
+        type.className = "card-type";
+        type.textContent =
+            `FRANCHISE / ${franchise.abbreviation || "N/A"}`;
 
-  
+        const title = document.createElement("h3");
+        title.textContent = franchise.name;
 
-    } catch (error) { 
+        const description = document.createElement("p");
+        description.textContent =
+            franchise.description || "No description available.";
 
-  
+        const owner = document.createElement("div");
+        owner.className = "card-franchise";
+        owner.textContent =
+            (franchise.owner || "UNKNOWN").toUpperCase();
 
-        directory.innerHTML = 
+        card.append(type, title, description, owner);
 
-            `<p>DATABASE ERROR: ${error.message}</p>`; 
+        directory.appendChild(card);
 
-  
+    });
 
-        franchiseCount.textContent = "DATABASE ERROR"; 
+    if (filteredFranchises.length === 0) {
+        directory.innerHTML = "<p>No franchises found.</p>";
+    }
 
-  
+}
 
-        console.error("FRANCHISE ERROR:", error); 
+searchInput.addEventListener("input", renderFranchises);
 
-  
-
-    } 
-
-  
-
-} 
-
-  
-
-  
-
-    franchises = data; 
-
-  
-
-    renderFranchises(); 
-
-  
-
-} 
-
-  
-
-function renderFranchises() { 
-
-  
-
-    const search = searchInput.value.toLowerCase(); 
-
-  
-
-    const filteredFranchises = franchises.filter(franchise => { 
-
-  
-
-        return ( 
-
-            franchise.name.toLowerCase().includes(search) || 
-
-            (franchise.owner || "").toLowerCase().includes(search) 
-
-        ); 
-
-  
-
-    }); 
-
-  
-
-    franchiseCount.textContent = 
-
-        `${filteredFranchises.length} FRANCHISES FOUND`; 
-
-  
-
-    directory.innerHTML = ""; 
-
-  
-
-    filteredFranchises.forEach(franchise => { 
-
-  
-
-        const card = document.createElement("a"); 
-
-  
-
-        card.className = "directory-card"; 
-
-        card.href = `franchise.html?id=${franchise.id}`; 
-
-  
-
-        const type = document.createElement("div"); 
-
-        type.className = "card-type"; 
-
-        type.textContent = 
-
-            `FRANCHISE / ${franchise.abbreviation || "N/A"}`; 
-
-  
-
-        const title = document.createElement("h3"); 
-
-        title.textContent = franchise.name; 
-
-  
-
-        const description = document.createElement("p"); 
-
-        description.textContent = 
-
-            franchise.description || "No description available."; 
-
-  
-
-        const owner = document.createElement("div"); 
-
-        owner.className = "card-franchise"; 
-
-        owner.textContent = 
-
-            (franchise.owner || "UNKNOWN").toUpperCase(); 
-
-  
-
-        card.append(type, title, description, owner); 
-
-  
-
-        directory.appendChild(card); 
-
-  
-
-    }); 
-
-  
-
-    if (filteredFranchises.length === 0) { 
-
-  
-
-        directory.innerHTML = "<p>No franchises found.</p>"; 
-
-  
-
-    } 
-
-  
-
-} 
-
-  
-
-searchInput.addEventListener("input", renderFranchises); 
-
-  loadFranchises();
+loadFranchises();
