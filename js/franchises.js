@@ -3,6 +3,33 @@ const directory = document.getElementById("franchiseDirectory");
 const searchInput = document.getElementById("franchiseSearch");
 const franchiseCount = document.getElementById("franchiseCount");
 
+let franchises = [];
+
+async function loadFranchises() {
+
+    directory.innerHTML = "<p>Loading franchises...</p>";
+
+    const { data, error } = await supabase
+        .from("franchises")
+        .select("id, name, abbreviation, owner, description")
+        .order("name");
+
+    if (error) {
+
+        directory.innerHTML =
+            `<p>Error loading franchises: ${error.message}</p>`;
+
+        franchiseCount.textContent = "DATABASE ERROR";
+        return;
+
+    }
+
+    franchises = data;
+
+    renderFranchises();
+
+}
+
 function renderFranchises() {
 
     const search = searchInput.value.toLowerCase();
@@ -11,7 +38,7 @@ function renderFranchises() {
 
         return (
             franchise.name.toLowerCase().includes(search) ||
-            franchise.owner.toLowerCase().includes(search)
+            (franchise.owner || "").toLowerCase().includes(search)
         );
 
     });
@@ -25,22 +52,27 @@ function renderFranchises() {
 
         const card = document.createElement("a");
 
-card.className = "directory-card";
-card.href = `franchise.html?id=${franchise.id}`;
+        card.className = "directory-card";
+        card.href = `franchise.html?id=${franchise.id}`;
 
-        card.innerHTML = `
-            <div class="card-type">
-                FRANCHISE / ${franchise.abbreviation}
-            </div>
+        const type = document.createElement("div");
+        type.className = "card-type";
+        type.textContent =
+            `FRANCHISE / ${franchise.abbreviation || "N/A"}`;
 
-            <h3>${franchise.name}</h3>
+        const title = document.createElement("h3");
+        title.textContent = franchise.name;
 
-            <p>${franchise.description}</p>
+        const description = document.createElement("p");
+        description.textContent =
+            franchise.description || "No description available.";
 
-            <div class="card-franchise">
-                ${franchise.owner.toUpperCase()}
-            </div>
-        `;
+        const owner = document.createElement("div");
+        owner.className = "card-franchise";
+        owner.textContent =
+            (franchise.owner || "UNKNOWN").toUpperCase();
+
+        card.append(type, title, description, owner);
 
         directory.appendChild(card);
 
@@ -56,4 +88,4 @@ card.href = `franchise.html?id=${franchise.id}`;
 
 searchInput.addEventListener("input", renderFranchises);
 
-renderFranchises();
+loadFranchises();
