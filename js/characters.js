@@ -22,8 +22,9 @@ async function loadCharacters() {
             throw error;
         }
 
-        characters = data;
-        renderCharacters();
+        directory.innerHTML = `
+            <pre>${JSON.stringify({ data, error }, null, 2)}</pre>
+`;
 
     } catch (error) {
 
