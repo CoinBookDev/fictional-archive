@@ -1,21 +1,26 @@
 
 const parameters = new URLSearchParams(window.location.search);
-
 const franchiseId = Number(parameters.get("id"));
 
-const franchise = franchises.find(
-    item => item.id === franchiseId
-);
+async function loadFranchise() {
 
-if (!franchise) {
+    const { data: franchise, error } = await supabase
+        .from("franchises")
+        .select("*")
+        .eq("id", franchiseId)
+        .single();
 
-    document.getElementById("franchiseName").textContent =
-        "Franchise not found";
+    if (error || !franchise) {
 
-    document.getElementById("franchiseDescription").textContent =
-        "The requested franchise does not exist in the archive.";
+        document.getElementById("franchiseName").textContent =
+            "Franchise not found";
 
-} else {
+        document.getElementById("franchiseDescription").textContent =
+            error ? error.message :
+            "The requested franchise does not exist.";
+
+        return;
+    }
 
     document.title = `${franchise.name} | Fictional Archive`;
 
@@ -23,19 +28,19 @@ if (!franchise) {
         franchise.name;
 
     document.getElementById("franchiseCode").textContent =
-        `FRANCHISE PROFILE / ${franchise.abbreviation}`;
+        `FRANCHISE PROFILE / ${franchise.abbreviation || "N/A"}`;
 
     document.getElementById("franchiseDescription").textContent =
-        franchise.description;
+        franchise.description || "No description available.";
 
     document.getElementById("franchiseOwner").textContent =
-        `OWNER: ${franchise.owner}`;
+        `OWNER: ${franchise.owner || "Unknown"}`;
 
     document.getElementById("franchiseMedium").textContent =
-        `MEDIA: ${franchise.medium.join(", ")}`;
+        `MEDIA: ${franchise.medium.join(", ") || "Not specified"}`;
 
     document.getElementById("universeCount").textContent =
-        franchise.universeIds.length;
+        franchise.universe_ids.length;
 
     document.getElementById("mediumCount").textContent =
         franchise.medium.length;
@@ -43,8 +48,10 @@ if (!franchise) {
     const universeContainer =
         document.getElementById("franchiseUniverses");
 
+    universeContainer.innerHTML = "";
+
     const associatedUniverses = universes.filter(universe =>
-        franchise.universeIds.includes(universe.id)
+        franchise.universe_ids.includes(universe.id)
     );
 
     associatedUniverses.forEach(universe => {
@@ -52,9 +59,7 @@ if (!franchise) {
         const entry = document.createElement("a");
 
         entry.className = "profile-list-item";
-
         entry.href = `universe.html?id=${universe.id}`;
-
         entry.textContent = universe.name;
 
         universeContainer.appendChild(entry);
@@ -67,5 +72,6 @@ if (!franchise) {
             "No associated universes found.";
 
     }
-
 }
+
+loadFranchise();
