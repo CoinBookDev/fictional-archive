@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Universe Profile | Fictional Archive</title>
+    <title>Franchise Profile | Fictional Archive</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -29,8 +29,8 @@
 
         <nav>
             <a href="../index.html" class="nav-item">Overview</a>
-            <a href="universes.html" class="nav-item active">Universes</a>
-            <a href="franchises.html" class="nav-item">Franchises</a>
+            <a href="universes.html" class="nav-item">Universes</a>
+            <a href="franchises.html" class="nav-item active">Franchises</a>
             <a href="characters.html" class="nav-item">Characters</a>
             <a href="locations.html" class="nav-item">Locations</a>
             <a href="organisations.html" class="nav-item">Organisations</a>
@@ -55,7 +55,7 @@
 
         <header class="topbar">
             <div class="breadcrumb">
-                ARCHIVE / UNIVERSES / PROFILE
+                ARCHIVE / FRANCHISES / PROFILE
             </div>
 
             <div class="topbar-right">
@@ -63,24 +63,23 @@
             </div>
         </header>
 
-        <a href="universes.html" class="back-link">
-            ← BACK TO UNIVERSE DIRECTORY
+        <a href="franchises.html" class="back-link">
+            ← BACK TO FRANCHISE DIRECTORY
         </a>
 
         <section class="profile-header">
 
-            <div class="eyebrow" id="universeGenre">
-                UNIVERSE PROFILE
+            <div class="eyebrow" id="franchiseCode">
+                FRANCHISE PROFILE
             </div>
 
-            <h1 id="universeName">Loading...</h1>
+            <h1 id="franchiseName">Loading...</h1>
 
-            <p id="universeDescription"></p>
+            <p id="franchiseDescription"></p>
 
             <div class="profile-meta">
-                <span id="universeFranchise"></span>
-                <span id="universeType"></span>
-                <span id="universeStatus"></span>
+                <span id="franchiseOwner"></span>
+                <span id="franchiseMedium"></span>
             </div>
 
         </section>
@@ -88,46 +87,23 @@
         <section class="profile-stats">
 
             <div class="stat-card">
-                <span>CONTINUITIES</span>
-                <h2 id="continuityCount">0</h2>
-            </div>
-
-            <div class="stat-card">
-                <span>REALITIES</span>
-                <h2 id="realityCount">0</h2>
+                <span>UNIVERSES</span>
+                <h2 id="universeCount">0</h2>
             </div>
 
             <div class="stat-card">
                 <span>MEDIA TYPES</span>
-                <h2 id="mediaCount">0</h2>
+                <h2 id="mediumCount">0</h2>
             </div>
 
         </section>
 
         <section class="profile-section">
 
-            <div class="eyebrow">STRUCTURE / 001</div>
-            <h2>Continuities</h2>
+            <div class="eyebrow">DATABASE / 001</div>
+            <h2>Associated Universes</h2>
 
-            <div class="profile-list" id="continuityList"></div>
-
-        </section>
-
-        <section class="profile-section">
-
-            <div class="eyebrow">STRUCTURE / 002</div>
-            <h2>Alternate Realities</h2>
-
-            <div class="profile-list" id="realityList"></div>
-
-        </section>
-
-        <section class="profile-section">
-
-            <div class="eyebrow">DATABASE / 003</div>
-            <h2>Media & Formats</h2>
-
-            <div class="profile-list" id="mediaList"></div>
+            <div class="profile-list" id="franchiseUniverses"></div>
 
         </section>
 
@@ -136,7 +112,8 @@
 </div>
 
 <script src="../js/data.js"></script>
-<script src="../js/universe.js"></script>
+<script src="../js/franchise-data.js"></script>
+<script src="../js/franchise.js"></script>
 
 </body>
 </html>
