@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Fictional Archive</title>
 
     <link rel="stylesheet" href="css/style.css">
@@ -10,11 +12,137 @@
 
 <body>
 
-    <div id="app">
-        <h1>FICTIONAL ARCHIVE</h1>
-        <p>Your archive of fictional universes.</p>
-    </div>
+<div id="app">
 
-    <script src="js/app.js"></script>
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-symbol">F</div>
+            <div>
+                <h2>FICTIONAL</h2>
+                <span>ARCHIVE</span>
+            </div>
+        </div>
+
+        <div class="nav-label">MAIN MENU</div>
+
+        <nav>
+            <a href="#" class="nav-item active">Overview</a>
+            <a href="#" class="nav-item">Universes</a>
+            <a href="#" class="nav-item">Characters</a>
+            <a href="#" class="nav-item">Locations</a>
+            <a href="#" class="nav-item">Organisations</a>
+            <a href="#" class="nav-item">Objects & Artifacts</a>
+        </nav>
+
+        <div class="nav-label">EXPLORE</div>
+
+        <nav>
+            <a href="#" class="nav-item">Timelines</a>
+            <a href="#" class="nav-item">Connections</a>
+            <a href="#" class="nav-item">Media Library</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            FICTIONAL ARCHIVE<br>
+            <span>VERSION 0.1</span>
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="breadcrumb">ARCHIVE / OVERVIEW</div>
+            <div class="topbar-right">DATABASE STATUS: <span>INITIALISING</span></div>
+        </header>
+
+        <section class="welcome">
+            <div class="eyebrow">THE FICTIONAL UNIVERSE DATABASE</div>
+            <h1>Explore the worlds<br>that never existed.</h1>
+            <p>
+                A structured archive of fictional universes,
+                their characters, histories and connections.
+            </p>
+        </section>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span>UNIVERSES</span>
+                <h2>08</h2>
+                <p>Registered worlds</p>
+            </div>
+
+            <div class="stat-card">
+                <span>CHARACTERS</span>
+                <h2>124</h2>
+                <p>Indexed individuals</p>
+            </div>
+
+            <div class="stat-card">
+                <span>LOCATIONS</span>
+                <h2>56</h2>
+                <p>Recorded locations</p>
+            </div>
+
+            <div class="stat-card">
+                <span>CONNECTIONS</span>
+                <h2>213</h2>
+                <p>Known relationships</p>
+            </div>
+
+        </section>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">DATABASE DIRECTORY</div>
+                    <h2>Featured Universes</h2>
+                </div>
+                <a href="#">VIEW ALL →</a>
+            </div>
+
+            <div class="universe-grid">
+
+                <article class="universe-card">
+                    <div class="universe-image marvel">
+                        <span>01 / UNIVERSE</span>
+                    </div>
+                    <div class="universe-info">
+                        <h3>Marvel Universe</h3>
+                        <p>Superheroes · Multiverse · Cosmic</p>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <div class="universe-image star-wars">
+                        <span>02 / UNIVERSE</span>
+                    </div>
+                    <div class="universe-info">
+                        <h3>Star Wars</h3>
+                        <p>Space Opera · Galactic History</p>
+                    </div>
+                </article>
+
+                <article class="universe-card">
+                    <div class="universe-image hunger-games">
+                        <span>03 / UNIVERSE</span>
+                    </div>
+                    <div class="universe-info">
+                        <h3>The Hunger Games</h3>
+                        <p>Dystopian · Political · Survival</p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+
 </body>
 </html>
