@@ -46,7 +46,7 @@ if (character.image_url) {
     document.getElementById("characterSpecies").textContent =
         character.species || "Unknown";
 
-    document.getElementById("characterFirstAppearence").textContent =
+    document.getElementById("characterFirstAppearance").textContent =
         character.first_appearence || "Unknown";
 
     const { data: versions, error: versionError } = await window.supabaseClient
