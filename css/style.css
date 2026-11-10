@@ -1,1 +1,52 @@
+/* =================================
+   FICTIONAL ARCHIVE
+   Main stylesheet
+================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+    --background: #0b0e13;
+    --sidebar: #10141c;
+    --surface: #151b25;
+    --surface-light: #1c2430;
+
+    --gold: #c5a46d;
+    --gold-muted: #897653;
+
+    --text: #e8e8e8;
+    --text-muted: #9299a5;
+
+    --border: rgba(255, 255, 255, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+#app {
+    min-height: 100vh;
+}
