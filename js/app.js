@@ -29,30 +29,33 @@ if (directory) {
 
         directory.innerHTML = "";
 
-        filteredUniverses.forEach(universe => {
+        
+filteredUniverses.forEach(universe => {
 
-            const card = document.createElement("article");
+    const card = document.createElement("a");
 
-            card.className = "directory-card";
+    card.className = "directory-card";
 
-            card.innerHTML = `
-                <div class="card-type">
-                    ${universe.genre.toUpperCase()}
-                </div>
+    card.href = `universe.html?id=${universe.id}`;
 
-                <h3>${universe.name}</h3>
+    card.innerHTML = `
+        <div class="card-type">
+            ${universe.genre.toUpperCase()}
+        </div>
 
-                <p>${universe.description}</p>
+        <h3>${universe.name}</h3>
 
-                <div class="card-franchise">
-                    ${universe.franchise.toUpperCase()}
-                    ·
-                    ${universe.type.toUpperCase()}
-                </div>
-            `;
+        <p>${universe.description}</p>
 
-            directory.appendChild(card);
-        });
+        <div class="card-franchise">
+            ${universe.franchise.toUpperCase()}
+            ·
+            ${universe.type.toUpperCase()}
+        </div>
+    `;
+
+    directory.appendChild(card);
+});
 
         if (filteredUniverses.length === 0) {
             directory.innerHTML = "<p>No universes found.</p>";
