@@ -5,24 +5,40 @@ const franchiseCount = document.getElementById("franchiseCount");
 
 let franchises = [];
 
+
 async function loadFranchises() {
 
-    directory.innerHTML = "<p>Loading franchises...</p>";
+    directory.innerHTML = "<p>Testing database connection...</p>";
 
-    const { data, error } = await supabase
-        .from("franchises")
-        .select("id, name, abbreviation, owner, description")
-        .order("name");
+    try {
 
-    if (error) {
+        const { data, error } = await supabase
+            .from("franchises")
+            .select("*");
+
+        if (error) {
+            throw error;
+        }
+
+        console.log("FRANCHISE DATA:", data);
+
+        franchises = data;
+
+        renderFranchises();
+
+    } catch (error) {
 
         directory.innerHTML =
-            `<p>Error loading franchises: ${error.message}</p>`;
+            `<p>DATABASE ERROR: ${error.message}</p>`;
 
         franchiseCount.textContent = "DATABASE ERROR";
-        return;
+
+        console.error("FRANCHISE ERROR:", error);
 
     }
+
+}
+
 
     franchises = data;
 
