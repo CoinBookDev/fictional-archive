@@ -128,5 +128,26 @@ const universes = [
             "Television series",
             "Games"
         ]
+    },
+    {
+        id: 7,
+        name: "Stranger Things",
+        franchise: "Stranger Thigns",
+        type: "Series and Games",
+        genre: "Science Fiction",
+        description: "An expansive galaxy filled with ancient orders, political conflicts and extraordinary adventures.",
+        status: "Active",
+        continuities: [
+            "Canon",
+            "Legends"
+        ],
+        realities: [
+            "Rightside up",
+            "Upside down"
+        ],
+        media: [
+            "Television series",
+            "Games"
+        ]
     }
 ];
