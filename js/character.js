@@ -32,6 +32,17 @@ async function loadCharacter() {
     document.getElementById("characterDescription").textContent =
         character.description || "No description available.";
 
+    const characterImage = document.getElementById("characterImage");
+const imagePlaceholder = document.getElementById("characterImagePlaceholder");
+
+if (character.image_url) {
+    characterImage.src = character.image_url;
+    characterImage.hidden = false;
+    imagePlaceholder.hidden = true;
+} else {
+    imagePlaceholder.textContent =
+        character.name.substring(0, 2).toUpperCase();
+}
     document.getElementById("characterSpecies").textContent =
         character.species || "Unknown";
 
