@@ -270,33 +270,48 @@
             </section>
 
 
-            <!-- CHARACTERS -->
-            <section class="admin-section" id="section-characters" hidden>
+<!-- CHARACTERS -->
+<section class="admin-section" id="section-characters" hidden>
 
-                <div class="page-heading">
-                    <div>
-                        <div class="eyebrow">DATABASE / MANAGEMENT</div>
-                        <h1>Characters</h1>
-                        <p>Manage character records and their information.</p>
-                    </div>
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">DATABASE / MANAGEMENT</div>
+            <h1>Characters</h1>
+            <p>Manage character records and their information.</p>
+        </div>
 
-                    <button class="admin-add-button" id="add-character">
-                        + Add Character
-                    </button>
-                </div>
+        <button class="admin-add-button" id="add-character">
+            + Add Character
+        </button>
+    </div>
 
-                <div class="admin-panel">
-                    <div class="panel-heading">
-                        <h2>All Characters</h2>
-                        <span id="character-count">LOADING...</span>
-                    </div>
+    <div class="admin-panel">
 
-                    <div id="character-list" class="admin-list">
-                        Loading characters...
-                    </div>
-                </div>
+        <div class="panel-heading">
+            <h2>All Characters</h2>
+            <span id="character-count">LOADING...</span>
+        </div>
 
-            </section>
+        <!-- SEARCH -->
+        <div class="character-search-container">
+            <input
+                type="search"
+                id="character-search"
+                placeholder="Search by character name or alias..."
+            >
+        </div>
+
+        <!-- CHARACTER GRID -->
+        <div id="character-list" class="character-admin-grid">
+            Loading characters...
+        </div>
+
+        <!-- PAGINATION -->
+        <div id="character-pagination" class="admin-pagination"></div>
+
+    </div>
+
+</section>
 
 
             <!-- LOCATIONS -->
