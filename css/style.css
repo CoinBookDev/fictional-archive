@@ -731,3 +731,12 @@ a {
         border-bottom: 1px solid var(--border);
     }
 }
+/* SCROLLABLE REGULAR SIDEBAR */
+
+.sidebar {
+    height: 100vh;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0;
+}
