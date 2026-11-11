@@ -43,7 +43,7 @@ async function loadCharacter() {
     document.getElementById("character-species").textContent =
         character.species || "-";
 
-    document.getElementById("character-first-appearance").textContent =
+    document.getElementById("character-first-appearence").textContent =
         character.first_appearence || "-";
 
     document.getElementById("character-alias").textContent =
