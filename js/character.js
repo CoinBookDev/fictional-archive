@@ -1,8 +1,12 @@
 
 const parameters = new URLSearchParams(window.location.search);
-const characterId = Number(parameters.get("id"));
+const characterId = parameters.get("id");
 
 async function loadCharacter() {
+
+    /* =========================================
+       LOAD CHARACTER
+    ========================================= */
 
     const { data: character, error } = await window.supabaseClient
         .from("characters")
@@ -18,101 +22,98 @@ async function loadCharacter() {
         document.getElementById("characterDescription").textContent =
             error ? error.message : "This character does not exist.";
 
-           document.getElementById("character-name").textContent =
-    character.name || "-";
-
-document.getElementById("character-description").textContent =
-    character.description || "";
-
-document.getElementById("character-image").src =
-    character.image_url || "";
-
-document.getElementById("character-species").textContent =
-    character.species || "-";
-
-document.getElementById("character-first-appearance").textContent =
-    character.first_appearence || "-";
-
-document.getElementById("character-alias").textContent =
-    character.Alias || "-";
-
-document.getElementById("character-status").textContent =
-    character.Status || "-";
-
-   document.getElementById("character-gender").textContent =
-    character.Gender || "-";
-
-document.getElementById("character-citizenship").textContent =
-    character.Citizenship || "-";
-
-document.getElementById("character-id").textContent =
-    character.id || "---";
         return;
     }
 
-    document.title = `${character.name} | Fictional Archive`;
-
-    document.getElementById("characterName").textContent =
-        character.name;
-
-    document.getElementById("characterCode").textContent =
-        `CHARACTER PROFILE / #${character.id}`;
-
-    document.getElementById("characterDescription").textContent =
-        character.description || "No description available.";
-
-    const characterImage = document.getElementById("characterImage");
-const imagePlaceholder = document.getElementById("characterImagePlaceholder");
-
-if (character.image_url) {
-    characterImage.src = character.image_url;
-    characterImage.hidden = false;
-    imagePlaceholder.hidden = true;
-} else {
-    imagePlaceholder.textContent =
-        character.name.substring(0, 2).toUpperCase();
-}
-document.getElementById("characterSpecies").textContent =
-    "DEBUG: " + JSON.stringify(character.species);
-
-document.getElementById("characterFirstAppearance").textContent =
-    "DEBUG: " + JSON.stringify(character.first_appearence);
     console.log("CHARACTER:", character);
 
-document.getElementById("characterSpecies").textContent =
-    JSON.stringify(character.species);
+    document.title = `${character.name} | Fictional Archive`;
 
-document.getElementById("characterFirstAppearance").textContent =
-    JSON.stringify(character.first_appearence);
 
-    document.getElementById("characterAlias").textContent =
-    characters.Alias || "Unknown";
+    /* =========================================
+       CHARACTER HEADER
+    ========================================= */
 
-document.getElementById("CharacterStatus").textContent =
-    characters.Status || "Unknown";
+    document.getElementById("character-name").textContent =
+        character.name || "-";
 
-document.getElementById("characterGender").textContent =
-    characters.Gender || "Unknown";
+    document.getElementById("character-description").textContent =
+        character.description || "No description available.";
 
-    const { data: versions, error: versionError } = await window.supabaseClient
-        .from("character_versions")
-        .select("*")
-        .eq("character_id", character.id)
-        .order("name");
+    document.getElementById("character-species").textContent =
+        character.species || "-";
+
+    document.getElementById("character-first-appearance").textContent =
+        character.first_appearence || "-";
+
+    document.getElementById("character-alias").textContent =
+        character.Alias || "-";
+
+    document.getElementById("character-status").textContent =
+        character.Status || "-";
+
+    document.getElementById("character-gender").textContent =
+        character.Gender || "-";
+
+    document.getElementById("character-citizenship").textContent =
+        character.Citizenship || "-";
+
+    document.getElementById("character-id").textContent =
+        character.id || "---";
+
+
+    /* =========================================
+       CHARACTER IMAGE
+    ========================================= */
+
+    const characterImage =
+        document.getElementById("character-image");
+
+    if (character.image_url) {
+
+        characterImage.src = character.image_url;
+        characterImage.hidden = false;
+
+    } else {
+
+        characterImage.hidden = true;
+
+    }
+
+
+    /* =========================================
+       LOAD CHARACTER VERSIONS
+    ========================================= */
+
+    const { data: versions, error: versionError } =
+        await window.supabaseClient
+            .from("character_versions")
+            .select("*")
+            .eq("character_id", character.id)
+            .order("name");
+
+    const versionContainer =
+        document.getElementById("characterVersions");
 
     if (versionError) {
-        document.getElementById("characterVersions").textContent =
-            versionError.message;
+
+        versionContainer.textContent =
+            "Could not load versions: " + versionError.message;
+
+        console.error("VERSION ERROR:", versionError);
+
         return;
     }
 
     document.getElementById("versionCount").textContent =
         versions.length;
 
-    const versionContainer =
-        document.getElementById("characterVersions");
-
     versionContainer.innerHTML = "";
+
+
+    /* =========================================
+       DISPLAY VERSIONS
+    ========================================= */
 
     versions.forEach(version => {
 
@@ -120,7 +121,7 @@ document.getElementById("characterGender").textContent =
         entry.className = "profile-list-item";
 
         const title = document.createElement("h3");
-        title.textContent = version.name;
+        title.textContent = version.name || "Unnamed version";
 
         const description = document.createElement("p");
         description.textContent =
@@ -136,10 +137,14 @@ document.getElementById("characterGender").textContent =
 
     });
 
+
     if (versions.length === 0) {
+
         versionContainer.textContent =
             "No character versions found.";
+
     }
+
 }
 
 loadCharacter();
