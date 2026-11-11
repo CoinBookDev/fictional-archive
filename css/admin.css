@@ -2,14 +2,14 @@
 /* =========================================
    FICTIONAL ARCHIVE - ADMIN PANEL
 ========================================= */
-
 .admin-app {
     display: flex;
     min-height: 100vh;
-    background: #101114;
+    height: 100vh;
+    overflow: hidden;
+   background: #101114;
     color: #e8e8e8;
 }
-
 
 /* =========================================
    SIDEBAR
@@ -27,10 +27,9 @@
     padding: 28px 18px;
     box-sizing: border-box;
 
-    position: sticky;
-    top: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    flex-shrink: 0;
 }
 
 .sidebar-header {
@@ -146,10 +145,11 @@
 /* =========================================
    MAIN CONTENT
 ========================================= */
-
 .admin-main {
     flex: 1;
     min-width: 0;
+    height: 100%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
