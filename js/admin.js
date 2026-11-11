@@ -281,18 +281,47 @@ if (sectionName === "characters") {
    CHARACTER MANAGEMENT
 ========================================= */
 
+/* =========================================
+   CHARACTER PAGINATION
+========================================= */
+
+let characterPage = 1;
+const characterPageSize = 50;
+let characterSearch = "";
+
 async function loadCharacters() {
 
     const list = document.getElementById("character-list");
     const count = document.getElementById("character-count");
+    const pagination = document.getElementById("character-pagination");
 
     list.textContent = "Loading characters...";
     count.textContent = "LOADING...";
+    pagination.innerHTML = "";
 
-    const { data, error } = await supabase
+    // Build the Supabase query
+    let query = supabase
         .from("characters")
-        .select("*")
-        .order("name");
+        .select("*", { count: "exact" });
+
+    // Search by name or alias
+    if (characterSearch) {
+        const safeSearch = characterSearch.replace(/[,%()\\]/g, " ").trim();
+
+        if (safeSearch) {
+            query = query.or(
+                `name.ilike.%${safeSearch}%,Alias.ilike.%${safeSearch}%`
+            );
+        }
+    }
+
+    // Alphabetical sorting and pagination
+    const from = (characterPage - 1) * characterPageSize;
+    const to = from + characterPageSize - 1;
+
+    const { data, error, count: totalCount } = await query
+        .order("name", { ascending: true })
+        .range(from, to);
 
     if (error) {
         console.error("Character loading error:", error);
@@ -301,19 +330,27 @@ async function loadCharacters() {
         return;
     }
 
-    count.textContent = `${data.length} RECORDS`;
+    count.textContent = `${totalCount} RECORDS`;
 
-    if (data.length === 0) {
+    const characterStat = document.getElementById("stat-characters");
+
+    if (characterStat) {
+        characterStat.textContent = totalCount;
+    }
+
+    // Empty results
+    if (!data || data.length === 0) {
         list.textContent = "No characters found.";
         return;
     }
 
+    // Create character cards
     list.innerHTML = "";
 
     data.forEach(character => {
 
-        const row = document.createElement("div");
-        row.className = "admin-franchise-row";
+        const card = document.createElement("div");
+        card.className = "character-admin-card";
 
         const information = document.createElement("div");
         information.className = "franchise-information";
@@ -323,6 +360,7 @@ async function loadCharacters() {
 
         const details = document.createElement("small");
         details.textContent =
+            `ID: ${character.id} · ` +
             `${character.species || "UNKNOWN SPECIES"} · ` +
             `${character.Status || "UNKNOWN STATUS"}`;
 
@@ -341,15 +379,63 @@ async function loadCharacters() {
         });
 
         actions.appendChild(editButton);
-        row.appendChild(information);
-        row.appendChild(actions);
-        list.appendChild(row);
+
+        card.appendChild(information);
+        card.appendChild(actions);
+
+        list.appendChild(card);
     });
 
-    const characterStat = document.getElementById("stat-characters");
+    // Create numbered pagination
+    const totalPages = Math.ceil(totalCount / characterPageSize);
 
-    if (characterStat) {
-        characterStat.textContent = data.length;
+    if (totalPages > 1) {
+
+        function createPageButton(label, page, disabled = false, active = false) {
+
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.textContent = label;
+            button.className = "admin-page-button";
+
+            if (active) {
+                button.classList.add("active");
+            }
+
+            button.disabled = disabled;
+
+            button.addEventListener("click", () => {
+                characterPage = page;
+                loadCharacters();
+            });
+
+            pagination.appendChild(button);
+        }
+
+        // Previous
+        createPageButton(
+            "Previous",
+            characterPage - 1,
+            characterPage === 1
+        );
+
+        // Numbered pages
+        for (let page = 1; page <= totalPages; page++) {
+            createPageButton(
+                page,
+                page,
+                false,
+                page === characterPage
+            );
+        }
+
+        // Next
+        createPageButton(
+            "Next",
+            characterPage + 1,
+            characterPage === totalPages
+        );
     }
 }
 
