@@ -751,3 +751,126 @@
 .character-delete-button:hover {
     background: #542929;
 }
+/* =========================================
+   CHARACTER GRID
+========================================= */
+
+.character-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.character-admin-card {
+    background: #17181d;
+    border: 1px solid #303137;
+    border-radius: 8px;
+    padding: 16px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.character-admin-card .franchise-information {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.character-admin-card .franchise-information strong {
+    font-size: 14px;
+}
+
+.character-admin-card .franchise-information small {
+    color: #92939c;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.character-admin-card .franchise-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* =========================================
+   CHARACTER SEARCH
+========================================= */
+
+.character-search-container {
+    margin-top: 20px;
+}
+
+.character-search-container input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    background: #17181d;
+    border: 1px solid #303137;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.character-search-container input:focus {
+    outline: none;
+    border-color: #777b91;
+}
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.admin-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 25px;
+}
+
+.admin-page-button {
+    padding: 9px 13px;
+    background: #17181d;
+    border: 1px solid #303137;
+    border-radius: 5px;
+    color: #b9bac2;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.admin-page-button:hover:not(:disabled) {
+    background: #292a32;
+    color: #ffffff;
+}
+
+.admin-page-button.active {
+    background: #343746;
+    border-color: #686d85;
+    color: #ffffff;
+}
+
+.admin-page-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   RESPONSIVE GRID
+========================================= */
+
+@media (max-width: 1000px) {
+    .character-admin-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .character-admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
