@@ -3,7 +3,122 @@
    FICTIONAL ARCHIVE - ADMIN PANEL
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const supabase = window.supabaseClient;
+
+    const loginScreen = document.getElementById("login-screen");
+    const loginForm = document.getElementById("admin-login-form");
+    const loginMessage = document.getElementById("login-message");
+    const loginButton = document.getElementById("admin-login-button");
+    const adminApp = document.getElementById("app");
+    const logoutButton = document.getElementById("admin-logout");
+
+    if (!supabase) {
+        alert("Supabase connection not found.");
+        return;
+    }
+
+    /* =====================================
+       AUTHENTICATION
+    ===================================== */
+
+    function showLogin() {
+        loginScreen.hidden = false;
+        adminApp.hidden = true;
+    }
+
+    function showDashboard() {
+        loginScreen.hidden = true;
+        adminApp.hidden = false;
+    }
+
+    async function verifyAdmin(user) {
+
+        const { data, error } = await supabase
+            .from("admin_users")
+            .select("user_id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Admin verification error:", error);
+            return false;
+        }
+
+        return data !== null;
+    }
+
+    async function authenticateUser(user) {
+
+        const isAdmin = await verifyAdmin(user);
+
+        if (!isAdmin) {
+            await supabase.auth.signOut();
+
+            showLogin();
+            loginMessage.textContent =
+                "Access denied. This account is not an administrator.";
+
+            return false;
+        }
+
+        showDashboard();
+        openSection("dashboard");
+
+        return true;
+    }
+
+    loginForm.addEventListener("submit", async event => {
+
+        event.preventDefault();
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Signing in...";
+        loginMessage.textContent = "";
+
+        const email = document.getElementById("admin-email").value.trim();
+        const password = document.getElementById("admin-password").value;
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+
+            loginMessage.textContent = error.message;
+
+        } else {
+
+            const success = await authenticateUser(data.user);
+
+            if (!success) {
+                document.getElementById("admin-password").value = "";
+            }
+
+        }
+
+        loginButton.disabled = false;
+        loginButton.textContent = "Sign In";
+
+    });
+
+    logoutButton.addEventListener("click", async () => {
+
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+            alert("Could not log out: " + error.message);
+            return;
+        }
+
+        showLogin();
+        loginForm.reset();
+        loginMessage.textContent = "";
+
+    });
+
 
     /* =====================================
        NAVIGATION
@@ -28,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
         events: "EVENTS",
         universes: "ALTERNATE UNIVERSES"
     };
-
 
     function openSection(sectionName) {
 
@@ -66,24 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     navigationButtons.forEach(button => {
         button.addEventListener("click", () => {
             openSection(button.dataset.section);
         });
     });
 
-
-    /* =====================================
-       SUPABASE
-    ===================================== */
-
-const supabase = window.supabaseClient;
-
-if (!supabase) {
-    console.error("Supabase client not found.");
-    return;
-}
 
     /* =====================================
        FRANCHISE MANAGEMENT
@@ -105,9 +207,10 @@ if (!supabase) {
         if (error) {
             console.error("Franchise loading error:", error);
 
-            list.textContent = "Could not load franchises: " + error.message;
-            count.textContent = "ERROR";
+            list.textContent =
+                "Could not load franchises: " + error.message;
 
+            count.textContent = "ERROR";
             return;
         }
 
@@ -160,7 +263,6 @@ if (!supabase) {
 
         });
 
-        // Update dashboard statistics
         const franchiseStat = document.getElementById("stat-franchises");
 
         if (franchiseStat) {
@@ -172,7 +274,6 @@ if (!supabase) {
 
     /* =====================================
        FRANCHISE FORM
-       Add/Edit interface
     ===================================== */
 
     function openFranchiseForm(franchise = null) {
@@ -249,7 +350,6 @@ if (!supabase) {
 
         modal.querySelector(".admin-cancel-button")
             .addEventListener("click", closeModal);
-
 
         form.addEventListener("submit", async event => {
 
@@ -330,8 +430,21 @@ if (!supabase) {
        INITIALIZATION
     ===================================== */
 
-    openSection("dashboard");
-
     window.openAdminSection = openSection;
+
+    showLogin();
+
+    const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+
+    if (sessionError) {
+        console.error("Session error:", sessionError);
+        loginMessage.textContent = "Could not verify your session.";
+        return;
+    }
+
+    if (sessionData.session) {
+        await authenticateUser(sessionData.session.user);
+    }
 
 });
