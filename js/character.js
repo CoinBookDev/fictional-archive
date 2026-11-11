@@ -18,6 +18,35 @@ async function loadCharacter() {
         document.getElementById("characterDescription").textContent =
             error ? error.message : "This character does not exist.";
 
+           document.getElementById("character-name").textContent =
+    character.name || "-";
+
+document.getElementById("character-description").textContent =
+    character.description || "";
+
+document.getElementById("character-image").src =
+    character.image_url || "";
+
+document.getElementById("character-species").textContent =
+    character.species || "-";
+
+document.getElementById("character-first-appearance").textContent =
+    character.first_appearence || "-";
+
+document.getElementById("character-alias").textContent =
+    character.Alias || "-";
+
+document.getElementById("character-status").textContent =
+    character.Status || "-";
+
+   document.getElementById("character-gender").textContent =
+    character.Gender || "-";
+
+document.getElementById("character-citizenship").textContent =
+    character.Citizenship || "-";
+
+document.getElementById("character-id").textContent =
+    character.id || "---";
         return;
     }
 
