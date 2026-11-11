@@ -453,6 +453,7 @@ function openCharacterForm(character = null) {
     /* FILL EXISTING DATA */
 
     if (isEditing) {
+      form.elements.id.value = character.id;
         form.elements.name.value = character.name || "";
         form.elements.Alias.value = character.Alias || "";
         form.elements.description.value = character.description || "";
@@ -587,13 +588,15 @@ function openCharacterForm(character = null) {
                 .update(characterData)
                 .eq("id", character.id);
 
-        } else {
+} else {
 
-            result = await supabase
-                .from("characters")
-                .insert([characterData]);
+    characterData.id = Number(formData.get("id"));
 
-        }
+    result = await supabase
+        .from("characters")
+        .insert([characterData]);
+
+}
 
         if (result.error) {
 
