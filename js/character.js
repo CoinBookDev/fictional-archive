@@ -45,21 +45,44 @@ async function loadCharacter() {
 
     document.getElementById("character-first-appearence").textContent =
         character.first_appearence || "-";
-
-    document.getElementById("character-alias").textContent =
-        character.Alias || "-";
-
-    document.getElementById("character-status").textContent =
-        character.Status || "-";
-
-    document.getElementById("character-gender").textContent =
-        character.Gender || "-";
-
-    document.getElementById("character-citizenship").textContent =
-        character.Citizenship || "-";
-
-    document.getElementById("character-id").textContent =
+ document.getElementById("character-id").textContent =
         character.id || "---";
+
+/* CHARACTER DETAILS */
+
+function setCharacterField(ids, value) {
+
+    const element = ids
+        .map(id => document.getElementById(id))
+        .find(element => element !== null);
+
+    if (element) {
+        element.textContent = value || "-";
+    } else {
+        console.warn("Missing HTML element:", ids);
+    }
+
+}
+
+setCharacterField(
+    ["character-alias", "characterAlias"],
+    character.Alias
+);
+
+setCharacterField(
+    ["character-status", "CharacterStatus", "characterStatus"],
+    character.Status
+);
+
+setCharacterField(
+    ["character-gender", "characterGender"],
+    character.Gender
+);
+
+setCharacterField(
+    ["character-citizenship", "characterCitizenship"],
+    character.Citizenship
+);
 
 
     /* =========================================
