@@ -674,3 +674,43 @@
     border-radius: 4px;
     cursor: pointer;
 }
+/* ADMIN LOGIN LAYOUT */
+
+.admin-login-screen {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.admin-login-screen > .sidebar {
+    width: 250px;
+    min-width: 250px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.admin-login-content {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+    .admin-login-screen {
+        flex-direction: column;
+    }
+
+    .admin-login-screen > .sidebar {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        max-height: 250px;
+    }
+}
