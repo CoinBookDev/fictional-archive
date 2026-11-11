@@ -759,6 +759,16 @@ function openCharacterForm(character = null) {
         });
     }
 
+   /* ADD CHARACTER BUTTON */
+
+const addCharacterButton =
+    document.getElementById("add-character");
+
+if (addCharacterButton) {
+    addCharacterButton.addEventListener("click", () => {
+        openCharacterForm();
+    });
+}
 
     /* =====================================
        INITIALIZATION
