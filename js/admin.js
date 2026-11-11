@@ -562,8 +562,9 @@ function openCharacterForm(character = null) {
         const formData = new FormData(form);
 
         const characterData = {
-            name: formData.get("name").trim(),
-            Alias: formData.get("Alias").trim() || null,
+             id: Number(formData.get("id")),
+             name: formData.get("name").trim(),
+             Alias: formData.get("Alias").trim() || null,
             description: formData.get("description").trim() || null,
             species: formData.get("species").trim() || null,
             image_url: formData.get("image_url").trim() || null,
