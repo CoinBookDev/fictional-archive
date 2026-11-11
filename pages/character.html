@@ -67,35 +67,62 @@
 
         <section class="page-content">
 
+<section class="character-hero">
 
-<div class="character-hero">
+    <!-- CHARACTER IMAGE -->
+    <div class="character-portrait">
+        <img id="character-image" src="" alt="Character portrait">
+    </div>
 
-    <div class="character-hero-content">
+    <!-- CHARACTER INFORMATION -->
+    <div class="character-overview">
 
-        <p id="characterCode" class="eyebrow">
-            CHARACTER PROFILE
-        </p>
+        <div class="character-heading">
+            <div class="character-label">CHARACTER PROFILE</div>
+            <h1 id="character-name">Loading character...</h1>
+            <p id="character-description"></p>
+        </div>
 
-        <h1 id="characterName">Loading...</h1>
+        <div class="character-information-grid">
 
-        <p id="characterDescription">
-            Loading character information...
-        </p>
+            <div class="character-info-item">
+                <span class="info-label">SPECIES</span>
+                <span class="info-value" id="character-species">-</span>
+            </div>
 
-        <div class="character-meta">
-            <span id="characterSpecies">TEST</span>
-            <span id="characterFirstAppearance">UNKNOWN</span>
+            <div class="character-info-item">
+                <span class="info-label">FIRST APPEARANCE</span>
+                <span class="info-value" id="character-first-appearance">-</span>
+            </div>
+
+            <div class="character-info-item">
+                <span class="info-label">OCCUPATION</span>
+                <span class="info-value" id="character-occupation">-</span>
+            </div>
+
+            <div class="character-info-item">
+                <span class="info-label">STATUS</span>
+                <span class="info-value" id="character-status">-</span>
+            </div>
+
+        </div>
+
+        <div class="character-hero-footer">
+
+            <div class="character-id">
+                CHARACTER ID:
+                <span id="character-id">---</span>
+            </div>
+
+            <div class="character-franchise">
+                <span id="character-franchise">---</span>
+            </div>
+
         </div>
 
     </div>
 
-    <div class="character-hero-image">
-        <div id="characterImagePlaceholder">FA</div>
-        <img id="characterImage" alt="Character artwork" hidden>
-    </div>
-
-</div>
-
+</section>
 
             <div class="profile-stats">
 
