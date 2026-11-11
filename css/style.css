@@ -740,3 +740,84 @@ a {
     overflow-x: hidden;
     flex-shrink: 0;
 }
+/* =========================================
+   CHARACTER DIRECTORY GRID
+========================================= */
+
+.directory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.directory-card {
+    min-width: 0;
+}
+
+/* =========================================
+   CHARACTER SEARCH
+========================================= */
+
+.directory-controls input {
+    box-sizing: border-box;
+}
+
+.directory-controls input:focus {
+    outline: none;
+    border-color: #777b91;
+}
+
+/* =========================================
+   DIRECTORY PAGINATION
+========================================= */
+
+.directory-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 30px;
+}
+
+.directory-page-button {
+    padding: 10px 14px;
+    background: #17181d;
+    border: 1px solid #303137;
+    border-radius: 5px;
+    color: #b9bac2;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.directory-page-button:hover:not(:disabled) {
+    background: #292a32;
+    color: #fff;
+}
+
+.directory-page-button.active {
+    background: #343746;
+    border-color: #686d85;
+    color: #fff;
+}
+
+.directory-page-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   RESPONSIVE DIRECTORY
+========================================= */
+
+@media (max-width: 1000px) {
+    .directory-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .directory-grid {
+        grid-template-columns: 1fr;
+    }
+}
