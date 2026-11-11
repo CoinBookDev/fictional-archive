@@ -78,11 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
        SUPABASE
     ===================================== */
 
-    if (typeof supabase === "undefined") {
-        console.error("Supabase client not found.");
-        return;
-    }
+const supabase = window.supabaseClient;
 
+if (!supabase) {
+    console.error("Supabase client not found.");
+    return;
+}
 
     /* =====================================
        FRANCHISE MANAGEMENT
