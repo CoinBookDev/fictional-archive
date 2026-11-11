@@ -869,6 +869,23 @@ if (addCharacterButton) {
     });
 }
 
+   /* CHARACTER SEARCH */
+
+const characterSearchInput =
+    document.getElementById("character-search");
+
+if (characterSearchInput) {
+
+    characterSearchInput.addEventListener("input", () => {
+
+        characterSearch = characterSearchInput.value.trim();
+        characterPage = 1;
+
+        loadCharacters();
+
+    });
+
+}
     /* =====================================
        INITIALIZATION
     ===================================== */
