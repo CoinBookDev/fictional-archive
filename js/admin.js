@@ -175,10 +175,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `ADMIN / ${sectionNames[sectionName]}`;
         }
 
-        if (sectionName === "franchises") {
-            loadFranchises();
-        }
-    }
+if (sectionName === "franchises") {
+    loadFranchises();
+}
+
+if (sectionName === "characters") {
+    loadCharacters();
+}
 
     navigationButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -271,7 +274,88 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     }
 
+/* =========================================
+   CHARACTER MANAGEMENT
+========================================= */
 
+async function loadCharacters() {
+
+    const list = document.getElementById("character-list");
+    const count = document.getElementById("character-count");
+
+    list.textContent = "Loading characters...";
+    count.textContent = "LOADING...";
+
+    const { data, error } = await supabase
+        .from("characters")
+        .select("*")
+        .order("name");
+
+    if (error) {
+        console.error("Character loading error:", error);
+
+        list.textContent =
+            "Could not load characters: " + error.message;
+
+        count.textContent = "ERROR";
+        return;
+    }
+
+    count.textContent = `${data.length} RECORDS`;
+
+    if (data.length === 0) {
+        list.textContent = "No characters found.";
+        return;
+    }
+
+    list.innerHTML = "";
+
+    data.forEach(character => {
+
+        const row = document.createElement("div");
+        row.className = "admin-franchise-row";
+
+        const information = document.createElement("div");
+        information.className = "franchise-information";
+
+        const name = document.createElement("strong");
+        name.textContent = character.name;
+
+        const details = document.createElement("small");
+
+        details.textContent =
+            `${character.species || "UNKNOWN SPECIES"} · ` +
+            `${character.Status || "UNKNOWN STATUS"}`;
+
+        information.appendChild(name);
+        information.appendChild(details);
+
+        const actions = document.createElement("div");
+        actions.className = "franchise-actions";
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.className = "admin-edit-button";
+
+        editButton.addEventListener("click", () => {
+            openCharacterForm(character);
+        });
+
+        actions.appendChild(editButton);
+
+        row.appendChild(information);
+        row.appendChild(actions);
+
+        list.appendChild(row);
+
+    });
+
+    const characterStat = document.getElementById("stat-characters");
+
+    if (characterStat) {
+        characterStat.textContent = data.length;
+    }
+}
     /* =====================================
        FRANCHISE FORM
     ===================================== */
