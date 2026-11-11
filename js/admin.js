@@ -373,6 +373,15 @@ function openCharacterForm(character = null) {
 
             <form id="character-form">
 
+             <label>ID</label>
+             <input
+                 type="number"
+                 name="id"
+                 min="0"
+                 step="1"
+                 required
+                 ${isEditing ? "readonly" : ""}
+             >
                 <label>Name</label>
                 <input type="text" name="name" required>
 
