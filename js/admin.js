@@ -276,6 +276,7 @@ if (sectionName === "characters") {
 
     }
 
+
 /* =========================================
    CHARACTER MANAGEMENT
 ========================================= */
@@ -295,10 +296,7 @@ async function loadCharacters() {
 
     if (error) {
         console.error("Character loading error:", error);
-
-        list.textContent =
-            "Could not load characters: " + error.message;
-
+        list.textContent = "Could not load characters: " + error.message;
         count.textContent = "ERROR";
         return;
     }
@@ -324,7 +322,6 @@ async function loadCharacters() {
         name.textContent = character.name;
 
         const details = document.createElement("small");
-
         details.textContent =
             `${character.species || "UNKNOWN SPECIES"} · ` +
             `${character.Status || "UNKNOWN STATUS"}`;
@@ -344,12 +341,9 @@ async function loadCharacters() {
         });
 
         actions.appendChild(editButton);
-
         row.appendChild(information);
         row.appendChild(actions);
-
         list.appendChild(row);
-
     });
 
     const characterStat = document.getElementById("stat-characters");
@@ -358,6 +352,260 @@ async function loadCharacters() {
         characterStat.textContent = data.length;
     }
 }
+
+
+/* CHARACTER FORM */
+
+function openCharacterForm(character = null) {
+
+    const isEditing = character !== null;
+
+    const modal = document.createElement("div");
+    modal.className = "admin-modal";
+
+    modal.innerHTML = `
+        <div class="admin-modal-content">
+
+            <div class="admin-modal-header">
+                <h2>${isEditing ? "Edit Character" : "Add Character"}</h2>
+                <button class="admin-close-button" type="button">×</button>
+            </div>
+
+            <form id="character-form">
+
+                <label>Name</label>
+                <input type="text" name="name" required>
+
+                <label>Alias</label>
+                <input type="text" name="Alias">
+
+                <label>Description</label>
+                <textarea name="description" rows="5"></textarea>
+
+                <label>Species</label>
+                <input type="text" name="species">
+
+                <label>Image URL</label>
+                <input type="url" name="image_url" placeholder="https://...">
+
+                <div class="character-image-preview">
+                    <img id="character-preview" alt="Character preview" hidden>
+                    <span id="character-preview-placeholder">
+                        IMAGE PREVIEW
+                    </span>
+                </div>
+
+                <label>First Appearance</label>
+                <input type="text" name="first_appearence">
+
+                <label>Status</label>
+                <input type="text" name="Status" list="character-status-options">
+
+                <datalist id="character-status-options">
+                    <option value="Alive">
+                    <option value="Deceased">
+                    <option value="Unknown">
+                    <option value="Missing">
+                    <option value="Inactive">
+                </datalist>
+
+                <label>Gender</label>
+                <input type="text" name="Gender">
+
+                <label>Citizenship</label>
+                <input type="text" name="Citizenship">
+
+                <div class="admin-form-actions">
+
+                    ${isEditing ? `
+                        <button type="button" class="character-delete-button">
+                            Delete
+                        </button>
+                    ` : ""}
+
+                    <button type="button" class="admin-cancel-button">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="admin-save-button">
+                        ${isEditing ? "Save Changes" : "Add Character"}
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const form = modal.querySelector("#character-form");
+
+    /* FILL EXISTING DATA */
+
+    if (isEditing) {
+        form.elements.name.value = character.name || "";
+        form.elements.Alias.value = character.Alias || "";
+        form.elements.description.value = character.description || "";
+        form.elements.species.value = character.species || "";
+        form.elements.image_url.value = character.image_url || "";
+        form.elements.first_appearence.value =
+            character.first_appearence || "";
+        form.elements.Status.value = character.Status || "";
+        form.elements.Gender.value = character.Gender || "";
+        form.elements.Citizenship.value = character.Citizenship || "";
+    }
+
+    /* IMAGE PREVIEW */
+
+    const imageInput = form.elements.image_url;
+    const preview = modal.querySelector("#character-preview");
+    const placeholder = modal.querySelector(
+        "#character-preview-placeholder"
+    );
+
+    function updateImagePreview() {
+
+        const url = imageInput.value.trim();
+
+        if (!url) {
+            preview.hidden = true;
+            preview.removeAttribute("src");
+            placeholder.hidden = false;
+            return;
+        }
+
+        preview.src = url;
+        preview.hidden = false;
+        placeholder.hidden = true;
+    }
+
+    imageInput.addEventListener("input", updateImagePreview);
+
+    preview.addEventListener("error", () => {
+        preview.hidden = true;
+        placeholder.hidden = false;
+        placeholder.textContent = "IMAGE COULD NOT BE LOADED";
+    });
+
+    preview.addEventListener("load", () => {
+        preview.hidden = false;
+        placeholder.hidden = true;
+    });
+
+    updateImagePreview();
+
+    /* CLOSE FORM */
+
+    function closeModal() {
+        modal.remove();
+    }
+
+    modal.querySelector(".admin-close-button")
+        .addEventListener("click", closeModal);
+
+    modal.querySelector(".admin-cancel-button")
+        .addEventListener("click", closeModal);
+
+    /* DELETE CHARACTER */
+
+    const deleteButton = modal.querySelector(".character-delete-button");
+
+    if (deleteButton) {
+
+        deleteButton.addEventListener("click", async () => {
+
+            const confirmed = confirm(
+                `Are you sure you want to delete ${character.name}?`
+            );
+
+            if (!confirmed) return;
+
+            deleteButton.disabled = true;
+            deleteButton.textContent = "Deleting...";
+
+            const { error } = await supabase
+                .from("characters")
+                .delete()
+                .eq("id", character.id);
+
+            if (error) {
+                console.error("Character deletion error:", error);
+                alert("Could not delete character: " + error.message);
+
+                deleteButton.disabled = false;
+                deleteButton.textContent = "Delete";
+                return;
+            }
+
+            closeModal();
+            await loadCharacters();
+        });
+    }
+
+    /* SAVE CHARACTER */
+
+    form.addEventListener("submit", async event => {
+
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const characterData = {
+            name: formData.get("name").trim(),
+            Alias: formData.get("Alias").trim() || null,
+            description: formData.get("description").trim() || null,
+            species: formData.get("species").trim() || null,
+            image_url: formData.get("image_url").trim() || null,
+            first_appearence:
+                formData.get("first_appearence").trim() || null,
+            Status: formData.get("Status").trim() || null,
+            Gender: formData.get("Gender").trim() || null,
+            Citizenship: formData.get("Citizenship").trim() || null
+        };
+
+        const saveButton = form.querySelector(".admin-save-button");
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        let result;
+
+        if (isEditing) {
+
+            result = await supabase
+                .from("characters")
+                .update(characterData)
+                .eq("id", character.id);
+
+        } else {
+
+            result = await supabase
+                .from("characters")
+                .insert([characterData]);
+
+        }
+
+        if (result.error) {
+
+            console.error("Character save error:", result.error);
+
+            alert("Could not save character: " + result.error.message);
+
+            saveButton.disabled = false;
+            saveButton.textContent = isEditing
+                ? "Save Changes"
+                : "Add Character";
+
+            return;
+        }
+
+        closeModal();
+        await loadCharacters();
+
+    });
+}
+
     /* =====================================
        FRANCHISE FORM
     ===================================== */
