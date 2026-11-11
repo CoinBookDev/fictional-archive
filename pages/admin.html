@@ -14,37 +14,68 @@
 
 <body>
 
+
 <div id="login-screen" class="admin-login-screen">
-    <div class="admin-login-box">
-        <div class="eyebrow">FICTIONAL ARCHIVE / RESTRICTED ACCESS</div>
-        <h1>Admin Login</h1>
-        <p>Sign in to manage the Fictional Archive database.</p>
 
-        <form id="admin-login-form">
-            <label for="admin-email">Email</label>
-            <input
-                type="email"
-                id="admin-email"
-                required
-                placeholder="Your email address"
-            >
+    <aside class="sidebar">
 
-            <label for="admin-password">Password</label>
-            <input
-                type="password"
-                id="admin-password"
-                required
-                placeholder="Your password"
-            >
+        <div class="brand">
+            <div class="brand-symbol">F</div>
+            <div>
+                <h2>FICTIONAL</h2>
+                <span>ARCHIVE</span>
+            </div>
+        </div>
 
-            <button type="submit" id="admin-login-button">
-                Sign In
-            </button>
+        <div class="nav-label">MAIN MENU</div>
 
-            <p id="login-message"></p>
-        </form>
+        <nav>
+            <a href="../index.html" class="nav-item">Overview</a>
+            <a href="universes.html" class="nav-item">Universes</a>
+            <a href="franchises.html" class="nav-item">Franchises</a>
+            <a href="characters.html" class="nav-item">Characters</a>
+            <a href="locations.html" class="nav-item">Locations</a>
+            <a href="organisations.html" class="nav-item">Organisations</a>
+            <a href="objects.html" class="nav-item">Objects & Artifacts</a>
+        </nav>
+
+        <div class="nav-label">EXPLORE</div>
+
+        <nav>
+            <a href="../timelines.html" class="nav-item">Timelines</a>
+            <a href="../connections.html" class="nav-item">Connections</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            FICTIONAL ARCHIVE<br>
+            <span>VERSION 0.1</span>
+        </div>
+
+    </aside>
+
+    <div class="admin-login-content">
+
+        <div class="admin-login-box">
+            <div class="eyebrow">FICTIONAL ARCHIVE / RESTRICTED ACCESS</div>
+            <h1>Admin Login</h1>
+            <p>Sign in to manage the Fictional Archive database.</p>
+
+            <form id="admin-login-form">
+                <label for="admin-email">Email</label>
+                <input type="email" id="admin-email" required placeholder="Your email address">
+
+                <label for="admin-password">Password</label>
+                <input type="password" id="admin-password" required placeholder="Your password">
+
+                <button type="submit" id="admin-login-button">Sign In</button>
+                <p id="login-message"></p>
+            </form>
+        </div>
+
     </div>
+
 </div>
+
 
 <div id="app" class="admin-app" hidden>
     <!-- SIDEBAR -->
