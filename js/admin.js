@@ -183,6 +183,8 @@ if (sectionName === "characters") {
     loadCharacters();
 }
 
+    }
+
     navigationButtons.forEach(button => {
         button.addEventListener("click", () => {
             openSection(button.dataset.section);
