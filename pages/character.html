@@ -15,6 +15,10 @@
 
 <div id="app">
 
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
     <aside class="sidebar">
 
         <div class="brand">
@@ -26,7 +30,7 @@
         </div>
 
         <div class="nav-label">MAIN MENU</div>
-        </script>
+
         <nav>
             <a href="../index.html" class="nav-item">Overview</a>
             <a href="universes.html" class="nav-item">Universes</a>
@@ -53,9 +57,17 @@
 
     </aside>
 
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
     <main class="main-content">
 
+        <!-- TOPBAR -->
+
         <header class="topbar">
+
             <div class="breadcrumb">
                 ARCHIVE / CHARACTERS / PROFILE
             </div>
@@ -63,112 +75,137 @@
             <div class="topbar-right">
                 DATABASE STATUS: <span>ONLINE</span>
             </div>
+
         </header>
+
+
+        <!-- PAGE CONTENT -->
 
         <section class="page-content">
 
-<section class="character-hero">
 
-    <!-- CHARACTER IMAGE -->
-    <div class="character-portrait">
-        <img id="character-image" src="" alt="Character portrait">
-    </div>
+            <!-- =====================================
+                 CHARACTER HERO
+            ====================================== -->
 
-    <!-- CHARACTER INFORMATION -->
-    <div class="character-overview">
+            <section class="character-hero">
 
-        <div class="character-heading">
-            <div class="character-label">CHARACTER PROFILE</div>
-            <h1 id="character-name">Loading character...</h1>
-            <p id="character-description"></p>
-        </div>
+                <!-- CHARACTER IMAGE -->
 
-        <div class="character-information-grid">
+                <div class="character-portrait">
 
-            <div class="character-info-item">
-                <span class="info-label">SPECIES</span>
-                <span class="info-value" id="character-species">-</span>
-            </div>
+                    <img
+                        id="character-image"
+                        src=""
+                        alt="Character portrait"
+                        hidden
+                    >
 
-            <div class="character-info-item">
-                <span class="info-label">FIRST APPEARANCE</span>
-                <span class="info-value" id="character-first-appearance">-</span>
-            </div>
-
-            <div class="character-info-item">
-                <span class="info-label">GENDER</span>
-                <span class="info-value" id="character-gender">-</span>
-            </div>
-
-            <div class="character-info-item">
-                <span class="info-label">STATUS</span>
-                <span class="info-value" id="character-status">-</span>
-            </div>
-
-        </div>
-
-        <div class="character-hero-footer">
-
-            <div class="character-id">
-                CHARACTER ID:
-                <span id="character-id">---</span>
-            </div>
-
-            <div class="character-franchise">
-                <span id="character-franchise">---</span>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-            <div class="profile-stats">
-
-                <div class="stat-card">
-                    <span>SPECIES</span>
-                    <h2 id="characterSpecies">-</h2>
                 </div>
 
-                <div class="stat-card">
-                    <span>FIRST APPEARANCE</span>
-                    <h2 id="characterFirstAppearance">-</h2>
+
+                <!-- CHARACTER OVERVIEW -->
+
+                <div class="character-overview">
+
+                    <div class="character-heading">
+
+                        <div class="character-label">
+                            CHARACTER PROFILE
+                        </div>
+
+                        <h1 id="character-name">
+                            Loading character...
+                        </h1>
+
+                        <p id="character-description">
+                            Loading description...
+                        </p>
+
+                    </div>
+
+
+                    <!-- CHARACTER INFORMATION -->
+
+                    <div class="character-information-grid">
+
+                        <div class="character-info-item">
+                            <span class="info-label">SPECIES</span>
+                            <span class="info-value" id="character-species">-</span>
+                        </div>
+
+                        <div class="character-info-item">
+                            <span class="info-label">FIRST APPEARANCE</span>
+                            <span class="info-value" id="character-first-appearance">-</span>
+                        </div>
+
+                        <div class="character-info-item">
+                            <span class="info-label">GENDER</span>
+                            <span class="info-value" id="character-gender">-</span>
+                        </div>
+
+                        <div class="character-info-item">
+                            <span class="info-label">STATUS</span>
+                            <span class="info-value" id="character-status">-</span>
+                        </div>
+
+                        <div class="character-info-item">
+                            <span class="info-label">ALIAS</span>
+                            <span class="info-value" id="character-alias">-</span>
+                        </div>
+
+                        <div class="character-info-item">
+                            <span class="info-label">CITIZENSHIP</span>
+                            <span class="info-value" id="character-citizenship">-</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- CHARACTER FOOTER -->
+
+                    <div class="character-hero-footer">
+
+                        <div class="character-id">
+                            CHARACTER ID:
+                            <span id="character-id">---</span>
+                        </div>
+
+                        <div class="character-franchise">
+                            <span id="character-franchise">---</span>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="stat-card">
-                    <span>VERSIONS</span>
-                    <h2 id="versionCount">0</h2>
-                </div>
-                
-                <div class="stat-card">
-                    <span>ALIAS</span>
-                    <h2 id="characterAlias">-</h2>
-                </div>
+            </section>
 
-                <div class="stat-card">
-                    <span>STATUS</span>
-                    <h2 id="characterStatus">-</h2>
-                </div>
 
-                <div class="stat-card">
-                    <span>GENDER</span>
-                    <h2 id="characterGender">0</h2>
-                </div>
-
-            </div>
+            <!-- =====================================
+                 CHARACTER VERSIONS
+            ====================================== -->
 
             <section class="profile-section">
 
                 <div class="section-heading">
+
                     <h2>CHARACTER VERSIONS</h2>
+
+                    <span class="version-counter">
+                        <span id="versionCount">0</span> VERSIONS
+                    </span>
+
                 </div>
 
                 <div id="characterVersions">
+
                     Loading versions...
+
                 </div>
 
             </section>
+
 
         </section>
 
@@ -176,8 +213,15 @@
 
 </div>
 
+
+<!-- =====================================
+     SCRIPTS
+====================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="../js/supabase.js"></script>
+
 <script src="../js/character.js"></script>
 
 </body>
