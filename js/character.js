@@ -69,7 +69,7 @@ async function loadCharacter() {
             "character-alias": character.Alias,
             "character-citizenship": character.Citizenship,
             "character-id": character.id,
-            "character-franchise": character.franchise || "-"
+            "character-franchise": character.franchise || "-",
             "character-earth": character.earth || "-"
 
         };
