@@ -25,7 +25,14 @@ async function loadCharacter() {
         return;
     }
 
-    console.log("CHARACTER:", character);
+    console.log("CHARACTER:", character); 
+    console.log("CHARACTER ID:", character.id);
+
+console.log("FIRST APPEARANCE:", character.first_appearence);
+console.log("ALL COLUMN NAMES:", Object.keys(character));
+
+console.log("IMAGE URL:", character.image_url);
+console.log("IMAGE:", character);
 
     document.title = `${character.name} | Fictional Archive`;
 
