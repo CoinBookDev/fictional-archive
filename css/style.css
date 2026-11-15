@@ -1033,3 +1033,232 @@ a {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
 }
+
+/* =========================================
+   CHARACTER VERSIONS
+========================================= */
+
+.character-versions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* =========================================
+   VERSION CARD
+========================================= */
+
+.character-version-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+}
+
+.character-version-card:hover {
+    border-color: var(--gold-muted);
+}
+
+.character-version-card.expanded {
+    border-color: var(--gold-muted);
+}
+
+
+/* =========================================
+   CLICKABLE HEADER
+========================================= */
+
+.character-version-toggle {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.character-version-toggle:focus-visible {
+    outline: 2px solid var(--gold-muted);
+    outline-offset: -3px;
+}
+
+
+/* =========================================
+   VERSION IMAGE
+========================================= */
+
+.version-image-wrapper {
+    width: 76px;
+    height: 88px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: var(--background);
+    border: 1px solid var(--border);
+}
+
+.version-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.version-image-wrapper.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.version-image-wrapper.no-image::after {
+    content: "NO IMAGE";
+    font-size: 9px;
+    color: var(--text-muted);
+}
+
+
+/* =========================================
+   BASIC INFORMATION
+========================================= */
+
+.version-basic-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.version-basic-info h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.version-universe {
+    margin: 0 0 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.version-status {
+    display: inline-block;
+    padding: 4px 8px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+
+/* =========================================
+   CHEVRON
+========================================= */
+
+.version-chevron {
+    flex-shrink: 0;
+    font-size: 22px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.character-version-toggle:hover .version-chevron {
+    color: var(--gold-muted);
+}
+
+.character-version-card.expanded .version-chevron {
+    transform: rotate(180deg);
+    color: var(--gold-muted);
+}
+
+
+/* =========================================
+   EXPANDED DETAILS
+========================================= */
+
+.character-version-details {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    animation: versionExpand 0.25s ease;
+}
+
+.character-version-details[hidden] {
+    display: none;
+}
+
+@keyframes versionExpand {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.version-description {
+    margin: 0 0 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   DETAILS GRID
+========================================= */
+
+.version-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.version-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.version-detail-item .info-value {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .character-version-toggle {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .version-image-wrapper {
+        width: 62px;
+        height: 76px;
+    }
+
+    .version-details-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .character-version-details {
+        padding: 16px;
+    }
+
+}
