@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Earth Explorer | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Leaflet map library -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Earth Explorer styling -->
+    <style>
+        /* =========================================
+           EARTH EXPLORER
+        ========================================= */
+
+        .earth-explorer {
+            padding: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .explorer-eyebrow {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8495a7;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .explorer-title {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .explorer-description {
+            color: #8794a3;
+            font-size: 13px;
+            margin-top: 9px;
+            line-height: 1.6;
+        }
+
+        .explorer-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 13px;
+            border: 1px solid rgba(86, 180, 130, 0.25);
+            background: rgba(86, 180, 130, 0.08);
+            border-radius: 7px;
+            color: #76c99c;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .explorer-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #62c58b;
+            box-shadow: 0 0 10px rgba(98, 197, 139, 0.6);
+        }
+
+        /* =========================================
+           STATISTICS
+        ========================================= */
+
+        .explorer-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .explorer-stat {
+            background: var(--card-bg, #151d27);
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 9px;
+            padding: 17px 19px;
+        }
+
+        .explorer-stat-label {
+            color: #8493a3;
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .explorer-stat-value {
+            font-size: 27px;
+            font-weight: 700;
+            margin-top: 8px;
+            color: var(--text-primary, #edf1f5);
+        }
+
+        .explorer-stat-subtitle {
+            color: #778596;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* =========================================
+           MAP TOOLBAR
+        ========================================= */
+
+        .explorer-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .explorer-search {
+            position: relative;
+            flex: 1;
+        }
+
+        .explorer-search input {
+            width: 100%;
+            height: 43px;
+            padding: 0 15px 0 40px;
+            background: var(--card-bg, #151d27);
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 7px;
+            color: var(--text-primary, #edf1f5);
+            font-size: 12px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .explorer-search input:focus {
+            border-color: #6688a6;
+        }
+
+        .explorer-search input::placeholder {
+            color: #788797;
+        }
+
+        .explorer-search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8291a1;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .explorer-filter {
+            height: 43px;
+            min-width: 175px;
+            padding: 0 12px;
+            background: var(--card-bg, #151d27);
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 7px;
+            color: var(--text-primary, #edf1f5);
+            font-size: 12px;
+            outline: none;
+        }
+
+        .explorer-filter:focus {
+            border-color: #6688a6;
+        }
+
+        .explorer-reset {
+            height: 43px;
+            padding: 0 15px;
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 7px;
+            background: transparent;
+            color: var(--text-primary, #edf1f5);
+            cursor: pointer;
+            font-size: 11px;
+            transition: 0.2s;
+        }
+
+        .explorer-reset:hover {
+            background: rgba(120, 145, 170, 0.12);
+        }
+
+        /* =========================================
+           MAP LAYOUT
+        ========================================= */
+
+        .explorer-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 310px;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .explorer-map-container {
+            position: relative;
+            min-width: 0;
+            height: 620px;
+            background: #101923;
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #locationMap {
+            width: 100%;
+            height: 100%;
+            background: #101923;
+            z-index: 1;
+        }
+
+        .map-overlay {
+            position: absolute;
+            z-index: 500;
+            top: 15px;
+            left: 15px;
+            pointer-events: none;
+            background: rgba(13, 23, 34, 0.88);
+            border: 1px solid rgba(160, 180, 200, 0.17);
+            border-radius: 6px;
+            padding: 10px 13px;
+            backdrop-filter: blur(8px);
+        }
+
+        .map-overlay-label {
+            font-size: 9px;
+            color: #8fa2b5;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .map-overlay-title {
+            font-size: 13px;
+            color: #edf3f8;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .map-coordinates {
+            position: absolute;
+            z-index: 500;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(13, 23, 34, 0.88);
+            color: #a5b6c5;
+            padding: 7px 10px;
+            border-radius: 5px;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           CUSTOM MAP MARKERS
+        ========================================= */
+
+        .archive-marker-wrapper {
+            background: transparent;
+            border: none;
+        }
+
+        .archive-marker {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #e7f0f8;
+            background: #79a9ce;
+            box-shadow:
+                0 0 0 4px rgba(121, 169, 206, 0.19),
+                0 0 15px rgba(121, 169, 206, 0.7);
+            transition: transform 0.2s;
+        }
+
+        .archive-marker:hover {
+            transform: scale(1.3);
+        }
+
+        .archive-marker.city {
+            background: #77a9d3;
+        }
+
+        .archive-marker.building {
+            background: #d7b66d;
+            box-shadow:
+                0 0 0 4px rgba(215, 182, 109, 0.19),
+                0 0 15px rgba(215, 182, 109, 0.7);
+        }
+
+        .archive-marker.facility {
+            background: #c77e7e;
+            box-shadow:
+                0 0 0 4px rgba(199, 126, 126, 0.19),
+                0 0 15px rgba(199, 126, 126, 0.7);
+        }
+
+        .archive-marker.country {
+            background: #83b99c;
+            box-shadow:
+                0 0 0 4px rgba(131, 185, 156, 0.19),
+                0 0 15px rgba(131, 185, 156, 0.7);
+        }
+
+        .archive-marker.selected {
+            transform: scale(1.35);
+            border-color: white;
+        }
+
+        /* =========================================
+           LEAFLET POPUP
+        ========================================= */
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+            background: #172330;
+            color: #edf1f5;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border: 1px solid #344555;
+            border-radius: 7px;
+        }
+
+        .leaflet-popup-content {
+            margin: 12px 15px;
+            min-width: 140px;
+        }
+
+        .map-popup-type {
+            color: #91a8bd;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .map-popup-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .map-popup-link {
+            display: inline-block;
+            margin-top: 9px;
+            color: #8bb8dd;
+            font-size: 10px;
+            text-decoration: none;
+        }
+
+        .map-popup-link:hover {
+            color: white;
+        }
+
+        /* =========================================
+           INTELLIGENCE PANEL
+        ========================================= */
+
+        .intelligence-panel {
+            background: var(--card-bg, #151d27);
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .intelligence-heading {
+            color: #91a2b3;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 18px;
+        }
+
+        .intelligence-empty {
+            flex: 1;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #8291a0;
+        }
+
+        .intelligence-empty-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        .intelligence-empty strong {
+            font-size: 13px;
+            color: var(--text-primary, #edf1f5);
+            margin-bottom: 7px;
+        }
+
+        .intelligence-empty p {
+            font-size: 11px;
+            line-height: 1.6;
+            max-width: 210px;
+        }
+
+        .intelligence-image {
+            width: 100%;
+            height: 145px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 17px;
+            background: #202d39;
+        }
+
+        .intelligence-type {
+            color: #91aec8;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .intelligence-name {
+            font-size: 21px;
+            font-weight: 700;
+            margin: 7px 0 12px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .intelligence-description {
+            color: #9aa7b5;
+            font-size: 11px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .intelligence-divider {
+            border: none;
+            border-top: 1px solid var(--border-color, #293441);
+            margin: 12px 0;
+        }
+
+        .intelligence-detail {
+            margin-bottom: 13px;
+        }
+
+        .intelligence-detail-label {
+            color: #8190a0;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .intelligence-detail-value {
+            color: var(--text-primary, #edf1f5);
+            font-size: 11px;
+        }
+
+        .intelligence-link {
+            display: block;
+            text-align: center;
+            margin-top: auto;
+            padding: 12px;
+            background: rgba(106, 145, 180, 0.12);
+            border: 1px solid rgba(106, 145, 180, 0.3);
+            color: #9dc2e3;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .intelligence-link:hover {
+            background: rgba(106, 145, 180, 0.22);
+            color: white;
+        }
+
+        .intelligence-parent-link {
+            color: #8eb9dc;
+            text-decoration: none;
+        }
+
+        .intelligence-parent-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================================
+           MAP LEGEND
+        ========================================= */
+
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 17px;
+            padding: 15px 2px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #8997a6;
+            font-size: 10px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-city {
+            background: #77a9d3;
+        }
+
+        .legend-building {
+            background: #d7b66d;
+        }
+
+        .legend-facility {
+            background: #c77e7e;
+        }
+
+        .legend-country {
+            background: #83b99c;
+        }
+
+        /* =========================================
+           STATUS MESSAGES
+        ========================================= */
+
+        .explorer-message {
+            padding: 15px;
+            border: 1px solid var(--border-color, #293441);
+            border-radius: 7px;
+            color: #9aa8b6;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .explorer-message.error {
+            color: #e29b9b;
+            border-color: rgba(210, 100, 100, 0.3);
+        }
+
+        .explorer-message[hidden] {
+            display: none;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1050px) {
+            .explorer-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .intelligence-panel {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .earth-explorer {
+                padding: 18px;
+            }
+
+            .explorer-header {
+                flex-direction: column;
+            }
+
+            .explorer-title {
+                font-size: 28px;
+            }
+
+            .explorer-stats {
+                grid-template-columns: 1fr;
+                gap: 9px;
+            }
+
+            .explorer-stat {
+                padding: 13px 16px;
+            }
+
+            .explorer-stat-value {
+                font-size: 22px;
+            }
+
+            .explorer-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .explorer-filter,
+            .explorer-reset {
+                width: 100%;
+            }
+
+            .explorer-map-container {
+                height: 470px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-name">FICTIONAL ARCHIVE</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">MAIN MENU</div>
+
+            <a href="../index.html" class="nav-item">
+                Overview
+            </a>
+
+            <a href="universes.html" class="nav-item">
+                Universes
+            </a>
+
+            <a href="franchises.html" class="nav-item">
+                Franchises
+            </a>
+
+            <a href="characters.html" class="nav-item">
+                Characters
+            </a>
+
+            <a href="locations.html" class="nav-item">
+                Locations
+            </a>
+
+            <a href="organisations.html" class="nav-item">
+                Organisations
+            </a>
+
+            <a href="objects.html" class="nav-item">
+                Objects & Artifacts
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">EXPLORE</div>
+
+            <a href="timelines.html" class="nav-item">
+                Timelines
+            </a>
+
+            <a href="connections.html" class="nav-item">
+                Connections
+            </a>
+
+            <a href="map.html" class="nav-item active">
+                Earth Explorer
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div>FICTIONAL ARCHIVE</div>
+            <span>VERSION 0.1</span>
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="main-content">
+
+        <div class="topbar">
+            <div class="breadcrumb">
+                EXPLORATION / EARTH
+            </div>
+        </div>
+
+        <section class="earth-explorer">
+
+            <!-- HEADER -->
+
+            <header class="explorer-header">
+
+                <div>
+                    <div class="explorer-eyebrow">
+                        DATABASE / CARTOGRAPHY / 001
+                    </div>
+
+                    <h1 class="explorer-title">
+                        Earth Explorer
+                    </h1>
+
+                    <p class="explorer-description">
+                        Explore geographical locations across the fictional universe.
+                        Select a marker to access its intelligence profile.
+                    </p>
+                </div>
+
+                <div class="explorer-status">
+                    <span class="explorer-status-dot"></span>
+                    DATABASE CONNECTED
+                </div>
+
+            </header>
+
+
+            <!-- STATISTICS -->
+
+            <div class="explorer-stats">
+
+                <div class="explorer-stat">
+                    <div class="explorer-stat-label">
+                        Registered locations
+                    </div>
+
+                    <div class="explorer-stat-value" id="locationTotal">
+                        --
+                    </div>
+
+                    <div class="explorer-stat-subtitle">
+                        Locations with map coordinates
+                    </div>
+                </div>
+
+                <div class="explorer-stat">
+                    <div class="explorer-stat-label">
+                        Location categories
+                    </div>
+
+                    <div class="explorer-stat-value" id="categoryTotal">
+                        --
+                    </div>
+
+                    <div class="explorer-stat-subtitle">
+                        Distinct location types
+                    </div>
+                </div>
+
+                <div class="explorer-stat">
+                    <div class="explorer-stat-label">
+                        Visible markers
+                    </div>
+
+                    <div class="explorer-stat-value" id="visibleTotal">
+                        --
+                    </div>
+
+                    <div class="explorer-stat-subtitle">
+                        Current search and filter results
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH AND FILTER -->
+
+            <div class="explorer-toolbar">
+
+                <div class="explorer-search">
+                    <span class="explorer-search-icon">⌕</span>
+
+                    <input
+                        type="search"
+                        id="locationSearch"
+                        placeholder="Search locations..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <select
+                    id="locationTypeFilter"
+                    class="explorer-filter"
+                >
+                    <option value="">All location types</option>
+                </select>
+
+                <button
+                    type="button"
+                    class="explorer-reset"
+                    id="resetMap"
+                >
+                    Reset map
+                </button>
+
+            </div>
+
+
+            <!-- MAP AND INTELLIGENCE PANEL -->
+
+            <div class="explorer-layout">
+
+                <div>
+
+                    <div class="explorer-map-container">
+
+                        <div id="locationMap"></div>
+
+                        <div class="map-overlay">
+                            <div class="map-overlay-label">
+                                GEOGRAPHICAL DATABASE
+                            </div>
+
+                            <div class="map-overlay-title">
+                                EARTH / MILKY WAY
+                            </div>
+                        </div>
+
+                        <div
+                            class="map-coordinates"
+                            id="mapCoordinates"
+                        >
+                            LAT: -- / LNG: --
+                        </div>
+
+                    </div>
+
+                    <div class="map-legend">
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-city"></span>
+                            Cities
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-country"></span>
+                            Countries
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-building"></span>
+                            Buildings
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-facility"></span>
+                            Facilities
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INTELLIGENCE PANEL -->
+
+                <aside class="intelligence-panel">
+
+                    <div class="intelligence-heading">
+                        LOCATION INTELLIGENCE
+                    </div>
+
+                    <div
+                        id="locationInformation"
+                        class="intelligence-empty"
+                    >
+                        <div class="intelligence-empty-icon">
+                            ◎
+                        </div>
+
+                        <strong>No location selected</strong>
+
+                        <p>
+                            Select a marker on the map to access
+                            its geographical and database information.
+                        </p>
+                    </div>
+
+                </aside>
+
+            </div>
+
+
+            <!-- STATUS MESSAGE -->
+
+            <div
+                id="mapMessage"
+                class="explorer-message"
+                hidden
+            ></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================
+     SCRIPTS
+====================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/supabase.js"></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="../js/map.js"></script>
+
+</body>
+</html>
