@@ -183,6 +183,9 @@ if (sectionName === "characters") {
     loadCharacters();
 }
 
+if (sectionName === "locations") {
+    loadLocations();
+}
     }
 
     navigationButtons.forEach(button => {
@@ -275,6 +278,382 @@ if (sectionName === "characters") {
         }
 
     }
+
+
+/* =========================================
+   LOCATION MANAGEMENT
+========================================= */
+
+let locationsCache = [];
+
+async function loadLocations() {
+
+    const list = document.getElementById("location-list");
+    const count = document.getElementById("location-count");
+
+    list.textContent = "Loading locations...";
+
+    const { data, error } = await supabase
+        .from("locations")
+        .select("*")
+        .order("name");
+
+    if (error) {
+        console.error("Location loading error:", error);
+        list.textContent = "Could not load locations: " + error.message;
+        if (count) count.textContent = "ERROR";
+        return;
+    }
+
+    locationsCache = data || [];
+
+    if (count) {
+        count.textContent = `${locationsCache.length} RECORDS`;
+    }
+
+    const locationStat = document.getElementById("stat-locations");
+
+    if (locationStat) {
+        locationStat.textContent = locationsCache.length;
+    }
+
+    if (locationsCache.length === 0) {
+        list.textContent = "No locations found.";
+        return;
+    }
+
+    list.innerHTML = "";
+
+    locationsCache.forEach(location => {
+
+        const row = document.createElement("div");
+        row.className = "admin-franchise-row";
+
+        const information = document.createElement("div");
+        information.className = "franchise-information";
+
+        const name = document.createElement("strong");
+        name.textContent = location.name;
+
+        const parent = locationsCache.find(
+            item => item.id === location.parent_location_id
+        );
+
+        const details = document.createElement("small");
+
+        details.textContent =
+            `${location.location_type} · ` +
+            `${parent ? parent.name : "NO PARENT"} · ` +
+            `ID: ${location.id}`;
+
+        information.appendChild(name);
+        information.appendChild(details);
+
+        const actions = document.createElement("div");
+        actions.className = "franchise-actions";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.className = "admin-edit-button";
+
+        editButton.addEventListener("click", () => {
+            openLocationForm(location);
+        });
+
+        actions.appendChild(editButton);
+
+        row.appendChild(information);
+        row.appendChild(actions);
+
+        list.appendChild(row);
+
+    });
+
+}
+
+
+/* LOCATION FORM */
+
+function openLocationForm(location = null) {
+
+    const isEditing = location !== null;
+
+    const modal = document.createElement("div");
+    modal.className = "admin-modal";
+
+    modal.innerHTML = `
+        <div class="admin-modal-content">
+
+            <div class="admin-modal-header">
+                <h2>${isEditing ? "Edit Location" : "Add Location"}</h2>
+                <button class="admin-close-button" type="button">×</button>
+            </div>
+
+            <form id="location-form">
+
+                <label>Name</label>
+                <input type="text" name="name" required>
+
+                <label>Location Type</label>
+                <select name="location_type" required>
+                    <option value="Planet">Planet</option>
+                    <option value="Star">Star</option>
+                    <option value="Moon">Moon</option>
+                    <option value="Country">Country</option>
+                    <option value="Region">Region</option>
+                    <option value="City">City</option>
+                    <option value="District">District</option>
+                    <option value="Building">Building</option>
+                    <option value="Structure">Structure</option>
+                    <option value="Space Station">Space Station</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label>Parent Location</label>
+                <select name="parent_location_id">
+                    <option value="">No Parent Location</option>
+                </select>
+
+                <label>Description</label>
+                <textarea name="description" rows="5"></textarea>
+
+                <label>Image URL</label>
+                <input type="url" name="image_url" placeholder="https://...">
+
+                <label>Status</label>
+                <select name="status">
+                    <option value="Active">Active</option>
+                    <option value="Destroyed">Destroyed</option>
+                    <option value="Abandoned">Abandoned</option>
+                    <option value="Unknown">Unknown</option>
+                </select>
+
+                <div class="admin-form-actions">
+
+                    ${isEditing ? `
+                        <button type="button" class="location-delete-button">
+                            Delete
+                        </button>
+                    ` : ""}
+
+                    <button type="button" class="admin-cancel-button">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="admin-save-button">
+                        ${isEditing ? "Save Changes" : "Add Location"}
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const form = modal.querySelector("#location-form");
+    const parentSelect = form.elements.parent_location_id;
+
+    // Find all descendants to prevent circular parent relationships.
+    function getDescendantIds(parentId) {
+
+        const descendants = new Set();
+
+        function findChildren(id) {
+
+            locationsCache
+                .filter(item => item.parent_location_id === id)
+                .forEach(child => {
+
+                    if (descendants.has(child.id)) return;
+
+                    descendants.add(child.id);
+                    findChildren(child.id);
+
+                });
+        }
+
+        findChildren(parentId);
+
+        return descendants;
+    }
+
+    const excludedIds = isEditing
+        ? getDescendantIds(location.id)
+        : new Set();
+
+    if (isEditing) {
+        excludedIds.add(location.id);
+    }
+
+    locationsCache.forEach(item => {
+
+        if (excludedIds.has(item.id)) return;
+
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.name;
+
+        parentSelect.appendChild(option);
+
+    });
+
+    // Fill existing information.
+    if (isEditing) {
+
+        form.elements.name.value = location.name || "";
+        form.elements.location_type.value =
+            location.location_type || "Other";
+
+        form.elements.parent_location_id.value =
+            location.parent_location_id ?? "";
+
+        form.elements.description.value =
+            location.description || "";
+
+        form.elements.image_url.value =
+            location.image_url || "";
+
+        form.elements.status.value =
+            location.status || "Active";
+    }
+
+    function closeModal() {
+        modal.remove();
+    }
+
+    modal.querySelector(".admin-close-button")
+        .addEventListener("click", closeModal);
+
+    modal.querySelector(".admin-cancel-button")
+        .addEventListener("click", closeModal);
+
+
+    // DELETE LOCATION
+    const deleteButton = modal.querySelector(".location-delete-button");
+
+    if (deleteButton) {
+
+        deleteButton.addEventListener("click", async () => {
+
+            const confirmed = confirm(
+                `Are you sure you want to delete ${location.name}?`
+            );
+
+            if (!confirmed) return;
+
+            deleteButton.disabled = true;
+            deleteButton.textContent = "Deleting...";
+
+            const { error } = await supabase
+                .from("locations")
+                .delete()
+                .eq("id", location.id);
+
+            if (error) {
+
+                console.error("Location deletion error:", error);
+                alert("Could not delete location: " + error.message);
+
+                deleteButton.disabled = false;
+                deleteButton.textContent = "Delete";
+
+                return;
+            }
+
+            closeModal();
+            await loadLocations();
+
+        });
+    }
+
+
+    // SAVE LOCATION
+    form.addEventListener("submit", async event => {
+
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const parentId = formData.get("parent_location_id");
+
+        const locationData = {
+
+            name: formData.get("name").trim(),
+
+            location_type: formData.get("location_type"),
+
+            parent_location_id: parentId
+                ? Number(parentId)
+                : null,
+
+            description:
+                formData.get("description").trim() || null,
+
+            image_url:
+                formData.get("image_url").trim() || null,
+
+            status: formData.get("status")
+
+        };
+
+        const saveButton = form.querySelector(".admin-save-button");
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        let result;
+
+        if (isEditing) {
+
+            result = await supabase
+                .from("locations")
+                .update(locationData)
+                .eq("id", location.id);
+
+        } else {
+
+            result = await supabase
+                .from("locations")
+                .insert([locationData]);
+
+        }
+
+        if (result.error) {
+
+            console.error("Location save error:", result.error);
+
+            alert("Could not save location: " + result.error.message);
+
+            saveButton.disabled = false;
+            saveButton.textContent = isEditing
+                ? "Save Changes"
+                : "Add Location";
+
+            return;
+        }
+
+        closeModal();
+        await loadLocations();
+
+    });
+
+}
+
+
+/* ADD LOCATION BUTTON */
+
+const addLocationButton = document.getElementById("add-location");
+
+if (addLocationButton) {
+
+    addLocationButton.addEventListener("click", () => {
+        openLocationForm();
+    });
+
+}
 
 
 /* =========================================
