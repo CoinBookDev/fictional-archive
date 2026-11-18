@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const mapElement = document.getElementById("locationMap");
 
+    const realityFilter = document.getElementById("realityFilter");
+    const realityLabel = document.getElementById("mapRealityLabel");
+
     const searchInput = document.getElementById("locationSearch");
     const typeFilter = document.getElementById("locationTypeFilter");
     const resetButton = document.getElementById("resetMap");
@@ -29,13 +32,157 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================== */
 
     let map;
-    let markerClusterGroup;
+    let markerCluster;
+
+    let realities = [];
+    let selectedReality = null;
+
     let allLocations = [];
     let markers = [];
+
     let selectedLocationId = null;
 
     const defaultCenter = [25, 0];
     const defaultZoom = 2;
+
+
+    /* =====================================
+       LOCATION CATEGORY GROUPS
+    ===================================== */
+
+    const categoryGroups = {
+
+        "Geographical Areas": [
+            "country",
+            "state",
+            "region",
+            "city",
+            "town",
+            "village",
+            "island",
+            "continent",
+            "territory",
+            "province",
+            "district"
+        ],
+
+        "Structures & Buildings": [
+            "building",
+            "tower",
+            "headquarters",
+            "monument",
+            "palace",
+            "laboratory",
+            "bunker",
+            "residence",
+            "mansion",
+            "temple",
+            "church",
+            "castle",
+            "skyscraper"
+        ],
+
+        "Facilities & Installations": [
+            "facility",
+            "military base",
+            "base",
+            "prison",
+            "research facility",
+            "airport",
+            "hospital",
+            "factory",
+            "training facility",
+            "compound",
+            "warehouse",
+            "embassy",
+            "command center"
+        ],
+
+        "Natural Locations": [
+            "forest",
+            "mountain",
+            "desert",
+            "ocean",
+            "sea",
+            "lake",
+            "river",
+            "cave",
+            "valley",
+            "waterfall",
+            "jungle",
+            "volcano",
+            "glacier",
+            "island"
+        ],
+
+        "Infrastructure & Transport": [
+            "road",
+            "railway",
+            "bridge",
+            "tunnel",
+            "spaceport",
+            "transport hub",
+            "station",
+            "port",
+            "harbour",
+            "highway",
+            "airport"
+        ],
+
+        "Cosmic Locations": [
+            "planet",
+            "moon",
+            "star system",
+            "galaxy",
+            "space station",
+            "celestial body",
+            "asteroid",
+            "nebula",
+            "dimension",
+            "realm",
+            "satellite"
+        ]
+
+    };
+
+
+    /* =====================================
+       DETERMINE CATEGORY GROUP
+    ===================================== */
+
+    function getCategoryGroup(type) {
+
+        const value = (type || "").toLowerCase().trim();
+
+        // More specific matches first
+
+        if (
+            value.includes("space station") ||
+            value.includes("star system") ||
+            value.includes("planet") ||
+            value.includes("galaxy") ||
+            value.includes("moon") ||
+            value.includes("nebula") ||
+            value.includes("celestial") ||
+            value.includes("asteroid") ||
+            value.includes("dimension") ||
+            value.includes("realm") ||
+            value.includes("satellite")
+        ) {
+            return "Cosmic Locations";
+        }
+
+        for (const [group, types] of Object.entries(categoryGroups)) {
+
+            if (types.some(item => value === item || value.includes(item))) {
+                return group;
+            }
+
+        }
+
+        return "Other Locations";
+
+    }
 
 
     /* =====================================
@@ -45,12 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function initialiseMap() {
 
         if (typeof L === "undefined") {
-            showMessage("Leaflet could not be loaded. Check your internet connection.", true);
+            showMessage("Leaflet could not be loaded.", true);
             return false;
         }
 
-        if (typeof L.markerClusterGroup !== "function") {
-            showMessage("Marker clustering could not be loaded. Check the MarkerCluster script.", true);
+        if (!mapElement) {
+            showMessage("Map element could not be found.", true);
             return false;
         }
 
@@ -63,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
             worldCopyJump: true
         });
 
-        // Dark cartographic map tiles
         L.tileLayer(
             "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_5b62_1_75c3b45e51e4c1266bcd3361",
             {
@@ -79,36 +225,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }).addTo(map);
 
 
-        // Create marker cluster group
-        markerClusterGroup = L.markerClusterGroup({
+        // Marker clustering
 
-            showCoverageOnHover: false,
-            spiderfyOnMaxZoom: true,
-            zoomToBoundsOnClick: true,
-            maxClusterRadius: 45,
+        if (typeof L.markerClusterGroup === "function") {
 
-            iconCreateFunction: function (cluster) {
+            markerCluster = L.markerClusterGroup({
+                showCoverageOnHover: false,
+                spiderfyOnMaxZoom: true,
+                maxClusterRadius: 45
+            });
 
-                const count = cluster.getChildCount();
+            map.addLayer(markerCluster);
 
-                return L.divIcon({
+        } else {
 
-                    html: `<div><span>${count}</span></div>`,
+            console.warn("MarkerCluster plugin unavailable.");
 
-                    className: "marker-cluster",
-
-                    iconSize: L.point(40, 40)
-
-                });
-
-            }
-
-        });
-
-        markerClusterGroup.addTo(map);
+        }
 
 
-        // Display coordinates when moving over the map
+        // Coordinates display
+
         map.on("mousemove", event => {
 
             const lat = event.latlng.lat.toFixed(4);
@@ -129,31 +266,146 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
-       LOAD LOCATIONS FROM SUPABASE
+       LOAD REALITIES
+    ===================================== */
+
+    async function loadRealities() {
+
+        showMessage("Loading reality database...");
+
+        try {
+
+            const { data, error } = await window.supabaseClient
+                .from("realities")
+                .select("id, name, designation, universe_id, continuity_id, description, status, image_url")
+                .order("designation", { ascending: true });
+
+            if (error) throw error;
+
+            realities = data || [];
+
+            realityFilter.innerHTML = "";
+
+            if (realities.length === 0) {
+
+                throw new Error("No realities were found in the database.");
+
+            }
+
+            realities.forEach(reality => {
+
+                const option = document.createElement("option");
+
+                option.value = reality.id;
+
+                const designation = reality.designation || "UNCLASSIFIED";
+                const name = reality.name || "Unnamed Reality";
+
+                option.textContent = `${designation} — ${name}`;
+
+                realityFilter.appendChild(option);
+
+            });
+
+
+            // Prefer Earth-199999 when available
+
+            const preferredReality = realities.find(reality =>
+                (reality.designation || "").toLowerCase() === "earth-199999"
+            );
+
+            selectedReality = preferredReality || realities[0];
+
+            realityFilter.value = selectedReality.id;
+
+            updateRealityDisplay();
+
+            await loadLocations();
+
+        } catch (error) {
+
+            console.error("Reality loading error:", error);
+
+            showMessage(
+                "Could not load realities: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+
+    /* =====================================
+       UPDATE REALITY DISPLAY
+    ===================================== */
+
+    function updateRealityDisplay() {
+
+        if (!selectedReality) return;
+
+        const designation = selectedReality.designation || "UNKNOWN REALITY";
+
+        realityLabel.textContent = designation.toUpperCase();
+
+    }
+
+
+    /* =====================================
+       CHANGE REALITY
+    ===================================== */
+
+    async function changeReality() {
+
+        const realityId = realityFilter.value;
+
+        selectedReality = realities.find(reality =>
+            String(reality.id) === String(realityId)
+        );
+
+        if (!selectedReality) return;
+
+        selectedLocationId = null;
+
+        showEmptyPanel();
+
+        searchInput.value = "";
+        typeFilter.value = "";
+
+        updateRealityDisplay();
+
+        map.setView(defaultCenter, defaultZoom);
+
+        await loadLocations();
+
+    }
+
+
+    /* =====================================
+       LOAD LOCATIONS
     ===================================== */
 
     async function loadLocations() {
+
+        if (!selectedReality) return;
 
         showMessage("Loading geographical database...");
 
         try {
 
-            if (!window.supabaseClient) {
-                throw new Error("Supabase client is not available.");
-            }
-
             const { data, error } = await window.supabaseClient
                 .from("locations")
                 .select("*")
+                .eq("reality_id", selectedReality.id)
                 .not("latitude", "is", null)
                 .not("longitude", "is", null)
                 .order("name", { ascending: true });
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
-            // Keep only records with valid geographical coordinates
+
+            // Validate geographical coordinates
+
             allLocations = (data || []).filter(location => {
 
                 const latitude = Number(location.latitude);
@@ -173,13 +425,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             populateTypeFilter();
+
             updateStatistics();
+
             renderMarkers();
 
             if (allLocations.length === 0) {
 
                 showMessage(
-                    "No locations with valid coordinates were found. Add latitude and longitude values to your locations in Supabase."
+                    `No locations with valid coordinates were found for ${selectedReality.designation || selectedReality.name}.`
                 );
 
             } else {
@@ -190,7 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-            console.error("Error loading map locations:", error);
+            console.error("Location loading error:", error);
 
             showMessage(
                 "Could not load locations: " + error.message,
@@ -208,6 +462,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function populateTypeFilter() {
 
+        const previousValue = typeFilter.value;
+
         const types = [
             ...new Set(
                 allLocations
@@ -216,21 +472,61 @@ document.addEventListener("DOMContentLoaded", () => {
             )
         ].sort((a, b) => a.localeCompare(b));
 
-        typeFilter.innerHTML =
-            '<option value="">All location types</option>';
+
+        typeFilter.innerHTML = "";
+
+        const allOption = document.createElement("option");
+
+        allOption.value = "";
+        allOption.textContent = "All location types";
+
+        typeFilter.appendChild(allOption);
+
+
+        // Group types into categories
+
+        const groupedTypes = {};
 
         types.forEach(type => {
 
-            const option = document.createElement("option");
+            const group = getCategoryGroup(type);
 
-            option.value = type;
-            option.textContent = type;
+            if (!groupedTypes[group]) {
+                groupedTypes[group] = [];
+            }
 
-            typeFilter.appendChild(option);
+            groupedTypes[group].push(type);
 
         });
 
-        categoryTotal.textContent = types.length;
+
+        Object.keys(groupedTypes).forEach(group => {
+
+            const optgroup = document.createElement("optgroup");
+
+            optgroup.label = group;
+
+            groupedTypes[group].forEach(type => {
+
+                const option = document.createElement("option");
+
+                option.value = type;
+                option.textContent = type;
+
+                optgroup.appendChild(option);
+
+            });
+
+            typeFilter.appendChild(optgroup);
+
+        });
+
+
+        // Restore previous filter if still available
+
+        if (types.includes(previousValue)) {
+            typeFilter.value = previousValue;
+        }
 
     }
 
@@ -260,51 +556,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getMarkerClass(type) {
 
+        const group = getCategoryGroup(type);
+
         const value = (type || "").toLowerCase();
 
         if (
             value.includes("country") ||
-            value.includes("state")
+            value.includes("state") ||
+            value.includes("region")
         ) {
             return "country";
         }
 
-        if (
-            value.includes("building") ||
-            value.includes("tower") ||
-            value.includes("palace")
-        ) {
+        if (group === "Structures & Buildings") {
             return "building";
         }
 
-        if (
-            value.includes("facility") ||
-            value.includes("base") ||
-            value.includes("prison") ||
-            value.includes("compound")
-        ) {
+        if (group === "Facilities & Installations") {
             return "facility";
         }
 
+        if (group === "Natural Locations") {
+            return "natural";
+        }
+
+        if (group === "Infrastructure & Transport") {
+            return "infrastructure";
+        }
+
+        if (group === "Cosmic Locations") {
+            return "cosmic";
+        }
+
         return "city";
-
-    }
-
-
-    /* =====================================
-       COORDINATE ACCURACY LABEL
-    ===================================== */
-
-    function getAccuracyLabel(accuracy) {
-
-        const labels = {
-            exact: "Exact",
-            approximate: "Approximate",
-            estimated: "Estimated",
-            unknown: "Unknown"
-        };
-
-        return labels[accuracy] || "Unknown";
 
     }
 
@@ -332,6 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
             iconAnchor: [9, 9]
 
         });
+
 
         const marker = L.marker(
             [
@@ -377,8 +662,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderMarkers() {
 
-        // Remove existing marker clusters and markers
-        markerClusterGroup.clearLayers();
+        if (!map) return;
+
+        if (markerCluster) {
+            markerCluster.clearLayers();
+        }
 
         markers = [];
 
@@ -387,6 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .toLowerCase();
 
         const selectedType = typeFilter.value;
+
 
         const filteredLocations = allLocations.filter(location => {
 
@@ -407,31 +696,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-        // Create markers for filtered locations
         filteredLocations.forEach(location => {
 
             const marker = createMarker(location);
 
             markers.push(marker);
 
+            if (markerCluster) {
+
+                markerCluster.addLayer(marker);
+
+            } else {
+
+                marker.addTo(map);
+
+            }
+
         });
 
-
-        // Add all markers to the cluster group
-        markerClusterGroup.addLayers(markers);
 
         visibleTotal.textContent = filteredLocations.length;
 
 
-        // Clear selection if it is no longer visible
+        // Clear selection if filtered out
+
         if (
             selectedLocationId !== null &&
-            !filteredLocations.some(
-                location => String(location.id) === String(selectedLocationId)
+            !filteredLocations.some(location =>
+                String(location.id) === String(selectedLocationId)
             )
         ) {
 
             selectedLocationId = null;
+
             showEmptyPanel();
 
         }
@@ -447,9 +744,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         selectedLocationId = location.id;
 
-        const parent = await getParentLocation(location.parent_location_id);
+        const parent = await getParentLocation(
+            location.parent_location_id
+        );
 
-        // Prevent an older request from replacing a newer selection
+        // Prevent an outdated request from replacing a newer selection
+
         if (String(selectedLocationId) !== String(location.id)) {
             return;
         }
@@ -465,9 +765,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function getParentLocation(parentId) {
 
-        if (!parentId) {
-            return null;
-        }
+        if (!parentId) return null;
 
         try {
 
@@ -478,7 +776,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .maybeSingle();
 
             if (error) {
-                console.error("Could not load parent location:", error);
+                console.error("Parent location error:", error);
                 return null;
             }
 
@@ -487,6 +785,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error("Parent location error:", error);
+
             return null;
 
         }
@@ -503,7 +802,9 @@ document.addEventListener("DOMContentLoaded", () => {
         informationPanel.className = "";
         informationPanel.innerHTML = "";
 
+
         // Image
+
         if (location.image_url) {
 
             const image = document.createElement("img");
@@ -520,6 +821,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // Type
+
         const type = document.createElement("div");
 
         type.className = "intelligence-type";
@@ -529,6 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // Name
+
         const name = document.createElement("h2");
 
         name.className = "intelligence-name";
@@ -538,6 +841,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // Description
+
         if (location.description) {
 
             const description = document.createElement("p");
@@ -550,11 +854,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // Divider
         addDivider();
 
 
+        // Reality
+
+        if (selectedReality) {
+
+            addDetail(
+                "Reality",
+                selectedReality.designation || selectedReality.name
+            );
+
+        }
+
+
         // Parent location
+
         if (parent) {
 
             const parentContainer = document.createElement("div");
@@ -572,6 +888,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "intelligence-detail-value intelligence-parent-link";
 
             parentLink.textContent = parent.name;
+
             parentLink.href =
                 `location.html?id=${encodeURIComponent(parent.id)}`;
 
@@ -584,38 +901,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // Coordinates
+
         addDetail(
             "Coordinates",
             `${Number(location.latitude).toFixed(4)}, ${Number(location.longitude).toFixed(4)}`
         );
 
 
-        // Coordinate accuracy
-        addDetail(
-            "Coordinate accuracy",
-            getAccuracyLabel(location.coordinate_accuracy)
-        );
-
-
         // Status
+
         if (location.status) {
-
-            addDetail(
-                "Status",
-                location.status
-            );
-
+            addDetail("Status", location.status);
         }
 
 
         // Database ID
-        addDetail(
-            "Database ID",
-            location.id
-        );
+
+        addDetail("Database ID", location.id);
 
 
         // Profile link
+
         const profileLink = document.createElement("a");
 
         profileLink.className = "intelligence-link";
@@ -705,9 +1011,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function hideMessage() {
-
         mapMessage.hidden = true;
-
     }
 
 
@@ -732,21 +1036,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
-       SEARCH AND FILTER EVENTS
+       EVENT LISTENERS
     ===================================== */
 
-    searchInput.addEventListener("input", () => {
+    realityFilter.addEventListener("change", changeReality);
 
-        renderMarkers();
+    searchInput.addEventListener("input", renderMarkers);
 
-    });
-
-
-    typeFilter.addEventListener("change", () => {
-
-        renderMarkers();
-
-    });
+    typeFilter.addEventListener("change", renderMarkers);
 
 
     /* =====================================
@@ -761,6 +1058,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedLocationId = null;
 
         renderMarkers();
+
         showEmptyPanel();
 
         map.setView(defaultCenter, defaultZoom);
@@ -774,7 +1072,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (initialiseMap()) {
 
-        loadLocations();
+        if (!window.supabaseClient) {
+
+            showMessage("Supabase client is unavailable.", true);
+
+        } else {
+
+            loadRealities();
+
+        }
 
     }
 
