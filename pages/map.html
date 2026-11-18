@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,32 +10,43 @@
 
     <link rel="stylesheet" href="../css/style.css">
 
-    <!-- Leaflet map library -->
+    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        
-    />
+    >
+
+    <!-- Marker Clustering -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-    />
-    
+    >
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-    />
-    <!-- Earth Explorer styling -->
+    >
+
+    <!-- =========================================
+         EARTH EXPLORER STYLES
+    ========================================== -->
+
     <style>
+
         /* =========================================
-           EARTH EXPLORER
-        ========================================= */
+           MAIN CONTAINER
+        ========================================== */
 
         .earth-explorer {
             padding: 30px;
             max-width: 1800px;
             margin: 0 auto;
         }
+
+
+        /* =========================================
+           HEADER
+        ========================================== */
 
         .explorer-header {
             display: flex;
@@ -89,9 +101,10 @@
             box-shadow: 0 0 10px rgba(98, 197, 139, 0.6);
         }
 
+
         /* =========================================
            STATISTICS
-        ========================================= */
+        ========================================== */
 
         .explorer-stats {
             display: grid;
@@ -128,33 +141,103 @@
             margin-top: 4px;
         }
 
+
         /* =========================================
-           MAP TOOLBAR
-        ========================================= */
+           REALITY SELECTOR
+        ========================================== */
+
+        .reality-selector-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 19px 21px;
+            margin-bottom: 18px;
+
+            background: linear-gradient(
+                110deg,
+                rgba(35, 54, 73, 0.65),
+                rgba(21, 29, 39, 0.95)
+            );
+
+            border: 1px solid rgba(120, 155, 185, 0.22);
+            border-radius: 9px;
+        }
+
+        .reality-selector-eyebrow {
+            color: #819bb2;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            margin-bottom: 6px;
+        }
+
+        .reality-selector-title {
+            color: #edf1f5;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .reality-selector-description {
+            color: #8998a8;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .explorer-reality {
+            min-width: 260px;
+            height: 45px;
+            padding: 0 14px;
+            background: #172330;
+            border: 1px solid #40566b;
+            border-radius: 7px;
+            color: #dce8f2;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .explorer-reality:focus {
+            border-color: #80add2;
+        }
+
+        .explorer-reality option {
+            background: #172330;
+            color: #edf1f5;
+        }
+
+
+        /* =========================================
+           SEARCH AND FILTERS
+        ========================================== */
 
         .explorer-toolbar {
             display: flex;
             gap: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             align-items: center;
         }
 
         .explorer-search {
             position: relative;
             flex: 1;
+            min-width: 0;
         }
 
         .explorer-search input {
             width: 100%;
             height: 43px;
             padding: 0 15px 0 40px;
+            box-sizing: border-box;
+
             background: var(--card-bg, #151d27);
             border: 1px solid var(--border-color, #293441);
             border-radius: 7px;
+
             color: var(--text-primary, #edf1f5);
             font-size: 12px;
             outline: none;
-            box-sizing: border-box;
         }
 
         .explorer-search input:focus {
@@ -179,9 +262,11 @@
             height: 43px;
             min-width: 175px;
             padding: 0 12px;
+
             background: var(--card-bg, #151d27);
             border: 1px solid var(--border-color, #293441);
             border-radius: 7px;
+
             color: var(--text-primary, #edf1f5);
             font-size: 12px;
             outline: none;
@@ -194,9 +279,11 @@
         .explorer-reset {
             height: 43px;
             padding: 0 15px;
+
             border: 1px solid var(--border-color, #293441);
             border-radius: 7px;
             background: transparent;
+
             color: var(--text-primary, #edf1f5);
             cursor: pointer;
             font-size: 11px;
@@ -207,21 +294,100 @@
             background: rgba(120, 145, 170, 0.12);
         }
 
+
         /* =========================================
-           MAP LAYOUT
-        ========================================= */
+           MAP AND INTELLIGENCE LAYOUT
+        ========================================== */
 
         .explorer-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 310px;
-            gap: 15px;
+            grid-template-columns: minmax(0, 1fr) 340px;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 15px 20px;
             align-items: stretch;
         }
 
+
+        /* =========================================
+           CATEGORY LEGEND
+        ========================================== */
+
+        .map-category-legend {
+            grid-column: 1 / -1;
+            grid-row: 1;
+
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 22px;
+
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 18px;
+
+            background: rgba(15, 22, 34, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 10px;
+
+            font-size: 11px;
+            color: #cbd5e1;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+
+        .legend-dot.geographical {
+            background: #4da3ff;
+        }
+
+        .legend-dot.structures {
+            background: #ff9f43;
+        }
+
+        .legend-dot.facilities {
+            background: #ff5555;
+        }
+
+        .legend-dot.natural {
+            background: #52d68a;
+        }
+
+        .legend-dot.infrastructure {
+            background: #f5d547;
+        }
+
+        .legend-dot.cosmic {
+            background: #b58aff;
+        }
+
+        .legend-dot.other {
+            background: #a0a0a0;
+        }
+
+
+        /* =========================================
+           MAP
+        ========================================== */
+
         .explorer-map-container {
+            grid-column: 1;
+            grid-row: 2;
+
             position: relative;
             min-width: 0;
             height: 620px;
+
             background: #101923;
             border: 1px solid var(--border-color, #293441);
             border-radius: 10px;
@@ -241,6 +407,7 @@
             top: 15px;
             left: 15px;
             pointer-events: none;
+
             background: rgba(13, 23, 34, 0.88);
             border: 1px solid rgba(160, 180, 200, 0.17);
             border-radius: 6px;
@@ -267,18 +434,21 @@
             z-index: 500;
             bottom: 12px;
             left: 12px;
+
             background: rgba(13, 23, 34, 0.88);
             color: #a5b6c5;
             padding: 7px 10px;
             border-radius: 5px;
+
             font-size: 9px;
             letter-spacing: 0.5px;
             pointer-events: none;
         }
 
+
         /* =========================================
-           CUSTOM MAP MARKERS
-        ========================================= */
+           CUSTOM MARKERS
+        ========================================== */
 
         .archive-marker-wrapper {
             background: transparent;
@@ -288,12 +458,10 @@
         .archive-marker {
             width: 15px;
             height: 15px;
+            box-sizing: border-box;
             border-radius: 50%;
             border: 2px solid #e7f0f8;
-            background: #79a9ce;
-            box-shadow:
-                0 0 0 4px rgba(121, 169, 206, 0.19),
-                0 0 15px rgba(121, 169, 206, 0.7);
+
             transition: transform 0.2s;
         }
 
@@ -301,29 +469,46 @@
             transform: scale(1.3);
         }
 
-        .archive-marker.city {
-            background: #77a9d3;
+        .archive-marker.geographical {
+            background: #4da3ff;
+            box-shadow: 0 0 0 4px rgba(77, 163, 255, 0.19),
+                        0 0 15px #4da3ff;
         }
 
-        .archive-marker.building {
-            background: #d7b66d;
-            box-shadow:
-                0 0 0 4px rgba(215, 182, 109, 0.19),
-                0 0 15px rgba(215, 182, 109, 0.7);
+        .archive-marker.structures {
+            background: #ff9f43;
+            box-shadow: 0 0 0 4px rgba(255, 159, 67, 0.19),
+                        0 0 15px #ff9f43;
         }
 
-        .archive-marker.facility {
-            background: #c77e7e;
-            box-shadow:
-                0 0 0 4px rgba(199, 126, 126, 0.19),
-                0 0 15px rgba(199, 126, 126, 0.7);
+        .archive-marker.facilities {
+            background: #ff5555;
+            box-shadow: 0 0 0 4px rgba(255, 85, 85, 0.19),
+                        0 0 15px #ff5555;
         }
 
-        .archive-marker.country {
-            background: #83b99c;
-            box-shadow:
-                0 0 0 4px rgba(131, 185, 156, 0.19),
-                0 0 15px rgba(131, 185, 156, 0.7);
+        .archive-marker.natural {
+            background: #52d68a;
+            box-shadow: 0 0 0 4px rgba(82, 214, 138, 0.19),
+                        0 0 15px #52d68a;
+        }
+
+        .archive-marker.infrastructure {
+            background: #f5d547;
+            box-shadow: 0 0 0 4px rgba(245, 213, 71, 0.19),
+                        0 0 15px #f5d547;
+        }
+
+        .archive-marker.cosmic {
+            background: #b58aff;
+            box-shadow: 0 0 0 4px rgba(181, 138, 255, 0.19),
+                        0 0 15px #b58aff;
+        }
+
+        .archive-marker.other {
+            background: #a0a0a0;
+            box-shadow: 0 0 0 4px rgba(160, 160, 160, 0.19),
+                        0 0 15px #a0a0a0;
         }
 
         .archive-marker.selected {
@@ -331,9 +516,31 @@
             border-color: white;
         }
 
+
         /* =========================================
-           LEAFLET POPUP
-        ========================================= */
+           MARKER CLUSTERS
+        ========================================== */
+
+        .marker-cluster {
+            background: rgba(80, 145, 190, 0.25);
+        }
+
+        .marker-cluster div {
+            background: #315e7d;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .marker-cluster span {
+            line-height: 30px;
+        }
+
+
+        /* =========================================
+           LEAFLET POPUPS
+        ========================================== */
 
         .leaflet-popup-content-wrapper,
         .leaflet-popup-tip {
@@ -376,16 +583,23 @@
             color: white;
         }
 
+
         /* =========================================
            INTELLIGENCE PANEL
-        ========================================= */
+        ========================================== */
 
         .intelligence-panel {
+            grid-column: 2;
+            grid-row: 2;
+
             background: var(--card-bg, #151d27);
             border: 1px solid var(--border-color, #293441);
             border-radius: 10px;
             padding: 20px;
+
             min-width: 0;
+            min-height: 620px;
+
             display: flex;
             flex-direction: column;
         }
@@ -401,10 +615,12 @@
         .intelligence-empty {
             flex: 1;
             min-height: 200px;
+
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+
             text-align: center;
             color: #8291a0;
         }
@@ -487,13 +703,16 @@
             text-align: center;
             margin-top: auto;
             padding: 12px;
+
             background: rgba(106, 145, 180, 0.12);
             border: 1px solid rgba(106, 145, 180, 0.3);
+
             color: #9dc2e3;
             text-decoration: none;
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.8px;
+
             border-radius: 6px;
             transition: 0.2s;
         }
@@ -512,50 +731,10 @@
             text-decoration: underline;
         }
 
-        /* =========================================
-           MAP LEGEND
-        ========================================= */
-
-        .map-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 17px;
-            padding: 15px 2px 0;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: #8997a6;
-            font-size: 10px;
-        }
-
-        .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .legend-city {
-            background: #77a9d3;
-        }
-
-        .legend-building {
-            background: #d7b66d;
-        }
-
-        .legend-facility {
-            background: #c77e7e;
-        }
-
-        .legend-country {
-            background: #83b99c;
-        }
 
         /* =========================================
            STATUS MESSAGES
-        ========================================= */
+        ========================================== */
 
         .explorer-message {
             padding: 15px;
@@ -574,36 +753,40 @@
         .explorer-message[hidden] {
             display: none;
         }
-        .marker-cluster {
-        background: rgba(80, 145, 190, 0.25);
-        }
-        
-        .marker-cluster div {
-            background: #315e7d;
-            color: white;
-            font-weight: 700;
-            font-size: 13px;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-        }
-        
-        .marker-cluster span {
-            line-height: 30px;
-        }
+
+
         /* =========================================
            RESPONSIVE
-        ========================================= */
+        ========================================== */
 
         @media (max-width: 1050px) {
+
             .explorer-layout {
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: auto auto auto;
+            }
+
+            .map-category-legend {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .explorer-map-container {
+                grid-column: 1;
+                grid-row: 2;
             }
 
             .intelligence-panel {
+                grid-column: 1;
+                grid-row: 3;
                 min-height: 300px;
             }
+
         }
 
+
         @media (max-width: 700px) {
+
             .earth-explorer {
                 padding: 18px;
             }
@@ -629,9 +812,23 @@
                 font-size: 22px;
             }
 
+            .reality-selector-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .explorer-reality {
+                width: 100%;
+                min-width: 0;
+            }
+
             .explorer-toolbar {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .explorer-search {
+                width: 100%;
             }
 
             .explorer-filter,
@@ -642,248 +839,22 @@
             .explorer-map-container {
                 height: 470px;
             }
+
+            .map-category-legend {
+                gap: 10px 14px;
+                padding: 12px;
+            }
+
+            .legend-item {
+                font-size: 10px;
+            }
+
         }
-        /* =========================================
-   REALITY SELECTOR
-========================================= */
 
-.reality-selector-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-
-    padding: 19px 21px;
-    margin-bottom: 18px;
-
-    background: linear-gradient(
-        110deg,
-        rgba(35, 54, 73, 0.65),
-        rgba(21, 29, 39, 0.95)
-    );
-
-    border: 1px solid rgba(120, 155, 185, 0.22);
-    border-radius: 9px;
-}
-
-.reality-selector-eyebrow {
-    color: #819bb2;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1.6px;
-    margin-bottom: 6px;
-}
-
-.reality-selector-title {
-    color: #edf1f5;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.reality-selector-description {
-    color: #8998a8;
-    font-size: 11px;
-    margin-top: 5px;
-}
-
-.explorer-reality {
-    min-width: 260px;
-    height: 45px;
-    padding: 0 14px;
-
-    background: #172330;
-    border: 1px solid #40566b;
-    border-radius: 7px;
-
-    color: #dce8f2;
-    font-size: 12px;
-    font-weight: 600;
-    outline: none;
-    cursor: pointer;
-}
-
-.explorer-reality:focus {
-    border-color: #80add2;
-}
-
-.explorer-reality option {
-    background: #172330;
-    color: #edf1f5;
-}
-
-/* Additional marker categories */
-
-.archive-marker.natural {
-    background: #79ad83;
-    box-shadow: 0 0 0 4px rgba(121, 173, 131, 0.19),
-                0 0 15px rgba(121, 173, 131, 0.7);
-}
-
-.archive-marker.infrastructure {
-    background: #a58bd0;
-    box-shadow: 0 0 0 4px rgba(165, 139, 208, 0.19),
-                0 0 15px rgba(165, 139, 208, 0.7);
-}
-
-.archive-marker.cosmic {
-    background: #71c4c7;
-    box-shadow: 0 0 0 4px rgba(113, 196, 199, 0.19),
-                0 0 15px rgba(113, 196, 199, 0.7);
-}
-
-@media (max-width: 700px) {
-    .reality-selector-panel {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .explorer-reality {
-        width: 100%;
-        min-width: 0;
-    }
-}
-        /* =========================================
-   CATEGORY MARKER COLOURS
-========================================= */
-
-.marker-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.85);
-    box-shadow: 0 0 12px currentColor;
-}
-
-.marker-dot.geographical {
-    background: #4da3ff;
-    color: #4da3ff;
-}
-
-.marker-dot.structures {
-    background: #ff9f43;
-    color: #ff9f43;
-}
-
-.marker-dot.facilities {
-    background: #ff5555;
-    color: #ff5555;
-}
-
-.marker-dot.natural {
-    background: #52d68a;
-    color: #52d68a;
-}
-
-.marker-dot.infrastructure {
-    background: #f5d547;
-    color: #f5d547;
-}
-
-.marker-dot.cosmic {
-    background: #b58aff;
-    color: #b58aff;
-}
-
-.marker-dot.other {
-    background: #a0a0a0;
-    color: #a0a0a0;
-}
-        .map-category-legend {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 500;
-
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 18px;
-
-    max-width: 520px;
-    padding: 14px 18px;
-
-    background: rgba(10, 15, 24, 0.92);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    backdrop-filter: blur(12px);
-
-    font-size: 11px;
-    color: #cbd5e1;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-.legend-dot.geographical { background: #4da3ff; }
-.legend-dot.structures { background: #ff9f43; }
-.legend-dot.facilities { background: #ff5555; }
-.legend-dot.natural { background: #52d68a; }
-.legend-dot.infrastructure { background: #f5d547; }
-.legend-dot.cosmic { background: #b58aff; }
-.legend-dot.other { background: #a0a0a0; }
-   
-    /* CATEGORY COLOURS */
-
-.archive-marker.geographical {
-    background: #4da3ff;
-    box-shadow: 0 0 12px #4da3ff;
-}
-
-.archive-marker.structures {
-    background: #ff9f43;
-    box-shadow: 0 0 12px #ff9f43;
-}
-
-.archive-marker.facilities {
-    background: #ff5555;
-    box-shadow: 0 0 12px #ff5555;
-}
-
-.archive-marker.natural {
-    background: #52d68a;
-    box-shadow: 0 0 12px #52d68a;
-}
-
-.archive-marker.infrastructure {
-    background: #f5d547;
-    box-shadow: 0 0 12px #f5d547;
-}
-
-.archive-marker.cosmic {
-    background: #b58aff;
-    box-shadow: 0 0 12px #b58aff;
-}
-
-.archive-marker.other {
-    background: #a0a0a0;
-    box-shadow: 0 0 12px #a0a0a0;
-}
-        .explorer-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 20px;
-    align-items: start;
-}
-
-.explorer-layout > div:first-child {
-    min-width: 0;
-}
-
-.intelligence-panel {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: start;
-}
     </style>
+
 </head>
+
 
 <body>
 
@@ -967,6 +938,7 @@
             </div>
         </div>
 
+
         <section class="earth-explorer">
 
             <!-- HEADER -->
@@ -1045,173 +1017,147 @@
             </div>
 
 
-<!-- REALITY SELECTOR -->
+            <!-- REALITY SELECTOR -->
 
-<div class="reality-selector-panel">
+            <div class="reality-selector-panel">
 
-    <div class="reality-selector-information">
-        <div class="reality-selector-eyebrow">CURRENT CONTINUITY</div>
-        <div class="reality-selector-title">Reality Database</div>
-        <div class="reality-selector-description">
-            Select a reality to explore its geographical records.
-        </div>
-    </div>
+                <div class="reality-selector-information">
 
-    <select id="realityFilter" class="explorer-reality">
-        <option value="">Loading realities...</option>
-    </select>
+                    <div class="reality-selector-eyebrow">
+                        CURRENT CONTINUITY
+                    </div>
 
-</div>
+                    <div class="reality-selector-title">
+                        Reality Database
+                    </div>
 
-
-<!-- SEARCH AND FILTER -->
-
-<div class="explorer-toolbar">
-
-    <div class="explorer-search">
-        <span class="explorer-search-icon">⌕</span>
-
-        <input
-            type="search"
-            id="locationSearch"
-            placeholder="Search locations..."
-            autocomplete="off"
-        >
-    </div>
-
-    <select
-        id="locationTypeFilter"
-        class="explorer-filter"
-    >
-        <option value="">All location types</option>
-    </select>
-
-    <button
-        type="button"
-        class="explorer-reset"
-        id="resetMap"
-    >
-        Reset map
-    </button>
-
-</div>
-
-
-            <!-- MAP AND INTELLIGENCE PANEL -->
-
-            <div class="explorer-layout">
-
-<div>
-
-    <!-- CATEGORY LEGEND -->
-
-    <div class="map-category-legend">
-
-        <div class="legend-item">
-            <span class="legend-dot geographical"></span>
-            Geographical Areas
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot structures"></span>
-            Structures & Buildings
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot facilities"></span>
-            Facilities & Installations
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot natural"></span>
-            Natural Locations
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot infrastructure"></span>
-            Infrastructure & Transport
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot cosmic"></span>
-            Cosmic Locations
-        </div>
-
-        <div class="legend-item">
-            <span class="legend-dot other"></span>
-            Other Locations
-        </div>
-
-    </div>
-
-
-    <!-- MAP -->
-
-    <div class="explorer-map-container">
-
-        <div id="locationMap"></div>
-
-        <div class="map-overlay">
-            <div class="map-overlay-label">
-                GEOGRAPHICAL DATABASE
-            </div>
-
-            <div class="map-overlay-title" id="mapRealityLabel">
-                SELECTING REALITY...
-            </div>
-        </div>
-
-        <div
-            class="map-coordinates"
-            id="mapCoordinates"
-        >
-            LAT: -- / LNG: --
-        </div>
-
-    </div>
-
-</div>
-
-<div class="map-category-legend">
-
-    <div class="legend-item">
-        <span class="legend-dot geographical"></span>
-        Geographical Areas
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot structures"></span>
-        Structures & Buildings
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot facilities"></span>
-        Facilities & Installations
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot natural"></span>
-        Natural Locations
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot infrastructure"></span>
-        Infrastructure & Transport
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot cosmic"></span>
-        Cosmic Locations
-    </div>
-
-    <div class="legend-item">
-        <span class="legend-dot other"></span>
-        Other Locations
-    </div>
-
+                    <div class="reality-selector-description">
+                        Select a reality to explore its geographical records.
                     </div>
 
                 </div>
+
+                <select id="realityFilter" class="explorer-reality">
+                    <option value="">Loading realities...</option>
+                </select>
+
+            </div>
+
+
+            <!-- SEARCH AND FILTER -->
+
+            <div class="explorer-toolbar">
+
+                <div class="explorer-search">
+
+                    <span class="explorer-search-icon">⌕</span>
+
+                    <input
+                        type="search"
+                        id="locationSearch"
+                        placeholder="Search locations..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <select
+                    id="locationTypeFilter"
+                    class="explorer-filter"
+                >
+                    <option value="">All location types</option>
+                </select>
+
+                <button
+                    type="button"
+                    class="explorer-reset"
+                    id="resetMap"
+                >
+                    Reset map
+                </button>
+
+            </div>
+
+
+            <!-- =====================================
+                 MAP AND INTELLIGENCE
+            ====================================== -->
+
+            <div class="explorer-layout">
+
+
+                <!-- CATEGORY LEGEND -->
+
+                <div class="map-category-legend">
+
+                    <div class="legend-item">
+                        <span class="legend-dot geographical"></span>
+                        Geographical Areas
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot structures"></span>
+                        Structures & Buildings
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot facilities"></span>
+                        Facilities & Installations
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot natural"></span>
+                        Natural Locations
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot infrastructure"></span>
+                        Infrastructure & Transport
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot cosmic"></span>
+                        Cosmic Locations
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot other"></span>
+                        Other Locations
+                    </div>
+
+                </div>
+
+
+                <!-- MAP -->
+
+                <div class="explorer-map-container">
+
+                    <div id="locationMap"></div>
+
+                    <div class="map-overlay">
+
+                        <div class="map-overlay-label">
+                            GEOGRAPHICAL DATABASE
+                        </div>
+
+                        <div
+                            class="map-overlay-title"
+                            id="mapRealityLabel"
+                        >
+                            SELECTING REALITY...
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="map-coordinates"
+                        id="mapCoordinates"
+                    >
+                        LAT: -- / LNG: --
+                    </div>
+
+                </div>
+
 
                 <!-- INTELLIGENCE PANEL -->
 
@@ -1225,6 +1171,7 @@
                         id="locationInformation"
                         class="intelligence-empty"
                     >
+
                         <div class="intelligence-empty-icon">
                             ◎
                         </div>
@@ -1235,6 +1182,7 @@
                             Select a marker on the map to access
                             its geographical and database information.
                         </p>
+
                     </div>
 
                 </aside>
@@ -1270,10 +1218,10 @@
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Your Supabase Configuration -->
+<!-- Supabase Configuration -->
 <script src="../js/supabase.js"></script>
 
-<!-- Map -->
+<!-- Earth Explorer -->
 <script src="../js/map.js"></script>
 
 </body>
