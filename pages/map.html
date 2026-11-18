@@ -13,8 +13,17 @@
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        
     />
-
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
     <!-- Earth Explorer styling -->
     <style>
         /* =========================================
@@ -565,7 +574,21 @@
         .explorer-message[hidden] {
             display: none;
         }
-
+        .marker-cluster {
+        background: rgba(80, 145, 190, 0.25);
+        }
+        
+        .marker-cluster div {
+            background: #315e7d;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+        
+        .marker-cluster span {
+            line-height: 30px;
+        }
         /* =========================================
            RESPONSIVE
         ========================================= */
@@ -925,6 +948,8 @@
 <script src="../js/supabase.js"></script>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script src="../js/map.js"></script>
 
