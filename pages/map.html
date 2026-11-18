@@ -643,6 +643,105 @@
                 height: 470px;
             }
         }
+        /* =========================================
+   REALITY SELECTOR
+========================================= */
+
+.reality-selector-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    padding: 19px 21px;
+    margin-bottom: 18px;
+
+    background: linear-gradient(
+        110deg,
+        rgba(35, 54, 73, 0.65),
+        rgba(21, 29, 39, 0.95)
+    );
+
+    border: 1px solid rgba(120, 155, 185, 0.22);
+    border-radius: 9px;
+}
+
+.reality-selector-eyebrow {
+    color: #819bb2;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    margin-bottom: 6px;
+}
+
+.reality-selector-title {
+    color: #edf1f5;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.reality-selector-description {
+    color: #8998a8;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.explorer-reality {
+    min-width: 260px;
+    height: 45px;
+    padding: 0 14px;
+
+    background: #172330;
+    border: 1px solid #40566b;
+    border-radius: 7px;
+
+    color: #dce8f2;
+    font-size: 12px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.explorer-reality:focus {
+    border-color: #80add2;
+}
+
+.explorer-reality option {
+    background: #172330;
+    color: #edf1f5;
+}
+
+/* Additional marker categories */
+
+.archive-marker.natural {
+    background: #79ad83;
+    box-shadow: 0 0 0 4px rgba(121, 173, 131, 0.19),
+                0 0 15px rgba(121, 173, 131, 0.7);
+}
+
+.archive-marker.infrastructure {
+    background: #a58bd0;
+    box-shadow: 0 0 0 4px rgba(165, 139, 208, 0.19),
+                0 0 15px rgba(165, 139, 208, 0.7);
+}
+
+.archive-marker.cosmic {
+    background: #71c4c7;
+    box-shadow: 0 0 0 4px rgba(113, 196, 199, 0.19),
+                0 0 15px rgba(113, 196, 199, 0.7);
+}
+
+@media (max-width: 700px) {
+    .reality-selector-panel {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .explorer-reality {
+        width: 100%;
+        min-width: 0;
+    }
+}
     </style>
 </head>
 
@@ -806,37 +905,56 @@
             </div>
 
 
-            <!-- SEARCH AND FILTER -->
+<!-- REALITY SELECTOR -->
 
-            <div class="explorer-toolbar">
+<div class="reality-selector-panel">
 
-                <div class="explorer-search">
-                    <span class="explorer-search-icon">⌕</span>
+    <div class="reality-selector-information">
+        <div class="reality-selector-eyebrow">CURRENT CONTINUITY</div>
+        <div class="reality-selector-title">Reality Database</div>
+        <div class="reality-selector-description">
+            Select a reality to explore its geographical records.
+        </div>
+    </div>
 
-                    <input
-                        type="search"
-                        id="locationSearch"
-                        placeholder="Search locations..."
-                        autocomplete="off"
-                    >
-                </div>
+    <select id="realityFilter" class="explorer-reality">
+        <option value="">Loading realities...</option>
+    </select>
 
-                <select
-                    id="locationTypeFilter"
-                    class="explorer-filter"
-                >
-                    <option value="">All location types</option>
-                </select>
+</div>
 
-                <button
-                    type="button"
-                    class="explorer-reset"
-                    id="resetMap"
-                >
-                    Reset map
-                </button>
 
-            </div>
+<!-- SEARCH AND FILTER -->
+
+<div class="explorer-toolbar">
+
+    <div class="explorer-search">
+        <span class="explorer-search-icon">⌕</span>
+
+        <input
+            type="search"
+            id="locationSearch"
+            placeholder="Search locations..."
+            autocomplete="off"
+        >
+    </div>
+
+    <select
+        id="locationTypeFilter"
+        class="explorer-filter"
+    >
+        <option value="">All location types</option>
+    </select>
+
+    <button
+        type="button"
+        class="explorer-reset"
+        id="resetMap"
+    >
+        Reset map
+    </button>
+
+</div>
 
 
             <!-- MAP AND INTELLIGENCE PANEL -->
@@ -854,8 +972,8 @@
                                 GEOGRAPHICAL DATABASE
                             </div>
 
-                            <div class="map-overlay-title">
-                                EARTH / MILKY WAY
+                            <div class="map-overlay-title" id="mapRealityLabel">
+                                SELECTING REALITY...
                             </div>
                         </div>
 
