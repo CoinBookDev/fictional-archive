@@ -829,6 +829,43 @@
 .legend-dot.infrastructure { background: #f5d547; }
 .legend-dot.cosmic { background: #b58aff; }
 .legend-dot.other { background: #a0a0a0; }
+   
+    /* CATEGORY COLOURS */
+
+.archive-marker.geographical {
+    background: #4da3ff;
+    box-shadow: 0 0 12px #4da3ff;
+}
+
+.archive-marker.structures {
+    background: #ff9f43;
+    box-shadow: 0 0 12px #ff9f43;
+}
+
+.archive-marker.facilities {
+    background: #ff5555;
+    box-shadow: 0 0 12px #ff5555;
+}
+
+.archive-marker.natural {
+    background: #52d68a;
+    box-shadow: 0 0 12px #52d68a;
+}
+
+.archive-marker.infrastructure {
+    background: #f5d547;
+    box-shadow: 0 0 12px #f5d547;
+}
+
+.archive-marker.cosmic {
+    background: #b58aff;
+    box-shadow: 0 0 12px #b58aff;
+}
+
+.archive-marker.other {
+    background: #a0a0a0;
+    box-shadow: 0 0 12px #a0a0a0;
+}
     </style>
 </head>
 
@@ -1163,14 +1200,19 @@
      SCRIPTS
 ====================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="../js/supabase.js"></script>
-
+<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Marker Clustering -->
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Your Supabase Configuration -->
+<script src="../js/supabase.js"></script>
+
+<!-- Map -->
 <script src="../js/map.js"></script>
 
 </body>
