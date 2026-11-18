@@ -184,14 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-const categoryClass = getCategoryClass(location.location_type);
 
-const markerIcon = L.divIcon({
-    className: "custom-marker",
-    html: `<div class="marker-dot ${categoryClass}"></div>`,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9]
-});
     /* =====================================
        INITIALISE MAP
     ===================================== */
@@ -561,106 +554,82 @@ const markerIcon = L.divIcon({
        MARKER COLOURS
     ===================================== */
 
-    function getMarkerClass(type) {
+  function getMarkerClass(type) {
 
-        const group = getCategoryGroup(type);
+    const group = getCategoryGroup(type);
 
-        const value = (type || "").toLowerCase();
+    const categoryClasses = {
+        "Geographical Areas": "geographical",
+        "Structures & Buildings": "structures",
+        "Facilities & Installations": "facilities",
+        "Natural Locations": "natural",
+        "Infrastructure & Transport": "infrastructure",
+        "Cosmic Locations": "cosmic",
+        "Other Locations": "other"
+    };
 
-        if (
-            value.includes("country") ||
-            value.includes("state") ||
-            value.includes("region")
-        ) {
-            return "country";
-        }
-
-        if (group === "Structures & Buildings") {
-            return "building";
-        }
-
-        if (group === "Facilities & Installations") {
-            return "facility";
-        }
-
-        if (group === "Natural Locations") {
-            return "natural";
-        }
-
-        if (group === "Infrastructure & Transport") {
-            return "infrastructure";
-        }
-
-        if (group === "Cosmic Locations") {
-            return "cosmic";
-        }
-
-        return "city";
-
-    }
-
+    return categoryClasses[group] || "other";
+}
 
     /* =====================================
        CREATE MARKER
     ===================================== */
 
-    function createMarker(location) {
+ function createMarker(location) {
 
-        const markerClass = getMarkerClass(location.location_type);
+    const markerClass = getMarkerClass(location.location_type);
 
-        const icon = L.divIcon({
+    const icon = L.divIcon({
 
-            className: "archive-marker-wrapper",
+        className: "archive-marker-wrapper",
 
-            html: `
-                <div
-                    class="archive-marker ${markerClass}"
-                    title="${escapeHTML(location.name)}"
-                ></div>
-            `,
+        html: `
+            <div
+                class="archive-marker ${markerClass}"
+                title="${escapeHTML(location.name)}"
+            ></div>
+        `,
 
-            iconSize: [19, 19],
-            iconAnchor: [9, 9]
+        iconSize: [19, 19],
+        iconAnchor: [9, 9]
 
-        });
+    });
 
+    const marker = L.marker(
+        [
+            Number(location.latitude),
+            Number(location.longitude)
+        ],
+        {
+            icon: icon
+        }
+    );
 
-        const marker = L.marker(
-            [
-                Number(location.latitude),
-                Number(location.longitude)
-            ],
-            {
-                icon: icon
-            }
-        );
+    marker.locationData = location;
 
-        marker.locationData = location;
+    marker.bindPopup(`
+        <div class="map-popup-type">
+            ${escapeHTML(location.location_type || "Location")}
+        </div>
 
-        marker.bindPopup(`
-            <div class="map-popup-type">
-                ${escapeHTML(location.location_type || "Location")}
-            </div>
+        <div class="map-popup-name">
+            ${escapeHTML(location.name)}
+        </div>
 
-            <div class="map-popup-name">
-                ${escapeHTML(location.name)}
-            </div>
+        <a
+            class="map-popup-link"
+            href="location.html?id=${encodeURIComponent(location.id)}"
+        >
+            OPEN LOCATION PROFILE →
+        </a>
+    `);
 
-            <a
-                class="map-popup-link"
-                href="location.html?id=${encodeURIComponent(location.id)}"
-            >
-                OPEN LOCATION PROFILE →
-            </a>
-        `);
+    marker.on("click", () => {
+        selectLocation(location);
+    });
 
-        marker.on("click", () => {
-            selectLocation(location);
-        });
-
-        return marker;
-
-    }
+    return marker;
+}
 
 
     /* =====================================
