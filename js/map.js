@@ -1,3 +1,4 @@
+
 /* =========================================
    FICTIONAL ARCHIVE - EARTH EXPLORER
 ========================================= */
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================== */
 
     let map;
+    let markerClusterGroup;
     let allLocations = [];
     let markers = [];
     let selectedLocationId = null;
@@ -47,6 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return false;
         }
 
+        if (typeof L.markerClusterGroup !== "function") {
+            showMessage("Marker clustering could not be loaded. Check the MarkerCluster script.", true);
+            return false;
+        }
+
         map = L.map("locationMap", {
             center: defaultCenter,
             zoom: defaultZoom,
@@ -58,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Dark cartographic map tiles
         L.tileLayer(
-"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_5b62_1_75c3b45e51e4c1266bcd3361",
+            "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=YOUR_CARTO_API_KEY",
             {
                 attribution:
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -70,6 +77,36 @@ document.addEventListener("DOMContentLoaded", () => {
         L.control.zoom({
             position: "bottomright"
         }).addTo(map);
+
+
+        // Create marker cluster group
+        markerClusterGroup = L.markerClusterGroup({
+
+            showCoverageOnHover: false,
+            spiderfyOnMaxZoom: true,
+            zoomToBoundsOnClick: true,
+            maxClusterRadius: 45,
+
+            iconCreateFunction: function (cluster) {
+
+                const count = cluster.getChildCount();
+
+                return L.divIcon({
+
+                    html: `<div><span>${count}</span></div>`,
+
+                    className: "marker-cluster",
+
+                    iconSize: L.point(40, 40)
+
+                });
+
+            }
+
+        });
+
+        markerClusterGroup.addTo(map);
+
 
         // Display coordinates when moving over the map
         map.on("mousemove", event => {
@@ -87,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         return true;
+
     }
 
 
@@ -254,6 +292,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
+       COORDINATE ACCURACY LABEL
+    ===================================== */
+
+    function getAccuracyLabel(accuracy) {
+
+        const labels = {
+            exact: "Exact",
+            approximate: "Approximate",
+            estimated: "Estimated",
+            unknown: "Unknown"
+        };
+
+        return labels[accuracy] || "Unknown";
+
+    }
+
+
+    /* =====================================
        CREATE MARKER
     ===================================== */
 
@@ -321,10 +377,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderMarkers() {
 
-        // Remove old markers
-        markers.forEach(marker => {
-            map.removeLayer(marker);
-        });
+        // Remove existing marker clusters and markers
+        markerClusterGroup.clearLayers();
 
         markers = [];
 
@@ -352,17 +406,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
+
+        // Create markers for filtered locations
         filteredLocations.forEach(location => {
 
             const marker = createMarker(location);
-
-            marker.addTo(map);
 
             markers.push(marker);
 
         });
 
+
+        // Add all markers to the cluster group
+        markerClusterGroup.addLayers(markers);
+
         visibleTotal.textContent = filteredLocations.length;
+
 
         // Clear selection if it is no longer visible
         if (
@@ -389,6 +448,11 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedLocationId = location.id;
 
         const parent = await getParentLocation(location.parent_location_id);
+
+        // Prevent an older request from replacing a newer selection
+        if (String(selectedLocationId) !== String(location.id)) {
+            return;
+        }
 
         renderLocationInformation(location, parent);
 
@@ -453,6 +517,7 @@ document.addEventListener("DOMContentLoaded", () => {
             informationPanel.appendChild(image);
 
         }
+
 
         // Type
         const type = document.createElement("div");
@@ -522,6 +587,13 @@ document.addEventListener("DOMContentLoaded", () => {
         addDetail(
             "Coordinates",
             `${Number(location.latitude).toFixed(4)}, ${Number(location.longitude).toFixed(4)}`
+        );
+
+
+        // Coordinate accuracy
+        addDetail(
+            "Coordinate accuracy",
+            getAccuracyLabel(location.coordinate_accuracy)
         );
 
 
