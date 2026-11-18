@@ -866,6 +866,22 @@
     background: #a0a0a0;
     box-shadow: 0 0 12px #a0a0a0;
 }
+        .explorer-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+    align-items: start;
+}
+
+.explorer-layout > div:first-child {
+    min-width: 0;
+}
+
+.intelligence-panel {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+}
     </style>
 </head>
 
