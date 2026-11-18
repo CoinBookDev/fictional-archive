@@ -788,6 +788,47 @@
     background: #a0a0a0;
     color: #a0a0a0;
 }
+        .map-category-legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 500;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+
+    max-width: 520px;
+    padding: 14px 18px;
+
+    background: rgba(10, 15, 24, 0.92);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(12px);
+
+    font-size: 11px;
+    color: #cbd5e1;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.legend-dot.geographical { background: #4da3ff; }
+.legend-dot.structures { background: #ff9f43; }
+.legend-dot.facilities { background: #ff5555; }
+.legend-dot.natural { background: #52d68a; }
+.legend-dot.infrastructure { background: #f5d547; }
+.legend-dot.cosmic { background: #b58aff; }
+.legend-dot.other { background: #a0a0a0; }
     </style>
 </head>
 
@@ -1032,27 +1073,42 @@
 
                     </div>
 
-                    <div class="map-legend">
+<div class="map-category-legend">
 
-                        <div class="legend-item">
-                            <span class="legend-dot legend-city"></span>
-                            Cities
-                        </div>
+    <div class="legend-item">
+        <span class="legend-dot geographical"></span>
+        Geographical Areas
+    </div>
 
-                        <div class="legend-item">
-                            <span class="legend-dot legend-country"></span>
-                            Countries
-                        </div>
+    <div class="legend-item">
+        <span class="legend-dot structures"></span>
+        Structures & Buildings
+    </div>
 
-                        <div class="legend-item">
-                            <span class="legend-dot legend-building"></span>
-                            Buildings
-                        </div>
+    <div class="legend-item">
+        <span class="legend-dot facilities"></span>
+        Facilities & Installations
+    </div>
 
-                        <div class="legend-item">
-                            <span class="legend-dot legend-facility"></span>
-                            Facilities
-                        </div>
+    <div class="legend-item">
+        <span class="legend-dot natural"></span>
+        Natural Locations
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-dot infrastructure"></span>
+        Infrastructure & Transport
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-dot cosmic"></span>
+        Cosmic Locations
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-dot other"></span>
+        Other Locations
+    </div>
 
                     </div>
 
