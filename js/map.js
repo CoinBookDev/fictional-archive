@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Dark cartographic map tiles
         L.tileLayer(
-            "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1+5b62_1_75c3b45e51e4c1266bcd3361",
+            "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_5b62_1_75c3b45e51e4c1266bcd3361",
             {
                 attribution:
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
