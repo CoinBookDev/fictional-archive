@@ -53,66 +53,66 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoryGroups = {
 
         "Geographical Areas": [
-            "Country",
-            "State",
-            "Region",
-            "City",
-            "Town",
-            "Village",
-            "Island",
-            "Continent",
-            "Territory",
-            "Province",
-            "District"
+            "country",
+            "state",
+            "region",
+            "city",
+            "town",
+            "village",
+            "island",
+            "continent",
+            "territory",
+            "province",
+            "district"
         ],
 
         "Structures & Buildings": [
-            "Building",
-            "Tower",
-            "Headquarters",
-            "Monument",
-            "Palace",
-            "Laboratory",
-            "Bunker",
-            "Residence",
-            "Mansion",
-            "Temple",
-            "Church",
-            "Castle",
-            "Skyscraper"
+            "building",
+            "tower",
+            "headquarters",
+            "monument",
+            "palace",
+            "laboratory",
+            "bunker",
+            "residence",
+            "mansion",
+            "temple",
+            "church",
+            "castle",
+            "skyscraper"
         ],
 
         "Facilities & Installations": [
-            "Facility",
-            "Military base",
-            "Base",
-            "Prison",
-            "Research facility",
-            "Airport",
-            "Hospital",
-            "Factory",
-            "Training facility",
-            "Compound",
-            "Warehouse",
-            "Embassy",
-            "Command center"
+            "facility",
+            "military base",
+            "base",
+            "prison",
+            "research facility",
+            "airport",
+            "hospital",
+            "factory",
+            "training facility",
+            "compound",
+            "warehouse",
+            "embassy",
+            "command center"
         ],
 
         "Natural Locations": [
-            "Forest",
-            "Mountain",
-            "Desert",
-            "Ocean",
-            "Sea",
-            "Lake",
-            "River",
-            "Cave",
-            "Valley",
-            "Waterfall",
-            "Jungle",
-            "Volcano",
-            "Glacier",
-            "Island"
+            "forest",
+            "mountain",
+            "desert",
+            "ocean",
+            "sea",
+            "lake",
+            "river",
+            "cave",
+            "valley",
+            "waterfall",
+            "jungle",
+            "volcano",
+            "glacier",
+            "island"
         ],
 
         "Infrastructure & Transport": [
@@ -184,7 +184,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+const categoryClass = getCategoryClass(location.location_type);
 
+const markerIcon = L.divIcon({
+    className: "custom-marker",
+    html: `<div class="marker-dot ${categoryClass}"></div>`,
+    iconSize: [18, 18],
+    iconAnchor: [9, 9]
+});
     /* =====================================
        INITIALISE MAP
     ===================================== */
