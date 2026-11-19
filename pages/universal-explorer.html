@@ -1,187 +1,161 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Universal Navigation | Fictional Archive</title>
+    <title>Universal Explorer | Fictional Archive</title>
 
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/universal-explorer.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 
 <body>
+
 <div id="app">
 
     <aside class="sidebar">
         <div class="brand">
             <div class="brand-name">FICTIONAL ARCHIVE</div>
+            <div class="brand-subtitle">UNIVERSAL DATABASE</div>
         </div>
 
-        <div class="nav-section">
-            <div class="nav-label">MAIN MENU</div>
-            <a href="../index.html" class="nav-item">Overview</a>
-            <a href="universes.html" class="nav-item">Universes</a>
-            <a href="franchises.html" class="nav-item">Franchises</a>
-            <a href="characters.html" class="nav-item">Characters</a>
-            <a href="locations.html" class="nav-item">Locations</a>
-            <a href="organisations.html" class="nav-item">Organisations</a>
-            <a href="objects.html" class="nav-item">Objects &amp; Artifacts</a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-label">EXPLORE</div>
-            <a href="timelines.html" class="nav-item">Timelines</a>
-            <a href="connections.html" class="nav-item">Connections</a>
-            <a href="map.html" class="nav-item">Earth Explorer</a>
-            <a href="universal-explorer.html" class="nav-item active">Universal Navigation</a>
-        </div>
-
-        <div class="sidebar-footer">
-            <div>FICTIONAL ARCHIVE</div>
-            <span>VERSION 0.2</span>
-        </div>
+        <nav class="sidebar-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="universes.html">Universes</a>
+            <a href="characters.html">Characters</a>
+            <a href="locations.html">Locations</a>
+            <a href="map.html">Earth Explorer</a>
+            <a href="universal-explorer.html" class="active">Universal Explorer</a>
+        </nav>
     </aside>
 
-    <main class="main-content universal-main">
+    <main class="universe-main">
 
-        <div class="ue-screen">
+        <header class="universe-header">
+            <div>
+                <div class="eyebrow">FICTIONAL ARCHIVE / SPATIAL INTELLIGENCE</div>
+                <h1>Universal Explorer</h1>
+                <p>Navigate the known cosmic structure.</p>
+            </div>
 
-            <!-- TOP BAR -->
+            <div class="header-status">
+                <span class="status-dot"></span>
+                COSMIC ATLAS ONLINE
+            </div>
+        </header>
 
-            <header class="ue-topbar">
-                <div class="ue-brand">
-                    <span class="ue-brand-symbol">✦</span>
-                    <div>
-                        <strong>UNIVERSAL NAVIGATION</strong>
-                        <small>FICTIONAL ARCHIVE // SPATIAL INTERFACE</small>
+        <section class="explorer">
+
+            <div id="cosmic-map">
+
+                <div class="map-topbar">
+                    <div class="breadcrumb" id="breadcrumb">
+                        <span>UNIVERSE</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <strong>COSMIC OVERVIEW</strong>
+                    </div>
+
+                    <input
+                        type="text"
+                        id="object-search"
+                        placeholder="Search cosmic archive..."
+                    >
+                </div>
+
+                <div class="map-instructions" id="map-instructions">
+                    SELECT A COSMIC REGION TO EXPLORE
+                </div>
+
+                <div id="three-container"></div>
+
+                <div class="map-overlay">
+                    <div class="map-coordinates">
+                        <span>ATLAS MODE</span>
+                        <strong id="current-mode">COSMIC OVERVIEW</strong>
+                    </div>
+
+                    <div class="map-controls">
+                        <button id="overview-button">OVERVIEW</button>
+                        <button id="reset-camera">RESET VIEW</button>
                     </div>
                 </div>
 
-                <div class="ue-system-status">
-                    <span class="ue-status-dot"></span>
-                    SYSTEM ONLINE
-                </div>
-            </header>
+                <aside class="object-panel" id="object-panel">
 
-            <!-- MAP ENVIRONMENT -->
-
-            <section class="ue-viewport">
-
-                <div id="universeCanvas"></div>
-
-                <!-- TOP LEFT LOCATION -->
-
-                <div class="ue-location">
-                    <span class="ue-location-label">CURRENT REGION</span>
-                    <strong id="viewTarget">KNOWN UNIVERSE</strong>
-                    <small id="viewCoordinates">SECTOR 001 / SOL</small>
-                </div>
-
-                <!-- TOP RIGHT CONTROLS -->
-
-                <div class="ue-map-controls">
-                    <button id="resetCamera" title="Reset camera">
-                        RESET VIEW
-                    </button>
-
-                    <button id="toggleLabels" class="active">
-                        LABELS ON
-                    </button>
-                </div>
-
-                <!-- OBJECT INFORMATION OVERLAY -->
-
-                <aside class="ue-object-panel" id="objectPanel">
-
-                    <button class="ue-panel-close" id="closePanel">
-                        ×
-                    </button>
-
-                    <div class="ue-panel-top">
-                        <span id="objectCategory">OBJECT DATA</span>
-                        <span id="objectIndex">OBJ / 001</span>
+                    <div class="panel-top">
+                        <span class="panel-label">OBJECT INTELLIGENCE</span>
+                        <button id="close-panel" aria-label="Close panel">×</button>
                     </div>
 
-                    <div class="ue-object-image" id="objectVisual">
-                        <span>✦</span>
-                    </div>
-
-                    <div class="ue-object-content">
-                        <div class="ue-object-type" id="objectType">
-                            CELESTIAL BODY
+                    <div class="panel-content">
+                        <div class="panel-category" id="panel-category">
+                            NO OBJECT SELECTED
                         </div>
 
-                        <h2 id="objectName">Earth</h2>
+                        <h2 id="panel-name">Cosmic Archive</h2>
 
-                        <p id="objectDescription">
-                            Select an object to explore its data.
+                        <p id="panel-description">
+                            Select a region or object to access its archive data.
                         </p>
 
-                        <div class="ue-object-details" id="objectDetails"></div>
+                        <div class="panel-divider"></div>
 
-                        <a href="map.html" id="objectAction" class="ue-object-action">
-                            OPEN EARTH EXPLORER
-                            <span>↗</span>
-                        </a>
-                    </div>
+                        <div class="panel-field">
+                            <span>OBJECT TYPE</span>
+                            <strong id="panel-type">—</strong>
+                        </div>
 
-                    <div class="ue-panel-bottom">
-                        <span>FICTIONAL ARCHIVE</span>
-                        <span>DATA INTERFACE</span>
+                        <div class="panel-field">
+                            <span>CLASSIFICATION</span>
+                            <strong id="panel-classification">—</strong>
+                        </div>
+
+                        <div class="panel-field">
+                            <span>ARCHIVE ID</span>
+                            <strong id="panel-id">—</strong>
+                        </div>
+
+                        <div class="panel-divider"></div>
+
+                        <div class="panel-related">
+                            <span>RELATED OBJECTS</span>
+                            <div id="panel-related-list">
+                                <span class="empty-related">No connections available.</span>
+                            </div>
+                        </div>
                     </div>
 
                 </aside>
 
-                <!-- BOTTOM NAVIGATION -->
+                <div class="map-legend">
+                    <span><i class="legend-dot region-dot"></i> REGION</span>
+                    <span><i class="legend-dot object-dot"></i> OBJECT</span>
+                    <span><i class="legend-dot connection-dot"></i> CONNECTION</span>
+                </div>
 
-                <div class="ue-bottom-interface">
-
-                    <div class="ue-bottom-heading">
-                        <span>AVAILABLE OBJECTS</span>
-                        <span id="bodyCount">09 OBJECTS</span>
+                <div class="bottom-bar">
+                    <div>
+                        <span class="bottom-label">ARCHIVE INDEX</span>
+                        <strong id="object-count">9 COSMIC REGIONS</strong>
                     </div>
 
-                    <div class="ue-object-list" id="bodyList"></div>
-
+                    <div class="bottom-hint">
+                        DRAG TO ROTATE · SCROLL TO ZOOM · SELECT TO EXPLORE
+                    </div>
                 </div>
 
-                <!-- ZOOM -->
+            </div>
 
-                <div class="ue-zoom">
-                    <button id="zoomIn">+</button>
-                    <button id="zoomOut">−</button>
-                </div>
-
-                <!-- MESSAGE -->
-
-                <div id="universalMessage" class="ue-message" hidden></div>
-
-                <!-- LOADING -->
-
-                <div class="ue-loading" id="spaceLoading">
-                    <div class="ue-loading-ring"></div>
-                    <span>ESTABLISHING CONNECTION</span>
-                    <small>INITIALISING SPATIAL ENVIRONMENT</small>
-                </div>
-
-            </section>
-
-            <!-- FOOTER -->
-
-            <footer class="ue-footer">
-                <span>UNIVERSAL NAVIGATION SYSTEM</span>
-                <span id="databaseStatus">CONNECTING TO ARCHIVE</span>
-                <span>BUILD 0.2</span>
-            </footer>
-
-        </div>
+        </section>
 
     </main>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase.js"></script>
+</div>
 
 <script type="module" src="../js/universal-explorer.js"></script>
 
