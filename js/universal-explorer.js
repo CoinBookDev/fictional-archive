@@ -450,9 +450,9 @@ document.addEventListener("DOMContentLoaded", () => {
         description.textContent = body.description;
 
         const details = [
-            ["Classification", body.type],
+            ["Object type", body.type],
             ["Distance from Sun", body.distance],
-            ["Mean diameter", body.diameter]
+            ["Diameter", body.diameter]
         ];
 
         informationPanel.append(type, name, description);
