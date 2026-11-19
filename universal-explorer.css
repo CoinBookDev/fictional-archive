@@ -1,0 +1,569 @@
+/* =========================================
+   FICTIONAL ARCHIVE - UNIVERSAL EXPLORER
+   All styles are scoped to this page.
+========================================= */
+
+.universal-main {
+    min-width: 0;
+    padding-bottom: 35px;
+}
+
+.ue-topbar-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8e9cad;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.ue-topbar-status span,
+.ue-mode-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #7cc8a1;
+    box-shadow: 0 0 10px rgba(124, 200, 161, .6);
+}
+
+.universal-explorer {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 28px 34px 45px;
+    box-sizing: border-box;
+    color: #e8edf4;
+}
+
+.ue-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.ue-eyebrow {
+    color: #8495a7;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+}
+
+.ue-heading h1 {
+    margin: 9px 0 7px;
+    color: #edf1f5;
+    font-size: 32px;
+    letter-spacing: .4px;
+}
+
+.ue-heading p {
+    max-width: 620px;
+    margin: 0;
+    color: #8997a7;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.ue-mode {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 13px;
+    border: 1px solid rgba(124, 200, 161, .2);
+    border-radius: 6px;
+    background: rgba(124, 200, 161, .06);
+    color: #8dc9a9;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.ue-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    min-height: 52px;
+    padding: 8px 12px 8px 17px;
+    margin-bottom: 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 7px;
+    background: rgba(17, 24, 34, .88);
+}
+
+.ue-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #77879a;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+}
+
+.ue-breadcrumb b {
+    color: #536274;
+}
+
+.ue-breadcrumb strong {
+    color: #c5a46d;
+}
+
+.ue-controls {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ue-button {
+    min-height: 32px;
+    padding: 0 11px;
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 5px;
+    background: #151e2a;
+    color: #aebbc9;
+    font: inherit;
+    font-size: 9px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s ease;
+}
+
+.ue-button:hover,
+.ue-button.active {
+    border-color: rgba(197,164,109,.45);
+    color: #e2c18a;
+    background: rgba(197,164,109,.09);
+}
+
+.ue-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 13px;
+    align-items: stretch;
+}
+
+.ue-viewport {
+    position: relative;
+    min-width: 0;
+    height: min(68vh, 690px);
+    min-height: 470px;
+    overflow: hidden;
+    border: 1px solid rgba(135,157,183,.17);
+    border-radius: 9px;
+    background:
+        radial-gradient(ellipse at 50% 48%, rgba(25,42,65,.35), transparent 60%),
+        #050912;
+}
+
+.ue-canvas {
+    position: absolute;
+    inset: 0;
+}
+
+.ue-canvas canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline: none;
+}
+
+.ue-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: #050912;
+    color: #8798ac;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    transition: opacity .5s ease;
+}
+
+.ue-loading.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ue-loader {
+    width: 27px;
+    height: 27px;
+    border: 2px solid rgba(197,164,109,.18);
+    border-top-color: #c5a46d;
+    border-radius: 50%;
+    animation: ue-spin .8s linear infinite;
+}
+
+@keyframes ue-spin {
+    to { transform: rotate(360deg); }
+}
+
+.ue-viewport-label {
+    position: absolute;
+    top: 15px;
+    left: 16px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px 12px;
+    border: 1px solid rgba(180,198,220,.13);
+    border-radius: 5px;
+    background: rgba(8,14,24,.72);
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+}
+
+.ue-viewport-label span {
+    color: #8294a9;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+}
+
+.ue-viewport-label strong {
+    color: #d7e0eb;
+    font-size: 11px;
+    letter-spacing: .8px;
+}
+
+.ue-viewport-hint {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #738297;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    pointer-events: none;
+}
+
+.ue-viewport-hint i {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #c5a46d;
+}
+
+.ue-zoom-controls {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ue-zoom-controls button {
+    width: 31px;
+    height: 31px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 5px;
+    background: rgba(12,20,32,.85);
+    color: #d5dfeb;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.ue-zoom-controls button:hover {
+    border-color: #c5a46d;
+    color: #e3c28e;
+}
+
+.ue-intelligence {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 470px;
+    padding: 18px;
+    border: 1px solid rgba(135,157,183,.15);
+    border-radius: 9px;
+    background: #111823;
+}
+
+.ue-panel-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: #91a1b3;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.ue-panel-index {
+    color: #627287;
+    font-size: 8px;
+}
+
+.ue-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #8190a1;
+}
+
+.ue-empty-symbol {
+    margin-bottom: 15px;
+    color: #b5a078;
+    font-size: 31px;
+    opacity: .7;
+}
+
+.ue-empty strong {
+    color: #dce3ec;
+    font-size: 12px;
+}
+
+.ue-empty p {
+    max-width: 205px;
+    margin: 8px 0 0;
+    color: #8290a0;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.ue-info-image {
+    width: 100%;
+    height: 125px;
+    margin: 17px 0 15px;
+    border-radius: 5px;
+    object-fit: cover;
+    background: #1c2837;
+}
+
+.ue-info-type {
+    color: #c5a46d;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.ue-info-name {
+    margin: 7px 0 9px;
+    color: #edf1f5;
+    font-size: 21px;
+    line-height: 1.2;
+}
+
+.ue-info-description {
+    margin: 0 0 15px;
+    color: #9aa7b6;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.ue-info-detail {
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.ue-info-detail span {
+    display: block;
+    margin-bottom: 5px;
+    color: #77879a;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.ue-info-detail strong {
+    color: #d4dde7;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.ue-record-link {
+    display: block;
+    margin-top: 12px;
+    padding: 11px;
+    border: 1px solid rgba(197,164,109,.25);
+    border-radius: 5px;
+    background: rgba(197,164,109,.07);
+    color: #d7b77f;
+    text-align: center;
+    text-decoration: none;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+}
+
+.ue-panel-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 13px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    color: #758599;
+    font-size: 8px;
+    letter-spacing: .8px;
+}
+
+.ue-panel-footer strong {
+    color: #80bd9b;
+    font-size: 8px;
+}
+
+.ue-lower {
+    margin-top: 26px;
+}
+
+.ue-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 15px;
+    margin-bottom: 13px;
+}
+
+.ue-section-heading h2 {
+    margin: 6px 0 0;
+    color: #e7edf4;
+    font-size: 18px;
+}
+
+.ue-section-heading > span {
+    color: #8190a1;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.ue-body-list {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.ue-body-card {
+    min-width: 0;
+    padding: 12px 8px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 6px;
+    background: #111823;
+    color: #aab6c4;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.ue-body-card:hover,
+.ue-body-card.selected {
+    border-color: rgba(197,164,109,.5);
+    background: rgba(197,164,109,.08);
+    color: #e4c58f;
+}
+
+.ue-body-orb {
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto 9px;
+    border-radius: 50%;
+    box-shadow: inset -5px -3px 7px rgba(0,0,0,.45), 0 0 12px rgba(120,150,190,.12);
+}
+
+.ue-body-card strong {
+    display: block;
+    overflow: hidden;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ue-body-card small {
+    display: block;
+    margin-top: 4px;
+    color: #758599;
+    font-size: 7px;
+    letter-spacing: .6px;
+}
+
+.ue-message {
+    margin-top: 15px;
+    padding: 12px 14px;
+    border: 1px solid rgba(210,100,100,.3);
+    border-radius: 6px;
+    color: #e2a1a1;
+    background: rgba(160,60,60,.07);
+    font-size: 11px;
+}
+
+.ue-message[hidden] {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .ue-workspace {
+        grid-template-columns: minmax(0, 1fr) 270px;
+    }
+    .ue-body-list {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 950px) {
+    .ue-workspace {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .ue-intelligence {
+        min-height: 320px;
+    }
+    .ue-viewport {
+        height: 60vh;
+    }
+}
+
+@media (max-width: 700px) {
+    .universal-explorer {
+        padding: 20px 16px 35px;
+    }
+    .ue-heading {
+        flex-direction: column;
+    }
+    .ue-heading h1 {
+        font-size: 27px;
+    }
+    .ue-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .ue-controls {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .ue-viewport {
+        min-height: 390px;
+        height: 55vh;
+    }
+    .ue-body-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .ue-viewport-hint {
+        max-width: 75%;
+        flex-wrap: wrap;
+        line-height: 1.7;
+    }
+}

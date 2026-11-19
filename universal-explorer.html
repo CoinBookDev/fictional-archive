@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Explorer | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/universal-explorer.css">
+</head>
+
+<body>
+<div id="app">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-name">FICTIONAL ARCHIVE</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">MAIN MENU</div>
+            <a href="../index.html" class="nav-item">Overview</a>
+            <a href="universes.html" class="nav-item">Universes</a>
+            <a href="franchises.html" class="nav-item">Franchises</a>
+            <a href="characters.html" class="nav-item">Characters</a>
+            <a href="locations.html" class="nav-item">Locations</a>
+            <a href="organisations.html" class="nav-item">Organisations</a>
+            <a href="objects.html" class="nav-item">Objects &amp; Artifacts</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">EXPLORE</div>
+            <a href="timelines.html" class="nav-item">Timelines</a>
+            <a href="connections.html" class="nav-item">Connections</a>
+            <a href="map.html" class="nav-item">Earth Explorer</a>
+            <a href="universal-explorer.html" class="nav-item active">Universal Explorer</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div>FICTIONAL ARCHIVE</div>
+            <span>VERSION 0.1</span>
+        </div>
+    </aside>
+
+    <main class="main-content universal-main">
+        <div class="topbar">
+            <div class="breadcrumb">EXPLORATION / UNIVERSAL SPACE</div>
+            <div class="ue-topbar-status"><span></span> 3D ENVIRONMENT</div>
+        </div>
+
+        <section class="universal-explorer">
+            <header class="ue-heading">
+                <div>
+                    <div class="ue-eyebrow">DATABASE / COSMOLOGY / 002</div>
+                    <h1>Universal Explorer</h1>
+                    <p>Navigate celestial bodies and cosmic locations across fictional realities.</p>
+                </div>
+                <div class="ue-mode">
+                    <span class="ue-mode-dot"></span>
+                    SOLAR SYSTEM SIMULATION
+                </div>
+            </header>
+
+            <div class="ue-toolbar">
+                <div class="ue-breadcrumb" id="spaceBreadcrumb">
+                    <span>UNIVERSE</span><b>/</b><strong>SOLAR SYSTEM</strong>
+                </div>
+                <div class="ue-controls">
+                    <button type="button" id="resetCamera" class="ue-button">Reset view</button>
+                    <button type="button" id="toggleOrbits" class="ue-button active">Orbits on</button>
+                    <a href="map.html" class="ue-button ue-button-link">Open Earth Explorer ↗</a>
+                </div>
+            </div>
+
+            <div class="ue-workspace">
+                <section class="ue-viewport">
+                    <div id="universeCanvas" class="ue-canvas">
+                        <div class="ue-loading" id="spaceLoading">
+                            <div class="ue-loader"></div>
+                            <span>INITIALISING CELESTIAL ENVIRONMENT</span>
+                        </div>
+                    </div>
+
+                    <div class="ue-viewport-label">
+                        <span>LIVE SPATIAL VIEW</span>
+                        <strong id="viewTarget">SOL SYSTEM</strong>
+                    </div>
+
+                    <div class="ue-viewport-hint">
+                        DRAG TO ROTATE <i></i> SCROLL TO ZOOM <i></i> SELECT A BODY
+                    </div>
+
+                    <div class="ue-zoom-controls">
+                        <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+                        <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+                    </div>
+                </section>
+
+                <aside class="ue-intelligence">
+                    <div class="ue-panel-heading">
+                        <span>CELESTIAL INTELLIGENCE</span>
+                        <span class="ue-panel-index">SYS / 001</span>
+                    </div>
+
+                    <div id="bodyInformation" class="ue-empty">
+                        <div class="ue-empty-symbol">◎</div>
+                        <strong>Select a celestial body</strong>
+                        <p>Choose a planet or the Sun in the 3D environment to inspect its archive profile.</p>
+                    </div>
+
+                    <div class="ue-panel-footer">
+                        <span>DATABASE CONNECTION</span>
+                        <strong id="databaseStatus">CONNECTING</strong>
+                    </div>
+                </aside>
+            </div>
+
+            <section class="ue-lower">
+                <div class="ue-section-heading">
+                    <div>
+                        <span class="ue-eyebrow">NAVIGATION INDEX</span>
+                        <h2>Celestial bodies</h2>
+                    </div>
+                    <span id="bodyCount">09 OBJECTS</span>
+                </div>
+                <div class="ue-body-list" id="bodyList"></div>
+            </section>
+
+            <div id="universalMessage" class="ue-message" hidden></div>
+        </section>
+    </main>
+</div>
+
+<!-- Supabase client and shared project configuration -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+
+<!-- Three.js is loaded as an ES module in universal-explorer.js -->
+<script type="module" src="../js/universal-explorer.js"></script>
+</body>
+</html>
