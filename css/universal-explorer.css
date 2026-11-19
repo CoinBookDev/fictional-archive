@@ -428,4 +428,36 @@
     .bottom-hint {
         display: none;
     }
+       /* =========================================
+   LAYOUT OVERRIDE
+========================================= */
+
+#app {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    width: 250px;
+    min-width: 250px;
+}
+
+.universe-main {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+    margin-left: 0;
+    box-sizing: border-box;
+}
+
+.explorer {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#cosmic-map {
+    width: 100%;
+}
 }
