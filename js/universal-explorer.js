@@ -4,669 +4,808 @@ import { OrbitControls } from "https://esm.sh/three@0.160.0/examples/jsm/control
 
 /* =========================================
    FICTIONAL ARCHIVE
-   UNIVERSAL NAVIGATION
+   UNIVERSAL EXPLORER
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================
-       ELEMENTS
+       DOM ELEMENTS
     ===================================== */
 
-    const canvasHost = document.getElementById("universeCanvas");
-    const loadingScreen = document.getElementById("spaceLoading");
+    const container = document.getElementById("three-container");
+    const panel = document.getElementById("object-panel");
 
-    const objectPanel = document.getElementById("objectPanel");
-    const objectName = document.getElementById("objectName");
-    const objectType = document.getElementById("objectType");
-    const objectCategory = document.getElementById("objectCategory");
-    const objectDescription = document.getElementById("objectDescription");
-    const objectDetails = document.getElementById("objectDetails");
-    const objectVisual = document.getElementById("objectVisual");
-    const objectIndex = document.getElementById("objectIndex");
-    const objectAction = document.getElementById("objectAction");
+    const panelName = document.getElementById("panel-name");
+    const panelCategory = document.getElementById("panel-category");
+    const panelDescription = document.getElementById("panel-description");
+    const panelType = document.getElementById("panel-type");
+    const panelClassification = document.getElementById("panel-classification");
+    const panelId = document.getElementById("panel-id");
+    const relatedList = document.getElementById("panel-related-list");
 
-    const bodyList = document.getElementById("bodyList");
-    const bodyCount = document.getElementById("bodyCount");
-
-    const viewTarget = document.getElementById("viewTarget");
-    const viewCoordinates = document.getElementById("viewCoordinates");
-
-    const databaseStatus = document.getElementById("databaseStatus");
-    const message = document.getElementById("universalMessage");
-
-    if (!canvasHost) return;
-
+    const breadcrumb = document.getElementById("breadcrumb");
+    const currentMode = document.getElementById("current-mode");
+    const instructions = document.getElementById("map-instructions");
+    const objectCount = document.getElementById("object-count");
+    const searchInput = document.getElementById("object-search");
 
     /* =====================================
-       CELESTIAL OBJECTS
+       COSMIC ARCHIVE DATA
     ===================================== */
 
-    const celestialBodies = [
+    const categories = [
+
         {
-            id: "sun",
-            name: "Sun",
-            type: "Star",
-            category: "STELLAR OBJECT",
-            description: "The central star of the Solar System. Its immense energy and gravity shape the surrounding planetary environment.",
-            diameter: "1,392,700 km",
-            distance: "0 AU",
-            color: 0xffa64d,
-            size: 2.8,
-            position: [0, 0, 0],
-            texture: "sun"
+            id: "solar-system",
+            name: "Solar System",
+            type: "STAR SYSTEM",
+            color: 0x55bfff,
+            description: "A planetary system containing a central star and multiple celestial bodies.",
+            objects: [
+                ["Earth", "Planet", "Homeworld of humanity."],
+                ["Moon", "Natural Satellite", "Earth's natural satellite."],
+                ["Mars", "Planet", "The fourth planet from the Sun."],
+                ["Titan", "Natural Satellite", "Saturn's largest moon."],
+                ["Vormir", "Planet", "A remote world associated with the Soul Stone."],
+                ["Xandar", "Planet", "Homeworld of the Xandarians."],
+                ["Contraxia", "Planet", "A frozen world known for its criminal underworld."]
+            ]
         },
+
         {
-            id: "mercury",
-            name: "Mercury",
-            type: "Terrestrial planet",
-            category: "PLANETARY OBJECT",
-            description: "A small rocky world with an ancient, heavily cratered surface.",
-            diameter: "4,879 km",
-            distance: "0.39 AU",
-            color: 0x96918c,
-            size: 0.55,
-            position: [-7, 1, 4],
-            texture: "rock"
+            id: "civilizations",
+            name: "Local Galactic Civilizations",
+            type: "CIVILIZATION NETWORK",
+            color: 0xb18cff,
+            description: "Major civilizations, empires and inhabited worlds throughout the cosmos.",
+            objects: [
+                ["Xandarians", "Civilization", "The people of Xandar."],
+                ["Kree Empire", "Empire", "A powerful interstellar civilization."],
+                ["Skrull Colonies", "Civilization", "Skrull settlements spread across the galaxy."],
+                ["Sovereign", "Civilization", "A genetically engineered golden-skinned society."],
+                ["Knowhere", "Settlement", "A settlement built within a Celestial's severed head."],
+                ["Sakaar", "Planet / Civilization", "A chaotic world inhabited by many species."],
+                ["Spartax", "Civilization", "An interstellar civilization associated with the Spartoi."]
+            ]
         },
+
         {
-            id: "venus",
-            name: "Venus",
-            type: "Terrestrial planet",
-            category: "PLANETARY OBJECT",
-            description: "A dense atmosphere surrounds this extremely hot world, hiding its surface beneath thick clouds.",
-            diameter: "12,104 km",
-            distance: "0.72 AU",
-            color: 0xd9a46e,
-            size: 0.85,
-            position: [7, -1, -4],
-            texture: "cloud"
+            id: "territories",
+            name: "Cosmic Territories",
+            type: "GALACTIC REGION",
+            color: 0x58dfbd,
+            description: "Large-scale cosmic territories, interstellar routes and ancient regions.",
+            objects: [
+                ["Kree Space", "Territory", "Space controlled or influenced by the Kree Empire."],
+                ["Nova Empire Territory", "Territory", "Regions associated with the Nova Empire."],
+                ["Dark Aster Routes", "Travel Routes", "Routes associated with Ronan's warship."],
+                ["Quantum Realm Connections", "Cosmic Connections", "Known connections involving the Quantum Realm."],
+                ["Celestial Routes and Ancient Worlds", "Ancient Routes", "Ancient locations and routes associated with Celestial activity."]
+            ]
         },
+
         {
-            id: "earth",
-            name: "Earth",
-            type: "Terrestrial planet",
-            category: "PLANETARY OBJECT",
-            description: "A world of oceans, continents and complex ecosystems. Earth is currently the only known planet with confirmed life.",
-            diameter: "12,742 km",
-            distance: "1.00 AU",
-            color: 0x328bd6,
-            size: 0.95,
-            position: [-4, 3, -12],
-            texture: "earth"
+            id: "nine-realms",
+            name: "The Nine Realms",
+            type: "REALM NETWORK",
+            color: 0xffbd71,
+            description: "Nine interconnected realms connected through the cosmic structure of Yggdrasil.",
+            objects: [
+                ["Asgard", "Realm", "Home of the Asgardians."],
+                ["Midgard", "Realm", "The realm associated with Earth."],
+                ["Vanaheim", "Realm", "Home of the Vanir."],
+                ["Jotunheim", "Realm", "Realm of the Frost Giants."],
+                ["Svartalfheim", "Realm", "Home of the Dark Elves."],
+                ["Nidavellir", "Realm", "A realm associated with the Dwarves."],
+                ["Alfheim", "Realm", "Home of the Light Elves."],
+                ["Niflheim", "Realm", "A realm of ice and mist."],
+                ["Muspelheim", "Realm", "A realm of fire, home of the Fire Demons."]
+            ]
         },
+
         {
-            id: "mars",
-            name: "Mars",
-            type: "Terrestrial planet",
-            category: "PLANETARY OBJECT",
-            description: "A cold desert world with a reddish surface, enormous volcanoes and evidence of ancient water.",
-            diameter: "6,779 km",
-            distance: "1.52 AU",
-            color: 0xb75c43,
-            size: 0.72,
-            position: [13, 2, 8],
-            texture: "mars"
+            id: "dimensions",
+            name: "Alternate Dimensions",
+            type: "DIMENSIONAL NETWORK",
+            color: 0xd28aff,
+            description: "Separate dimensions and mystical planes beyond ordinary physical space.",
+            objects: [
+                ["Mirror Dimension", "Dimension", "A parallel dimension used by sorcerers."],
+                ["Dark Dimension", "Dimension", "A dimension associated with Dormammu."],
+                ["Noor Dimension", "Dimension", "A dimension connected to Noor energy."],
+                ["Ta Lo", "Mystical Realm", "A hidden mystical realm."],
+                ["Duat", "Afterlife Realm", "An Egyptian afterlife dimension."],
+                ["Ancestral Plane", "Spiritual Realm", "A spiritual plane associated with Wakanda."],
+                ["Valhalla", "Afterlife Realm", "The Asgardian afterlife."]
+            ]
         },
+
         {
-            id: "jupiter",
-            name: "Jupiter",
-            type: "Gas giant",
-            category: "PLANETARY OBJECT",
-            description: "The largest planet in the Solar System. Its atmosphere contains enormous cloud bands and powerful storms.",
-            diameter: "139,820 km",
-            distance: "5.20 AU",
-            color: 0xc99c76,
-            size: 2.1,
-            position: [-17, -2, -5],
-            texture: "jupiter"
+            id: "multiverse",
+            name: "The Multiverse",
+            type: "UNIVERSE NETWORK",
+            color: 0x75aaff,
+            description: "Parallel universes and alternate continuities.",
+            objects: [
+                ["Earth-199999", "Universe", "The universe designation commonly associated with the MCU."],
+                ["Earth-10005", "Universe", "The universe associated with the X-Men film continuity."]
+            ]
         },
+
         {
-            id: "saturn",
-            name: "Saturn",
-            type: "Gas giant",
-            category: "PLANETARY OBJECT",
-            description: "A gas giant surrounded by an extensive and visually distinctive ring system.",
-            diameter: "116,460 km",
-            distance: "9.58 AU",
-            color: 0xd8bd83,
-            size: 1.75,
-            position: [19, 4, -13],
-            texture: "saturn"
+            id: "sub-realities",
+            name: "Sub-Reality Realms",
+            type: "SUB-REALITY NETWORK",
+            color: 0xff83a8,
+            description: "Enclosed realities, temporal pathways and unusual spaces within larger cosmic structures.",
+            objects: [
+                ["Quantum Realm", "Subatomic Reality", "A strange realm beyond ordinary space and time."],
+                ["Probability Storm Regions", "Reality Region", "Regions of shifting probabilities."],
+                ["TVA Pathways", "Temporal Infrastructure", "Pathways associated with the Time Variance Authority."],
+                ["Void at the End of Time", "Temporal Realm", "A realm at the end of time."]
+            ]
         },
+
         {
-            id: "uranus",
-            name: "Uranus",
-            type: "Ice giant",
-            category: "PLANETARY OBJECT",
-            description: "A distant ice giant with a pale blue-green atmosphere and an extreme axial tilt.",
-            diameter: "50,724 km",
-            distance: "19.2 AU",
-            color: 0x82c9d0,
-            size: 1.25,
-            position: [-13, -5, 17],
-            texture: "ice"
+            id: "cosmic-entities",
+            name: "Cosmic Entities & Celestial Domains",
+            type: "CELESTIAL NETWORK",
+            color: 0xffdf7c,
+            description: "Cosmic beings, celestial structures and domains associated with powerful entities.",
+            objects: [
+                ["Ego's Planet", "Celestial Body", "The living planetary form of Ego."],
+                ["Celestial Worlds", "Celestial Locations", "Worlds connected to Celestial activity."],
+                ["Knowhere", "Celestial Location", "A settlement inside a Celestial's severed head."],
+                ["Eternity's Realm", "Cosmic Domain", "A realm associated with Eternity."],
+                ["Living Tribunal's Domain", "Cosmic Domain", "A domain associated with the Living Tribunal."],
+                ["Cosmic Crossroads", "Cosmic Location", "A meeting point between cosmic pathways."]
+            ]
         },
+
         {
-            id: "neptune",
-            name: "Neptune",
-            type: "Ice giant",
-            category: "PLANETARY OBJECT",
-            description: "A remote blue ice giant with powerful winds and a dynamic atmosphere.",
-            diameter: "49,244 km",
-            distance: "30.1 AU",
-            color: 0x426bcb,
-            size: 1.2,
-            position: [16, -4, 19],
-            texture: "neptune"
+            id: "beyond",
+            name: "Beyond the Multiverse",
+            type: "TRANSCENDENT STRUCTURE",
+            color: 0xe4efff,
+            description: "Structures and places that exist beyond conventional multiversal organisation.",
+            objects: [
+                ["The Citadel at the End of Time", "Temporal Structure", "The location associated with He Who Remains."],
+                ["Yggdrasil", "Cosmic Structure", "The interconnected structure of the Nine Realms."],
+                ["The Void", "Cosmic Realm", "A place associated with the end of time."],
+                ["Eternity's Plane", "Cosmic Plane", "A plane associated with Eternity."],
+                ["Temporal Loom Remnants", "Temporal Structure", "Remnants associated with the Temporal Loom."]
+            ]
         }
+
     ];
 
-
     /* =====================================
-       VARIABLES
+       PREPARE OBJECTS
     ===================================== */
 
-    let scene;
-    let camera;
-    let renderer;
-    let controls;
-    let raycaster;
-    let pointer;
+    let allObjects = [];
 
-    let selectedBody = null;
-    let showLabels = true;
-    let animationFrame;
+    categories.forEach(category => {
 
-    const bodyMeshes = new Map();
-    const clickableMeshes = [];
-    const floatingObjects = [];
+        category.objects.forEach((object, index) => {
 
-    const clock = new THREE.Clock();
+            allObjects.push({
+                id: makeId(object[0]),
+                name: object[0],
+                type: object[1],
+                description: object[2],
+                category: category.name,
+                categoryId: category.id,
+                index
+            });
 
+        });
+
+    });
+
+    function makeId(value) {
+        return value
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+    }
 
     /* =====================================
-       PROCEDURAL TEXTURES
+       THREE.JS SCENE
     ===================================== */
 
-    function createPlanetTexture(type, color) {
+    const scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x050914);
+
+    const camera = new THREE.PerspectiveCamera(
+        55,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        3000
+    );
+
+    camera.position.set(0, 65, 175);
+
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.045;
+    controls.minDistance = 12;
+    controls.maxDistance = 450;
+    controls.enablePan = true;
+
+    scene.add(new THREE.AmbientLight(0x7b9cbb, 1.5));
+
+    const mainLight = new THREE.PointLight(0x8acbff, 2.5, 500);
+    mainLight.position.set(0, 80, 80);
+    scene.add(mainLight);
+
+    /* =====================================
+       STARFIELD
+    ===================================== */
+
+    const starGeometry = new THREE.BufferGeometry();
+    const starPositions = [];
+
+    for (let i = 0; i < 4500; i++) {
+
+        starPositions.push(
+            (Math.random() - 0.5) * 1500,
+            (Math.random() - 0.5) * 1000,
+            (Math.random() - 0.5) * 1500
+        );
+
+    }
+
+    starGeometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(starPositions, 3)
+    );
+
+    const starMaterial = new THREE.PointsMaterial({
+        color: 0xaac9ed,
+        size: 0.9,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: true
+    });
+
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    /* =====================================
+       MAP OBJECTS
+    ===================================== */
+
+    const categoryMeshes = [];
+    const objectMeshes = [];
+    const interactiveObjects = [];
+
+    const categoryGroups = new Map();
+
+    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+
+    const categoryRadius = 5;
+    const objectRadius = 1.15;
+
+    function createLabel(text, color = "#dceeff") {
 
         const canvas = document.createElement("canvas");
-        canvas.width = 1024;
-        canvas.height = 512;
+        const context = canvas.getContext("2d");
 
-        const ctx = canvas.getContext("2d");
+        canvas.width = 512;
+        canvas.height = 128;
 
-        const baseColor = new THREE.Color(color);
+        context.font = "500 34px Arial";
+        context.textAlign = "center";
+        context.fillStyle = color;
+        context.shadowColor = color;
+        context.shadowBlur = 12;
 
-        ctx.fillStyle = `#${baseColor.getHexString()}`;
-        ctx.fillRect(0, 0, 1024, 512);
-
-        const imageData = ctx.getImageData(0, 0, 1024, 512);
-        const data = imageData.data;
-
-        // Surface noise
-
-        for (let i = 0; i < data.length; i += 4) {
-
-            const variation = Math.random() * 35 - 17;
-
-            data[i] = Math.max(0, Math.min(255, data[i] + variation));
-            data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + variation));
-            data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + variation));
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-
-        // Atmospheric bands
-
-        if (["jupiter", "saturn", "venus", "sun"].includes(type)) {
-
-            for (let i = 0; i < 22; i++) {
-
-                const y = Math.random() * 512;
-                const height = Math.random() * 18 + 3;
-
-                ctx.fillStyle = `rgba(255,255,255,${Math.random() * .12})`;
-
-                ctx.fillRect(0, y, 1024, height);
-            }
-        }
-
-        // Earth-like continents
-
-        if (type === "earth") {
-
-            ctx.fillStyle = "#397b48";
-
-            for (let i = 0; i < 35; i++) {
-
-                const x = Math.random() * 1024;
-                const y = Math.random() * 512;
-
-                ctx.beginPath();
-                ctx.ellipse(
-                    x,
-                    y,
-                    Math.random() * 60 + 20,
-                    Math.random() * 35 + 10,
-                    Math.random() * Math.PI,
-                    0,
-                    Math.PI * 2
-                );
-                ctx.fill();
-            }
-
-            ctx.fillStyle = "rgba(230,245,255,.45)";
-
-            for (let i = 0; i < 30; i++) {
-
-                ctx.beginPath();
-                ctx.arc(
-                    Math.random() * 1024,
-                    Math.random() * 512,
-                    Math.random() * 15 + 3,
-                    0,
-                    Math.PI * 2
-                );
-                ctx.fill();
-            }
-        }
-
-        // Craters
-
-        if (type === "rock" || type === "mars") {
-
-            for (let i = 0; i < 180; i++) {
-
-                const x = Math.random() * 1024;
-                const y = Math.random() * 512;
-                const radius = Math.random() * 13 + 2;
-
-                ctx.beginPath();
-                ctx.arc(x, y, radius, 0, Math.PI * 2);
-
-                ctx.fillStyle = "rgba(0,0,0,.16)";
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(x - 2, y - 2, radius * .65, 0, Math.PI * 2);
-
-                ctx.strokeStyle = "rgba(255,255,255,.13)";
-                ctx.stroke();
-            }
-        }
-
-        // Cloud patterns
-
-        if (type === "cloud" || type === "venus") {
-
-            for (let i = 0; i < 120; i++) {
-
-                ctx.beginPath();
-
-                ctx.ellipse(
-                    Math.random() * 1024,
-                    Math.random() * 512,
-                    Math.random() * 100 + 20,
-                    Math.random() * 20 + 5,
-                    Math.random() * Math.PI,
-                    0,
-                    Math.PI * 2
-                );
-
-                ctx.fillStyle = "rgba(255,255,255,.09)";
-                ctx.fill();
-            }
-        }
-
-        // Ice patterns
-
-        if (type === "ice" || type === "neptune") {
-
-            for (let i = 0; i < 90; i++) {
-
-                ctx.fillStyle = `rgba(220,250,255,${Math.random() * .13})`;
-
-                ctx.fillRect(
-                    Math.random() * 1024,
-                    Math.random() * 512,
-                    Math.random() * 80,
-                    Math.random() * 5 + 1
-                );
-            }
-        }
+        context.fillText(text.toUpperCase(), 256, 72);
 
         const texture = new THREE.CanvasTexture(canvas);
-        texture.colorSpace = THREE.SRGBColorSpace;
 
-        return texture;
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            depthWrite: false
+        });
+
+        const sprite = new THREE.Sprite(material);
+
+        sprite.scale.set(15, 3.75, 1);
+
+        return sprite;
     }
 
-
-    /* =====================================
-       ATMOSPHERE
-    ===================================== */
-
-    function addAtmosphere(mesh, color, size) {
-
-        const atmosphere = new THREE.Mesh(
-            new THREE.SphereGeometry(size * 1.12, 48, 48),
-
-            new THREE.MeshBasicMaterial({
-                color: color,
-                transparent: true,
-                opacity: 0.13,
-                side: THREE.BackSide,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            })
-        );
-
-        mesh.add(atmosphere);
-
-        const outerGlow = new THREE.Mesh(
-            new THREE.SphereGeometry(size * 1.3, 32, 32),
-
-            new THREE.MeshBasicMaterial({
-                color: color,
-                transparent: true,
-                opacity: 0.035,
-                side: THREE.BackSide,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            })
-        );
-
-        mesh.add(outerGlow);
-    }
-
-
-    /* =====================================
-       PLANET RINGS
-    ===================================== */
-
-    function addRings(mesh) {
-
-        const geometry = new THREE.RingGeometry(2.0, 3.0, 100);
+    function createGlow(color, radius) {
 
         const material = new THREE.MeshBasicMaterial({
-            color: 0xd6c39c,
-            side: THREE.DoubleSide,
+            color,
             transparent: true,
-            opacity: 0.65
+            opacity: 0.13,
+            side: THREE.BackSide
         });
 
-        const rings = new THREE.Mesh(geometry, material);
+        const glow = new THREE.Mesh(
+            new THREE.SphereGeometry(radius * 1.7, 24, 24),
+            material
+        );
 
-        rings.rotation.x = Math.PI / 2.3;
-        mesh.add(rings);
+        return glow;
     }
 
-
     /* =====================================
-       CREATE CELESTIAL OBJECT
+       CATEGORY POSITIONS
     ===================================== */
 
-    function createBody(body) {
+    const categoryPositions = categories.map((category, index) => {
 
-        const geometry = new THREE.SphereGeometry(
-            body.size,
-            64,
-            64
+        const angle = (index / categories.length) * Math.PI * 2;
+
+        const radius = 48;
+
+        return new THREE.Vector3(
+            Math.cos(angle) * radius,
+            Math.sin(angle * 2) * 10,
+            Math.sin(angle) * radius
         );
 
-        const texture = createPlanetTexture(
-            body.texture,
-            body.color
-        );
+    });
+
+    /* =====================================
+       CREATE CATEGORY NODES
+    ===================================== */
+
+    categories.forEach((category, index) => {
+
+        const position = categoryPositions[index];
+
+        const group = new THREE.Group();
+
+        group.position.copy(position);
+        group.userData = {
+            kind: "category",
+            categoryId: category.id
+        };
 
         const material = new THREE.MeshStandardMaterial({
-            map: texture,
-            roughness: body.id === "sun" ? 1 : 0.88,
-            metalness: 0.02
+            color: category.color,
+            emissive: category.color,
+            emissiveIntensity: 0.55,
+            metalness: 0.3,
+            roughness: 0.35
         });
 
-        if (body.id === "sun") {
+        const sphere = new THREE.Mesh(
+            sphereGeometry,
+            material
+        );
 
-            material.emissive = new THREE.Color(0xff7b22);
-            material.emissiveMap = texture;
-            material.emissiveIntensity = 1.2;
-        }
+        sphere.scale.setScalar(categoryRadius);
+        sphere.userData = group.userData;
 
-        const mesh = new THREE.Mesh(geometry, material);
+        group.add(sphere);
+        group.add(createGlow(category.color, categoryRadius));
 
-        mesh.position.set(...body.position);
-        mesh.userData.bodyId = body.id;
+        const label = createLabel(category.name, "#d8edff");
+        label.position.y = 9;
+        group.add(label);
 
-        if (body.id !== "sun") {
-            addAtmosphere(mesh, body.color, body.size);
-        }
+        scene.add(group);
 
-        if (body.id === "saturn") {
-            addRings(mesh);
-        }
+        categoryGroups.set(category.id, group);
+        categoryMeshes.push(sphere);
+        interactiveObjects.push(sphere);
 
-        scene.add(mesh);
+        /* Hidden child objects */
 
-        // Sun light
+        const childMeshes = [];
 
-        if (body.id === "sun") {
+        category.objects.forEach((object, objectIndex) => {
 
-            const light = new THREE.PointLight(
-                0xffc58b,
-                4,
-                150,
-                1.5
+            const total = category.objects.length;
+
+            const angle = (objectIndex / total) * Math.PI * 2;
+
+            const spread = 17;
+
+            const childPosition = new THREE.Vector3(
+                Math.cos(angle) * spread,
+                Math.sin(objectIndex * 1.7) * 5,
+                Math.sin(angle) * spread
             );
 
-            light.position.copy(mesh.position);
-            scene.add(light);
-        }
+            const childGroup = new THREE.Group();
 
-        bodyMeshes.set(body.id, {
-            mesh,
-            body,
-            basePosition: mesh.position.clone(),
-            phase: Math.random() * Math.PI * 2
-        });
+            childGroup.position.copy(childPosition);
 
-        clickableMeshes.push(mesh);
-    }
+            const childMaterial = new THREE.MeshStandardMaterial({
+                color: category.color,
+                emissive: category.color,
+                emissiveIntensity: 0.3,
+                metalness: 0.4,
+                roughness: 0.4
+            });
 
-
-    /* =====================================
-       STAR FIELD
-    ===================================== */
-
-    function createStarField() {
-
-        const geometry = new THREE.BufferGeometry();
-        const positions = [];
-        const colors = [];
-
-        for (let i = 0; i < 4500; i++) {
-
-            const radius = 35 + Math.random() * 110;
-
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(Math.random() * 2 - 1);
-
-            positions.push(
-                radius * Math.sin(phi) * Math.cos(theta),
-                radius * Math.cos(phi),
-                radius * Math.sin(phi) * Math.sin(theta)
+            const childSphere = new THREE.Mesh(
+                sphereGeometry,
+                childMaterial
             );
 
-            const brightness = .5 + Math.random() * .5;
+            childSphere.scale.setScalar(objectRadius);
 
-            colors.push(
-                brightness * .7,
-                brightness * .85,
-                brightness
+            const objectData = allObjects.find(
+                item => item.categoryId === category.id &&
+                        item.name === object[0]
             );
+
+            childSphere.userData = {
+                kind: "object",
+                objectId: objectData.id,
+                categoryId: category.id
+            };
+
+            childGroup.add(childSphere);
+            childGroup.add(createGlow(category.color, objectRadius));
+
+            const childLabel = createLabel(object[0], "#c5d9eb");
+            childLabel.position.y = 2.8;
+            childLabel.scale.set(11, 2.75, 1);
+
+            childGroup.add(childLabel);
+
+            group.add(childGroup);
+
+            childGroup.visible = false;
+
+            childMeshes.push(childGroup);
+            objectMeshes.push(childSphere);
+            interactiveObjects.push(childSphere);
+
+        });
+
+        group.userData.children = childMeshes;
+
+    });
+
+    /* =====================================
+       CONNECTION LINES
+    ===================================== */
+
+    const connectionMaterial = new THREE.LineBasicMaterial({
+        color: 0x416c94,
+        transparent: true,
+        opacity: 0.22
+    });
+
+    for (let i = 0; i < categoryPositions.length; i++) {
+
+        const next = (i + 1) % categoryPositions.length;
+
+        const geometry = new THREE.BufferGeometry().setFromPoints([
+            categoryPositions[i],
+            categoryPositions[next]
+        ]);
+
+        const line = new THREE.Line(geometry, connectionMaterial);
+
+        scene.add(line);
+
+    }
+
+    /* =====================================
+       CAMERA NAVIGATION
+    ===================================== */
+
+    let cameraTarget = new THREE.Vector3(0, 0, 0);
+    let desiredCameraPosition = new THREE.Vector3(0, 65, 175);
+
+    function moveCamera(position, target) {
+
+        desiredCameraPosition.copy(position);
+        cameraTarget.copy(target);
+
+    }
+
+    function focusCategory(categoryId) {
+
+        const category = categories.find(
+            item => item.id === categoryId
+        );
+
+        if (!category) return;
+
+        const group = categoryGroups.get(categoryId);
+        const position = group.position;
+
+        group.userData.children.forEach(child => {
+            child.visible = true;
+        });
+
+        categories.forEach(item => {
+
+            if (item.id !== categoryId) {
+                categoryGroups.get(item.id).visible = false;
+            }
+
+        });
+
+        const cameraPosition = position.clone().add(
+            new THREE.Vector3(0, 20, 48)
+        );
+
+        moveCamera(cameraPosition, position);
+
+        currentMode.textContent = category.name.toUpperCase();
+
+        breadcrumb.innerHTML = `
+            <span>UNIVERSE</span>
+            <span class="breadcrumb-separator">/</span>
+            <strong>${category.name.toUpperCase()}</strong>
+        `;
+
+        instructions.textContent = "SELECT AN OBJECT TO ACCESS ITS INTELLIGENCE";
+
+        objectCount.textContent = `${category.objects.length} ARCHIVED OBJECTS`;
+
+        showCategoryPanel(category);
+
+    }
+
+    function showOverview() {
+
+        categories.forEach(category => {
+
+            const group = categoryGroups.get(category.id);
+
+            group.visible = true;
+
+            group.userData.children.forEach(child => {
+                child.visible = false;
+            });
+
+        });
+
+        moveCamera(
+            new THREE.Vector3(0, 65, 175),
+            new THREE.Vector3(0, 0, 0)
+        );
+
+        currentMode.textContent = "COSMIC OVERVIEW";
+
+        breadcrumb.innerHTML = `
+            <span>UNIVERSE</span>
+            <span class="breadcrumb-separator">/</span>
+            <strong>COSMIC OVERVIEW</strong>
+        `;
+
+        instructions.textContent = "SELECT A COSMIC REGION TO EXPLORE";
+
+        objectCount.textContent = `${categories.length} COSMIC REGIONS`;
+
+        panel.classList.add("hidden");
+
+    }
+
+    /* =====================================
+       INFORMATION PANEL
+    ===================================== */
+
+    function showCategoryPanel(category) {
+
+        panel.classList.remove("hidden");
+
+        panelCategory.textContent = "COSMIC CLASSIFICATION";
+        panelName.textContent = category.name;
+        panelDescription.textContent = category.description;
+
+        panelType.textContent = category.type;
+        panelClassification.textContent = "PRIMARY REGION";
+        panelId.textContent = category.id.toUpperCase();
+
+        relatedList.innerHTML = "";
+
+        category.objects.forEach(object => {
+
+            const button = document.createElement("button");
+
+            button.className = "related-object";
+            button.textContent = object[0];
+
+            button.addEventListener("click", () => {
+
+                const data = allObjects.find(
+                    item => item.categoryId === category.id &&
+                            item.name === object[0]
+                );
+
+                selectObject(data);
+
+            });
+
+            relatedList.appendChild(button);
+
+        });
+
+    }
+
+    function selectObject(object) {
+
+        if (!object) return;
+
+        const category = categories.find(
+            item => item.id === object.categoryId
+        );
+
+        if (!category) return;
+
+        if (currentMode.textContent !== category.name.toUpperCase()) {
+            focusCategory(category.id);
         }
 
-        geometry.setAttribute(
-            "position",
-            new THREE.Float32BufferAttribute(positions, 3)
+        panel.classList.remove("hidden");
+
+        panelCategory.textContent = category.name.toUpperCase();
+        panelName.textContent = object.name;
+        panelDescription.textContent = object.description;
+
+        panelType.textContent = object.type;
+        panelClassification.textContent = category.name;
+        panelId.textContent = object.id.toUpperCase();
+
+        relatedList.innerHTML = "";
+
+        const related = allObjects.filter(item =>
+            item.categoryId === object.categoryId &&
+            item.id !== object.id
         );
 
-        geometry.setAttribute(
-            "color",
-            new THREE.Float32BufferAttribute(colors, 3)
-        );
+        related.slice(0, 5).forEach(item => {
 
-        const stars = new THREE.Points(
-            geometry,
+            const button = document.createElement("button");
 
-            new THREE.PointsMaterial({
-                size: .12,
-                vertexColors: true,
-                transparent: true,
-                opacity: .85,
-                sizeAttenuation: true
-            })
-        );
+            button.className = "related-object";
+            button.textContent = item.name;
 
-        scene.add(stars);
-        floatingObjects.push(stars);
-    }
+            button.addEventListener("click", () => {
+                selectObject(item);
+            });
 
+            relatedList.appendChild(button);
 
-    /* =====================================
-       NEBULA BACKGROUND
-    ===================================== */
-
-    function createNebula() {
-
-        const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 512;
-
-        const ctx = canvas.getContext("2d");
-
-        const gradient = ctx.createRadialGradient(
-            256, 256, 10,
-            256, 256, 250
-        );
-
-        gradient.addColorStop(0, "rgba(40,100,190,.20)");
-        gradient.addColorStop(.4, "rgba(55,65,150,.10)");
-        gradient.addColorStop(1, "rgba(0,0,0,0)");
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 512, 512);
-
-        const texture = new THREE.CanvasTexture(canvas);
-
-        const nebula = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-                map: texture,
-                transparent: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending
-            })
-        );
-
-        nebula.position.set(-18, 12, -35);
-        nebula.scale.set(70, 55, 1);
-
-        scene.add(nebula);
-    }
-
-
-    /* =====================================
-       SCENE
-    ===================================== */
-
-    function createScene() {
-
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020611);
-        scene.fog = new THREE.FogExp2(0x020611, 0.0018);
-
-        camera = new THREE.PerspectiveCamera(
-            50,
-            canvasHost.clientWidth / canvasHost.clientHeight,
-            0.1,
-            500
-        );
-
-        camera.position.set(0, 18, 43);
-
-        renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: false
         });
 
-        renderer.setPixelRatio(
-            Math.min(window.devicePixelRatio, 1.75)
+        if (!related.length) {
+            relatedList.innerHTML =
+                '<span class="empty-related">No connections available.</span>';
+        }
+
+        const group = categoryGroups.get(category.id);
+
+        const childIndex = category.objects.findIndex(
+            item => item[0] === object.name
         );
 
-        renderer.setSize(
-            canvasHost.clientWidth,
-            canvasHost.clientHeight
+        const child = group.children[childIndex];
+
+        const worldPosition = new THREE.Vector3();
+
+        child.getWorldPosition(worldPosition);
+
+        moveCamera(
+            worldPosition.clone().add(new THREE.Vector3(0, 8, 22)),
+            worldPosition
         );
 
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.25;
+        instructions.textContent = "OBJECT SELECTED / INTELLIGENCE DATA LOADED";
 
-        canvasHost.appendChild(renderer.domElement);
-
-        controls = new OrbitControls(
-            camera,
-            renderer.domElement
-        );
-
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.045;
-
-        controls.minDistance = 3;
-        controls.maxDistance = 100;
-
-        controls.target.set(0, 0, 0);
-
-        scene.add(new THREE.AmbientLight(0x6685ae, 0.7));
-
-        const blueLight = new THREE.DirectionalLight(
-            0x5caeff,
-            1.2
-        );
-
-        blueLight.position.set(-20, 15, 25);
-        scene.add(blueLight);
-
-        createStarField();
-        createNebula();
-
-        celestialBodies.forEach(createBody);
-
-        raycaster = new THREE.Raycaster();
-        pointer = new THREE.Vector2();
-
-        renderer.domElement.addEventListener(
-            "pointerdown",
-            onCanvasClick
-        );
-
-        window.addEventListener("resize", onResize);
-
-        populateObjectList();
-
-        animate();
-
-        requestAnimationFrame(() => {
-
-            loadingScreen.classList.add("is-hidden");
-
-            setTimeout(() => {
-                loadingScreen.remove();
-            }, 650);
-        });
     }
 
+    /* =====================================
+       MOUSE INTERACTION
+    ===================================== */
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    renderer.domElement.addEventListener("click", event => {
+
+        const rect = renderer.domElement.getBoundingClientRect();
+
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        const hits = raycaster.intersectObjects(
+            interactiveObjects.filter(mesh => mesh.visible),
+            false
+        );
+
+        if (!hits.length) return;
+
+        const data = hits[0].object.userData;
+
+        if (data.kind === "category") {
+            focusCategory(data.categoryId);
+        }
+
+        if (data.kind === "object") {
+
+            const object = allObjects.find(
+                item => item.id === data.objectId
+            );
+
+            selectObject(object);
+
+        }
+
+    });
+
+    /* =====================================
+       SEARCH
+    ===================================== */
+
+    searchInput.addEventListener("input", () => {
+
+        const query = searchInput.value.trim().toLowerCase();
+
+        if (query.length < 2) return;
+
+        const result = allObjects.find(item =>
+            item.name.toLowerCase().includes(query)
+        );
+
+        if (!result) return;
+
+        focusCategory(result.categoryId);
+
+        setTimeout(() => {
+            selectObject(result);
+        }, 250);
+
+    });
+
+    /* =====================================
+       BUTTONS
+    ===================================== */
+
+    document.getElementById("overview-button")
+        .addEventListener("click", showOverview);
+
+    document.getElementById("reset-camera")
+        .addEventListener("click", () => {
+
+            if (currentMode.textContent === "COSMIC OVERVIEW") {
+                showOverview();
+            } else {
+                const category = categories.find(
+                    item => item.name.toUpperCase() === currentMode.textContent
+                );
+
+                if (category) focusCategory(category.id);
+            }
+
+        });
+
+    document.getElementById("close-panel")
+        .addEventListener("click", () => {
+            panel.classList.add("hidden");
+        });
 
     /* =====================================
        ANIMATION
@@ -674,305 +813,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function animate() {
 
-        animationFrame = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
 
-        const elapsed = clock.getElapsedTime();
-
-        bodyMeshes.forEach(record => {
-
-            record.mesh.rotation.y += 0.0015;
-
-            // Subtle floating movement
-
-            record.mesh.position.y =
-                record.basePosition.y +
-                Math.sin(elapsed * 0.4 + record.phase) * 0.07;
-        });
-
-        floatingObjects.forEach(object => {
-            object.rotation.y += 0.000025;
-        });
+        camera.position.lerp(desiredCameraPosition, 0.035);
+        controls.target.lerp(cameraTarget, 0.035);
 
         controls.update();
+
+        stars.rotation.y += 0.00004;
+
+        categoryMeshes.forEach((mesh, index) => {
+
+            const pulse = 1 + Math.sin(
+                Date.now() * 0.0015 + index
+            ) * 0.035;
+
+            mesh.scale.setScalar(categoryRadius * pulse);
+
+        });
 
         renderer.render(scene, camera);
+
     }
-
-
-    /* =====================================
-       CLICK DETECTION
-    ===================================== */
-
-    function onCanvasClick(event) {
-
-        const rect = renderer.domElement.getBoundingClientRect();
-
-        pointer.x =
-            ((event.clientX - rect.left) / rect.width) * 2 - 1;
-
-        pointer.y =
-            -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-        raycaster.setFromCamera(pointer, camera);
-
-        const hits = raycaster.intersectObjects(
-            clickableMeshes,
-            false
-        );
-
-        if (hits.length) {
-
-            const id = hits[0].object.userData.bodyId;
-
-            selectBody(id);
-        }
-    }
-
-
-    /* =====================================
-       OBJECT NAVIGATION LIST
-    ===================================== */
-
-    function populateObjectList() {
-
-        bodyList.innerHTML = "";
-
-        bodyCount.textContent =
-            `${celestialBodies.length.toString().padStart(2, "0")} OBJECTS`;
-
-        celestialBodies.forEach(body => {
-
-            const button = document.createElement("button");
-
-            button.className = "ue-object-card";
-            button.type = "button";
-            button.dataset.id = body.id;
-
-            const orb = document.createElement("span");
-
-            orb.className = "ue-object-orb";
-
-            orb.style.background =
-                `#${body.color.toString(16).padStart(6, "0")}`;
-
-            const name = document.createElement("strong");
-            name.textContent = body.name;
-
-            button.append(orb, name);
-
-            button.addEventListener("click", () => {
-                selectBody(body.id);
-            });
-
-            bodyList.appendChild(button);
-        });
-    }
-
-
-    /* =====================================
-       SELECT OBJECT
-    ===================================== */
-
-    function selectBody(id) {
-
-        const body = celestialBodies.find(
-            item => item.id === id
-        );
-
-        if (!body) return;
-
-        selectedBody = body;
-
-        // Update navigation
-
-        viewTarget.textContent = body.name.toUpperCase();
-        viewCoordinates.textContent =
-            `SOL SYSTEM / ${body.id.toUpperCase()}`;
-
-        // Update selected button
-
-        bodyList.querySelectorAll(".ue-object-card").forEach(button => {
-
-            button.classList.toggle(
-                "selected",
-                button.dataset.id === id
-            );
-        });
-
-        // Update information panel
-
-        objectCategory.textContent = body.category;
-        objectIndex.textContent =
-            `OBJ / ${String(celestialBodies.indexOf(body) + 1).padStart(3, "0")}`;
-
-        objectType.textContent = body.type.toUpperCase();
-        objectName.textContent = body.name;
-        objectDescription.textContent = body.description;
-
-        objectVisual.innerHTML = "";
-
-        const visualSymbol = document.createElement("span");
-        visualSymbol.textContent = "✦";
-
-        objectVisual.appendChild(visualSymbol);
-
-        // Object details
-
-        objectDetails.innerHTML = "";
-
-        const details = [
-            ["Diameter", body.diameter],
-            ["Distance from Sun", body.distance],
-            ["Object ID", body.id.toUpperCase()]
-        ];
-
-        details.forEach(([label, value]) => {
-
-            const row = document.createElement("div");
-            row.className = "ue-object-detail";
-
-            const labelElement = document.createElement("span");
-            labelElement.textContent = label;
-
-            const valueElement = document.createElement("strong");
-            valueElement.textContent = value;
-
-            row.append(labelElement, valueElement);
-
-            objectDetails.appendChild(row);
-        });
-
-        // Earth navigation
-
-        if (body.id === "earth") {
-
-            objectAction.classList.add("visible");
-            objectAction.href = "map.html";
-
-        } else {
-
-            objectAction.classList.remove("visible");
-        }
-
-        objectPanel.classList.add("visible");
-
-        focusBody(body.id);
-    }
-
-
-    /* =====================================
-       CAMERA FOCUS
-    ===================================== */
-
-    function focusBody(id) {
-
-        const record = bodyMeshes.get(id);
-
-        if (!record) return;
-
-        const target = record.mesh.position.clone();
-
-        const direction = new THREE.Vector3()
-            .subVectors(camera.position, controls.target)
-            .normalize();
-
-        const distance = Math.max(
-            record.body.size * 4.5,
-            5
-        );
-
-        const destination = target.clone().add(
-            direction.multiplyScalar(distance)
-        );
-
-        camera.position.copy(destination);
-        controls.target.copy(target);
-
-        controls.update();
-    }
-
-
-    /* =====================================
-       RESET CAMERA
-    ===================================== */
-
-    function resetCamera() {
-
-        camera.position.set(0, 18, 43);
-
-        controls.target.set(0, 0, 0);
-        controls.update();
-
-        selectedBody = null;
-
-        objectPanel.classList.remove("visible");
-
-        viewTarget.textContent = "KNOWN UNIVERSE";
-        viewCoordinates.textContent = "SECTOR 001 / SOL";
-
-        bodyList.querySelectorAll(".ue-object-card").forEach(button => {
-            button.classList.remove("selected");
-        });
-    }
-
-
-    /* =====================================
-       INTERFACE CONTROLS
-    ===================================== */
-
-    function setupControls() {
-
-        document.getElementById("resetCamera")
-            .addEventListener("click", resetCamera);
-
-        document.getElementById("closePanel")
-            .addEventListener("click", () => {
-                objectPanel.classList.remove("visible");
-            });
-
-        document.getElementById("toggleLabels")
-            .addEventListener("click", event => {
-
-                showLabels = !showLabels;
-
-                event.currentTarget.classList.toggle(
-                    "active",
-                    showLabels
-                );
-
-                event.currentTarget.textContent =
-                    showLabels ? "LABELS ON" : "LABELS OFF";
-
-                bodyList.style.opacity =
-                    showLabels ? "1" : "0.25";
-            });
-
-        document.getElementById("zoomIn")
-            .addEventListener("click", () => {
-
-                camera.position.multiplyScalar(0.8);
-                controls.update();
-            });
-
-        document.getElementById("zoomOut")
-            .addEventListener("click", () => {
-
-                camera.position.multiplyScalar(1.2);
-                controls.update();
-            });
-    }
-
 
     /* =====================================
        RESIZE
     ===================================== */
 
-    function onResize() {
+    window.addEventListener("resize", () => {
 
-        if (!camera || !renderer) return;
-
-        const width = canvasHost.clientWidth;
-        const height = canvasHost.clientHeight;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
         if (!width || !height) return;
 
@@ -980,106 +851,17 @@ document.addEventListener("DOMContentLoaded", () => {
         camera.updateProjectionMatrix();
 
         renderer.setSize(width, height);
-    }
 
-
-    /* =====================================
-       SUPABASE CONNECTION
-    ===================================== */
-
-    async function checkDatabase() {
-
-        if (!window.supabaseClient) {
-
-            databaseStatus.textContent = "CLIENT UNAVAILABLE";
-            databaseStatus.style.color = "#e58c8c";
-
-            showMessage(
-                "Supabase client unavailable. Check ../js/supabase.js."
-            );
-
-            return;
-        }
-
-        try {
-
-            const { error } = await window.supabaseClient
-                .from("realities")
-                .select("id")
-                .limit(1);
-
-            if (error) throw error;
-
-            databaseStatus.textContent = "ARCHIVE CONNECTED";
-            databaseStatus.style.color = "#64cda8";
-
-        } catch (error) {
-
-            console.error("Database connection failed:", error);
-
-            databaseStatus.textContent = "DATABASE ERROR";
-            databaseStatus.style.color = "#e58c8c";
-
-            showMessage(
-                `Database connection failed: ${error.message}`
-            );
-        }
-    }
-
-
-    /* =====================================
-       ERROR MESSAGE
-    ===================================== */
-
-    function showMessage(text) {
-
-        message.textContent = text;
-        message.hidden = false;
-    }
-
+    });
 
     /* =====================================
        INITIALISE
     ===================================== */
 
-    setupControls();
+    objectCount.textContent = `${categories.length} COSMIC REGIONS`;
 
-    try {
+    panel.classList.add("hidden");
 
-        createScene();
-        checkDatabase();
-
-    } catch (error) {
-
-        console.error(
-            "Universal Navigation initialisation failed:",
-            error
-        );
-
-        loadingScreen.innerHTML = `
-            <span>SPATIAL SYSTEM ERROR</span>
-            <small>${error.message}</small>
-        `;
-
-        showMessage(
-            "The 3D environment could not initialise. Check the browser console."
-        );
-    }
-
-
-    /* =====================================
-       CLEANUP
-    ===================================== */
-
-    window.addEventListener("beforeunload", () => {
-
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-
-        if (renderer) {
-            renderer.dispose();
-        }
-    });
+    animate();
 
 });
