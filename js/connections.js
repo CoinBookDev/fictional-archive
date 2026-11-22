@@ -1,0 +1,772 @@
+
+/* =========================================
+   FICTIONAL ARCHIVE
+   CONNECTIONS DIRECTORY
+========================================= */
+
+
+/* =========================================
+   CONFIGURATION
+========================================= */
+
+const CONNECTION_PAGE_SIZE = 50;
+
+let connectionCurrentPage = 1;
+let connectionTotal = 0;
+
+let connectionSearchTerm = "";
+let connectionSourceType = "";
+let connectionTargetType = "";
+
+let connectionSearchTimeout = null;
+
+
+/* =========================================
+   ENTITY TABLE CONFIGURATION
+========================================= */
+
+const CONNECTION_ENTITY_TABLES = {
+
+    character: {
+        table: "characters",
+        nameColumn: "name",
+        label: "Character"
+    },
+
+    character_version: {
+        table: "character_versions",
+        nameColumn: "name",
+        label: "Character Version"
+    },
+
+    organisation: {
+        table: "organisations",
+        nameColumn: "name",
+        label: "Organisation"
+    },
+
+    object: {
+        table: "objects",
+        nameColumn: "name",
+        label: "Object"
+    },
+
+    franchise: {
+        table: "franchises",
+        nameColumn: "name",
+        label: "Franchise"
+    },
+
+    reality: {
+        table: "realities",
+        nameColumn: "name",
+        label: "Reality"
+    },
+
+    location: {
+        table: "locations",
+        nameColumn: "name",
+        label: "Location"
+    },
+
+    timeline: {
+        table: "timelines",
+        nameColumn: "name",
+        label: "Timeline"
+    },
+
+    timeline_event: {
+        table: "timeline_events",
+        nameColumn: "title",
+        label: "Timeline Event"
+    }
+
+};
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const connectionSearch =
+    document.getElementById("connectionSearch");
+
+const connectionSourceFilter =
+    document.getElementById("connectionSourceFilter");
+
+const connectionTargetFilter =
+    document.getElementById("connectionTargetFilter");
+
+const connectionCount =
+    document.getElementById("connectionCount");
+
+const connectionDirectory =
+    document.getElementById("connectionDirectory");
+
+const connectionPagination =
+    document.getElementById("connectionPagination");
+
+
+/* =========================================
+   INITIALIZATION
+========================================= */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    if (!window.supabaseClient) {
+        showConnectionError("Supabase client could not be initialized.");
+        return;
+    }
+
+    loadEntityTypeFilters();
+
+    connectionSearch.addEventListener("input", () => {
+
+        clearTimeout(connectionSearchTimeout);
+
+        connectionSearchTimeout = setTimeout(() => {
+
+            connectionSearchTerm = connectionSearch.value.trim();
+            connectionCurrentPage = 1;
+
+            loadConnections();
+
+        }, 300);
+
+    });
+
+
+    connectionSourceFilter.addEventListener("change", () => {
+
+        connectionSourceType = connectionSourceFilter.value;
+        connectionCurrentPage = 1;
+
+        loadConnections();
+
+    });
+
+
+    connectionTargetFilter.addEventListener("change", () => {
+
+        connectionTargetType = connectionTargetFilter.value;
+        connectionCurrentPage = 1;
+
+        loadConnections();
+
+    });
+
+
+    await loadConnections();
+
+});
+
+
+/* =========================================
+   ENTITY TYPE FILTERS
+========================================= */
+
+function loadEntityTypeFilters() {
+
+    Object.entries(CONNECTION_ENTITY_TABLES).forEach(([type, config]) => {
+
+        const sourceOption = document.createElement("option");
+
+        sourceOption.value = type;
+        sourceOption.textContent = config.label;
+
+        connectionSourceFilter.appendChild(sourceOption);
+
+
+        const targetOption = document.createElement("option");
+
+        targetOption.value = type;
+        targetOption.textContent = config.label;
+
+        connectionTargetFilter.appendChild(targetOption);
+
+    });
+
+}
+
+
+/* =========================================
+   LOAD CONNECTIONS
+========================================= */
+
+async function loadConnections() {
+
+    showConnectionLoading();
+
+    const from =
+        (connectionCurrentPage - 1) * CONNECTION_PAGE_SIZE;
+
+    const to =
+        from + CONNECTION_PAGE_SIZE - 1;
+
+
+    let query = window.supabaseClient
+        .from("connections")
+        .select("*", { count: "exact" })
+        .order("id", { ascending: true })
+        .range(from, to);
+
+
+    /* SEARCH */
+
+    if (connectionSearchTerm) {
+
+        const safeSearch = connectionSearchTerm
+            .replace(/[(),]/g, " ")
+            .replace(/[%_]/g, " ")
+            .trim();
+
+        if (safeSearch) {
+
+            query = query.or(
+                `relationship.ilike.%${safeSearch}%,description.ilike.%${safeSearch}%`
+            );
+
+        }
+
+    }
+
+
+    /* SOURCE FILTER */
+
+    if (connectionSourceType) {
+
+        query = query.eq(
+            "source_type",
+            connectionSourceType
+        );
+
+    }
+
+
+    /* TARGET FILTER */
+
+    if (connectionTargetType) {
+
+        query = query.eq(
+            "target_type",
+            connectionTargetType
+        );
+
+    }
+
+
+    const { data, error, count } = await query;
+
+
+    if (error) {
+
+        console.error("Could not load connections:", error);
+
+        showConnectionError("The connections could not be loaded.");
+
+        connectionCount.textContent = "Unable to load connections";
+
+        return;
+
+    }
+
+
+    connectionTotal = count || 0;
+
+    updateConnectionCount();
+
+
+    if (!data || data.length === 0) {
+
+        showConnectionEmpty();
+
+        renderConnectionPagination();
+
+        return;
+
+    }
+
+
+    /* RESOLVE ENTITY NAMES */
+
+    const resolvedConnections = await resolveConnectionEntities(data);
+
+
+    renderConnections(resolvedConnections);
+
+    renderConnectionPagination();
+
+}
+
+
+/* =========================================
+   RESOLVE ENTITY NAMES
+========================================= */
+
+async function resolveConnectionEntities(connections) {
+
+    const requestedEntities = {};
+
+
+    // Collect all referenced IDs by entity type
+
+    connections.forEach(connection => {
+
+        if (!requestedEntities[connection.source_type]) {
+            requestedEntities[connection.source_type] = new Set();
+        }
+
+        if (!requestedEntities[connection.target_type]) {
+            requestedEntities[connection.target_type] = new Set();
+        }
+
+        requestedEntities[connection.source_type].add(
+            connection.source_id
+        );
+
+        requestedEntities[connection.target_type].add(
+            connection.target_id
+        );
+
+    });
+
+
+    const entityMaps = {};
+
+
+    // Query each relevant entity table
+
+    for (const [type, idSet] of Object.entries(requestedEntities)) {
+
+        const config = CONNECTION_ENTITY_TABLES[type];
+
+        if (!config) {
+            continue;
+        }
+
+        const ids = [...idSet];
+
+        if (ids.length === 0) {
+            continue;
+        }
+
+
+        const { data, error } = await window.supabaseClient
+            .from(config.table)
+            .select(`id, ${config.nameColumn}`)
+            .in("id", ids);
+
+
+        if (error) {
+
+            console.error(
+                `Could not resolve ${type} entities:`,
+                error
+            );
+
+            entityMaps[type] = {};
+
+            continue;
+
+        }
+
+
+        entityMaps[type] = {};
+
+        data.forEach(entity => {
+
+            entityMaps[type][entity.id] =
+                entity[config.nameColumn];
+
+        });
+
+    }
+
+
+    // Attach resolved names to connection records
+
+    return connections.map(connection => {
+
+        const sourceConfig =
+            CONNECTION_ENTITY_TABLES[connection.source_type];
+
+        const targetConfig =
+            CONNECTION_ENTITY_TABLES[connection.target_type];
+
+
+        return {
+
+            ...connection,
+
+            source_name:
+                entityMaps[connection.source_type]?.[connection.source_id]
+                || `${sourceConfig?.label || connection.source_type} #${connection.source_id}`,
+
+            target_name:
+                entityMaps[connection.target_type]?.[connection.target_id]
+                || `${targetConfig?.label || connection.target_type} #${connection.target_id}`,
+
+            source_label:
+                sourceConfig?.label || connection.source_type,
+
+            target_label:
+                targetConfig?.label || connection.target_type
+
+        };
+
+    });
+
+}
+
+
+/* =========================================
+   RENDER CONNECTIONS
+========================================= */
+
+function renderConnections(connections) {
+
+    connectionDirectory.innerHTML = "";
+
+
+    connections.forEach(connection => {
+
+        const card = document.createElement("a");
+
+        card.className = "connection-card";
+
+        card.href =
+            `connection.html?id=${encodeURIComponent(connection.id)}`;
+
+
+        const source = document.createElement("div");
+
+        source.className =
+            "connection-entity connection-entity-source";
+
+
+        const sourceType = document.createElement("span");
+
+        sourceType.className = "connection-entity-type";
+        sourceType.textContent = connection.source_label;
+
+
+        const sourceName = document.createElement("span");
+
+        sourceName.className = "connection-entity-name";
+        sourceName.textContent = connection.source_name;
+
+
+        source.append(sourceType, sourceName);
+
+
+        const flow = document.createElement("div");
+
+        flow.className = "connection-flow";
+
+
+        const arrow = document.createElement("div");
+
+        arrow.className = "connection-flow-arrow";
+
+
+        const relationship = document.createElement("span");
+
+        relationship.className = "connection-relationship";
+        relationship.textContent = connection.relationship;
+
+
+        const arrowLine = document.createElement("div");
+
+        arrowLine.className = "connection-arrow-line";
+
+
+        arrow.append(relationship, arrowLine);
+
+
+        const target = document.createElement("div");
+
+        target.className =
+            "connection-entity connection-entity-target";
+
+
+        const targetType = document.createElement("span");
+
+        targetType.className = "connection-entity-type";
+        targetType.textContent = connection.target_label;
+
+
+        const targetName = document.createElement("span");
+
+        targetName.className = "connection-entity-name";
+        targetName.textContent = connection.target_name;
+
+
+        target.append(targetType, targetName);
+
+
+        flow.append(source, arrow, target);
+
+
+        card.append(source, flow);
+
+
+        if (connection.description) {
+
+            const description = document.createElement("p");
+
+            description.className = "connection-description";
+            description.textContent = connection.description;
+
+            card.appendChild(description);
+
+        }
+
+
+        connectionDirectory.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+function renderConnectionPagination() {
+
+    connectionPagination.innerHTML = "";
+
+    const totalPages = Math.ceil(
+        connectionTotal / CONNECTION_PAGE_SIZE
+    );
+
+    if (totalPages <= 1) {
+        return;
+    }
+
+
+    // Previous button
+
+    const previousButton = document.createElement("button");
+
+    previousButton.textContent = "←";
+    previousButton.disabled = connectionCurrentPage === 1;
+
+    previousButton.addEventListener("click", () => {
+
+        changeConnectionPage(connectionCurrentPage - 1);
+
+    });
+
+    connectionPagination.appendChild(previousButton);
+
+
+    // Page numbers
+
+    const pages = [];
+
+    for (
+        let page = Math.max(1, connectionCurrentPage - 2);
+        page <= Math.min(totalPages, connectionCurrentPage + 2);
+        page++
+    ) {
+
+        pages.push(page);
+
+    }
+
+
+    if (pages[0] > 1) {
+
+        addConnectionPageButton(1);
+
+        if (pages[0] > 2) {
+            addConnectionEllipsis();
+        }
+
+    }
+
+
+    pages.forEach(page => {
+
+        addConnectionPageButton(page);
+
+    });
+
+
+    if (pages[pages.length - 1] < totalPages) {
+
+        if (pages[pages.length - 1] < totalPages - 1) {
+            addConnectionEllipsis();
+        }
+
+        addConnectionPageButton(totalPages);
+
+    }
+
+
+    // Next button
+
+    const nextButton = document.createElement("button");
+
+    nextButton.textContent = "→";
+    nextButton.disabled = connectionCurrentPage === totalPages;
+
+    nextButton.addEventListener("click", () => {
+
+        changeConnectionPage(connectionCurrentPage + 1);
+
+    });
+
+    connectionPagination.appendChild(nextButton);
+
+}
+
+
+function addConnectionPageButton(page) {
+
+    const button = document.createElement("button");
+
+    button.textContent = page;
+
+    if (page === connectionCurrentPage) {
+        button.classList.add("active");
+    }
+
+    button.addEventListener("click", () => {
+
+        changeConnectionPage(page);
+
+    });
+
+    connectionPagination.appendChild(button);
+
+}
+
+
+function addConnectionEllipsis() {
+
+    const ellipsis = document.createElement("span");
+
+    ellipsis.textContent = "...";
+    ellipsis.style.color = "var(--text-muted)";
+    ellipsis.style.padding = "8px 3px";
+    ellipsis.style.fontSize = "11px";
+
+    connectionPagination.appendChild(ellipsis);
+
+}
+
+
+function changeConnectionPage(page) {
+
+    connectionCurrentPage = page;
+
+    loadConnections();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================
+   COUNT
+========================================= */
+
+function updateConnectionCount() {
+
+    if (connectionTotal === 0) {
+
+        connectionCount.textContent = "No connections found";
+
+        return;
+
+    }
+
+
+    const from =
+        (connectionCurrentPage - 1) * CONNECTION_PAGE_SIZE + 1;
+
+    const to = Math.min(
+        connectionCurrentPage * CONNECTION_PAGE_SIZE,
+        connectionTotal
+    );
+
+
+    connectionCount.textContent =
+        `Showing ${from}–${to} of ${connectionTotal} connections`;
+
+}
+
+
+/* =========================================
+   STATES
+========================================= */
+
+function showConnectionLoading() {
+
+    connectionDirectory.innerHTML = `
+
+        <div class="connection-loading">
+
+            <div class="connection-loading-spinner"></div>
+
+            <span>Loading connections...</span>
+
+        </div>
+
+    `;
+
+}
+
+
+function showConnectionEmpty() {
+
+    connectionDirectory.innerHTML = `
+
+        <div class="connection-empty">
+
+            <div class="connection-empty-title">
+                No connections found
+            </div>
+
+            <span>
+                Try changing your search or filters.
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+function showConnectionError(message) {
+
+    connectionDirectory.innerHTML = "";
+
+    const error = document.createElement("div");
+
+    error.className = "connection-error";
+
+
+    const title = document.createElement("div");
+
+    title.className = "connection-error-title";
+    title.textContent = "Something went wrong";
+
+
+    const description = document.createElement("span");
+
+    description.textContent = message;
+
+
+    error.append(title, description);
+
+    connectionDirectory.appendChild(error);
+
+}
