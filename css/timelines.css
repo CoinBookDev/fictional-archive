@@ -774,3 +774,202 @@
     }
 
 }
+
+/* =========================================
+   TIMELINE STRUCTURE
+========================================= */
+
+.timeline-structure {
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+/* SAGA BAR */
+
+.saga-bar {
+    min-height: 76px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #252a30;
+    border: 1px solid #49433a;
+    border-left: 3px solid #a58b63;
+}
+
+.saga-information {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.saga-information span {
+    color: #a5a6a6;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.saga-information strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: #e2d4bd;
+}
+
+.saga-years {
+    color: #a5a6a6;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+/* PHASE TRACK */
+
+.phase-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.phase-bar {
+    min-height: 65px;
+    padding: 13px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+
+    background: #1b2027;
+    border: 1px solid #353b43;
+    border-top: 2px solid #777b80;
+    transition: 0.2s;
+}
+
+.phase-bar:hover {
+    background: #242a32;
+    border-top-color: #b29a75;
+}
+
+.phase-bar span {
+    color: #d2d0ca;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+.phase-bar small {
+    color: #858b94;
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+/* TIMELINE LABEL */
+
+.timeline-track-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 12px;
+}
+
+.timeline-track-label span {
+    color: #858b94;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+}
+
+/* =========================================
+   NEW EVENT COLOUR SYSTEM
+========================================= */
+
+.timeline-line {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #62666c 5%,
+        #a49a86 50%,
+        #62666c 95%,
+        transparent
+    );
+}
+
+.event-node {
+    background: #10151d;
+    border-color: #c2b69f;
+}
+
+.event-node::after {
+    background: #c2b69f;
+}
+
+.timeline-event:hover .event-node,
+.timeline-event.selected .event-node {
+    box-shadow: 0 0 15px rgba(194, 182, 159, 0.35);
+}
+
+.event-card {
+    background: #191e25;
+    border-color: #343b44;
+}
+
+.event-card:hover,
+.timeline-event.selected .event-card {
+    border-color: #9b8768;
+    background: #242a32;
+}
+
+.event-type-film,
+.event-type-series,
+.event-type-event {
+    border-top: 2px solid #9b8768;
+}
+
+.event-type,
+.event-type-series .event-type,
+.event-type-event .event-type {
+    color: #b9a584;
+}
+
+.series-node,
+.event-node.event-node-major {
+    border-color: #c2b69f;
+}
+
+.series-node::after,
+.event-node.event-node-major::after {
+    background: #c2b69f;
+}
+
+.film-dot,
+.series-dot,
+.event-dot {
+    background: #b9a584;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .phase-track {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .phase-bar {
+        min-height: 52px;
+    }
+
+    .saga-years {
+        font-size: 9px;
+    }
+
+    .saga-information strong {
+        font-size: 17px;
+    }
+
+}
