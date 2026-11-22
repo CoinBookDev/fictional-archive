@@ -607,7 +607,6 @@ document.getElementById("zoomOut").addEventListener("click", () => {
 /* =========================================
    INITIALISE
 ========================================= */
-
-loadTimeline();
-
 updateZoom();
+
+window.addEventListener("supabase-ready", loadTimeline);
