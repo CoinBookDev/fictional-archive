@@ -531,11 +531,16 @@ document.querySelectorAll(".view-button").forEach(button => {
 
         button.classList.add("active");
 
-        currentOrder = button.dataset.order;
+       currentOrder = button.dataset.order;
 
-        closePanel();
+document.getElementById("timelineModeLabel").textContent =
+    currentOrder === "chronological"
+        ? "CHRONOLOGICAL ORDER"
+        : "RELEASE ORDER";
 
-        renderTimeline();
+closePanel();
+
+renderTimeline();
 
         timelineViewport.scrollLeft = 0;
 
