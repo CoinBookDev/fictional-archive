@@ -2,6 +2,7 @@
 /* =========================================
    FICTIONAL ARCHIVE
    CONNECTIONS DIRECTORY
+   UNIVERSAL ENTITY SYSTEM
 ========================================= */
 
 
@@ -114,7 +115,23 @@ const connectionPagination =
 document.addEventListener("DOMContentLoaded", async () => {
 
     if (!window.supabaseClient) {
-        showConnectionError("Supabase client could not be initialized.");
+        showConnectionError(
+            "Supabase client could not be initialized."
+        );
+        return;
+    }
+
+    if (
+        !connectionSearch ||
+        !connectionSourceFilter ||
+        !connectionTargetFilter ||
+        !connectionCount ||
+        !connectionDirectory ||
+        !connectionPagination
+    ) {
+        console.error(
+            "One or more Connections page elements are missing."
+        );
         return;
     }
 
@@ -126,7 +143,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         connectionSearchTimeout = setTimeout(() => {
 
-            connectionSearchTerm = connectionSearch.value.trim();
+            connectionSearchTerm =
+                connectionSearch.value.trim();
+
             connectionCurrentPage = 1;
 
             loadConnections();
@@ -138,7 +157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     connectionSourceFilter.addEventListener("change", () => {
 
-        connectionSourceType = connectionSourceFilter.value;
+        connectionSourceType =
+            connectionSourceFilter.value;
+
         connectionCurrentPage = 1;
 
         loadConnections();
@@ -148,7 +169,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     connectionTargetFilter.addEventListener("change", () => {
 
-        connectionTargetType = connectionTargetFilter.value;
+        connectionTargetType =
+            connectionTargetFilter.value;
+
         connectionCurrentPage = 1;
 
         loadConnections();
@@ -167,24 +190,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function loadEntityTypeFilters() {
 
-    Object.entries(CONNECTION_ENTITY_TABLES).forEach(([type, config]) => {
+    Object.entries(CONNECTION_ENTITY_TABLES).forEach(
+        ([type, config]) => {
 
-        const sourceOption = document.createElement("option");
+            const sourceOption =
+                document.createElement("option");
 
-        sourceOption.value = type;
-        sourceOption.textContent = config.label;
+            sourceOption.value = type;
+            sourceOption.textContent = config.label;
 
-        connectionSourceFilter.appendChild(sourceOption);
+            connectionSourceFilter.appendChild(
+                sourceOption
+            );
 
 
-        const targetOption = document.createElement("option");
+            const targetOption =
+                document.createElement("option");
 
-        targetOption.value = type;
-        targetOption.textContent = config.label;
+            targetOption.value = type;
+            targetOption.textContent = config.label;
 
-        connectionTargetFilter.appendChild(targetOption);
+            connectionTargetFilter.appendChild(
+                targetOption
+            );
 
-    });
+        }
+    );
 
 }
 
@@ -198,15 +229,36 @@ async function loadConnections() {
     showConnectionLoading();
 
     const from =
-        (connectionCurrentPage - 1) * CONNECTION_PAGE_SIZE;
+        (connectionCurrentPage - 1) *
+        CONNECTION_PAGE_SIZE;
 
     const to =
         from + CONNECTION_PAGE_SIZE - 1;
 
 
+    /*
+       The Connections table now references
+       entities through universal IDs.
+
+       These joins retrieve the registry
+       records for both sides of a connection.
+    */
+
     let query = window.supabaseClient
         .from("connections")
-        .select("*", { count: "exact" })
+        .select(`
+            *,
+            source:entities!connections_source_entity_fkey!inner(
+                id,
+                entity_type,
+                record_id
+            ),
+            target:entities!connections_target_entity_fkey!inner(
+                id,
+                entity_type,
+                record_id
+            )
+        `, { count: "exact" })
         .order("id", { ascending: true })
         .range(from, to);
 
@@ -231,40 +283,50 @@ async function loadConnections() {
     }
 
 
-    /* SOURCE FILTER */
+    /* SOURCE TYPE FILTER */
 
     if (connectionSourceType) {
 
         query = query.eq(
-            "source_type",
+            "source.entity_type",
             connectionSourceType
         );
 
     }
 
 
-    /* TARGET FILTER */
+    /* TARGET TYPE FILTER */
 
     if (connectionTargetType) {
 
         query = query.eq(
-            "target_type",
+            "target.entity_type",
             connectionTargetType
         );
 
     }
 
 
-    const { data, error, count } = await query;
+    const {
+        data,
+        error,
+        count
+    } = await query;
 
 
     if (error) {
 
-        console.error("Could not load connections:", error);
+        console.error(
+            "Could not load connections:",
+            error
+        );
 
-        showConnectionError("The connections could not be loaded.");
+        showConnectionError(
+            "The connections could not be loaded."
+        );
 
-        connectionCount.textContent = "Unable to load connections";
+        connectionCount.textContent =
+            "Unable to load connections";
 
         return;
 
@@ -289,7 +351,8 @@ async function loadConnections() {
 
     /* RESOLVE ENTITY NAMES */
 
-    const resolvedConnections = await resolveConnectionEntities(data);
+    const resolvedConnections =
+        await resolveConnectionEntities(data);
 
 
     renderConnections(resolvedConnections);
@@ -308,25 +371,53 @@ async function resolveConnectionEntities(connections) {
     const requestedEntities = {};
 
 
-    // Collect all referenced IDs by entity type
+    /*
+       Collect registry records by entity type.
+
+       record_id refers to the original ID
+       inside the corresponding entity table.
+    */
 
     connections.forEach(connection => {
 
-        if (!requestedEntities[connection.source_type]) {
-            requestedEntities[connection.source_type] = new Set();
+        const source = connection.source;
+        const target = connection.target;
+
+
+        if (
+            source &&
+            CONNECTION_ENTITY_TABLES[source.entity_type]
+        ) {
+
+            const type = source.entity_type;
+
+            if (!requestedEntities[type]) {
+                requestedEntities[type] = new Set();
+            }
+
+            requestedEntities[type].add(
+                source.record_id
+            );
+
         }
 
-        if (!requestedEntities[connection.target_type]) {
-            requestedEntities[connection.target_type] = new Set();
+
+        if (
+            target &&
+            CONNECTION_ENTITY_TABLES[target.entity_type]
+        ) {
+
+            const type = target.entity_type;
+
+            if (!requestedEntities[type]) {
+                requestedEntities[type] = new Set();
+            }
+
+            requestedEntities[type].add(
+                target.record_id
+            );
+
         }
-
-        requestedEntities[connection.source_type].add(
-            connection.source_id
-        );
-
-        requestedEntities[connection.target_type].add(
-            connection.target_id
-        );
 
     });
 
@@ -334,11 +425,20 @@ async function resolveConnectionEntities(connections) {
     const entityMaps = {};
 
 
-    // Query each relevant entity table
+    /*
+       Query each relevant entity table.
 
-    for (const [type, idSet] of Object.entries(requestedEntities)) {
+       These queries use original record IDs,
+       not universal entity IDs.
+    */
 
-        const config = CONNECTION_ENTITY_TABLES[type];
+    for (
+        const [type, idSet]
+        of Object.entries(requestedEntities)
+    ) {
+
+        const config =
+            CONNECTION_ENTITY_TABLES[type];
 
         if (!config) {
             continue;
@@ -351,10 +451,13 @@ async function resolveConnectionEntities(connections) {
         }
 
 
-        const { data, error } = await window.supabaseClient
-            .from(config.table)
-            .select(`id, ${config.nameColumn}`)
-            .in("id", ids);
+        const { data, error } =
+            await window.supabaseClient
+                .from(config.table)
+                .select(
+                    `id, ${config.nameColumn}`
+                )
+                .in("id", ids);
 
 
         if (error) {
@@ -373,7 +476,7 @@ async function resolveConnectionEntities(connections) {
 
         entityMaps[type] = {};
 
-        data.forEach(entity => {
+        (data || []).forEach(entity => {
 
             entityMaps[type][entity.id] =
                 entity[config.nameColumn];
@@ -383,15 +486,37 @@ async function resolveConnectionEntities(connections) {
     }
 
 
-    // Attach resolved names to connection records
+    /*
+       Attach resolved information to
+       each connection.
+    */
 
     return connections.map(connection => {
 
-        const sourceConfig =
-            CONNECTION_ENTITY_TABLES[connection.source_type];
+        const source = connection.source;
+        const target = connection.target;
 
-        const targetConfig =
-            CONNECTION_ENTITY_TABLES[connection.target_type];
+
+        const sourceConfig = source
+            ? CONNECTION_ENTITY_TABLES[source.entity_type]
+            : null;
+
+        const targetConfig = target
+            ? CONNECTION_ENTITY_TABLES[target.entity_type]
+            : null;
+
+
+        const sourceName = sourceConfig
+            ? entityMaps[source.entity_type]?.[
+                source.record_id
+            ]
+            : null;
+
+        const targetName = targetConfig
+            ? entityMaps[target.entity_type]?.[
+                target.record_id
+            ]
+            : null;
 
 
         return {
@@ -399,18 +524,24 @@ async function resolveConnectionEntities(connections) {
             ...connection,
 
             source_name:
-                entityMaps[connection.source_type]?.[connection.source_id]
-                || `${sourceConfig?.label || connection.source_type} #${connection.source_id}`,
+                sourceName ||
+                `${sourceConfig?.label || "Unknown Entity"} #${source?.record_id ?? "?"}`,
 
             target_name:
-                entityMaps[connection.target_type]?.[connection.target_id]
-                || `${targetConfig?.label || connection.target_type} #${connection.target_id}`,
+                targetName ||
+                `${targetConfig?.label || "Unknown Entity"} #${target?.record_id ?? "?"}`,
 
             source_label:
-                sourceConfig?.label || connection.source_type,
+                sourceConfig?.label || "Unknown Entity",
 
             target_label:
-                targetConfig?.label || connection.target_type
+                targetConfig?.label || "Unknown Entity",
+
+            source_universal_id:
+                source?.id ?? null,
+
+            target_universal_id:
+                target?.id ?? null
 
         };
 
@@ -438,6 +569,8 @@ function renderConnections(connections) {
             `connection.html?id=${encodeURIComponent(connection.id)}`;
 
 
+        /* SOURCE ENTITY */
+
         const source = document.createElement("div");
 
         source.className =
@@ -446,23 +579,26 @@ function renderConnections(connections) {
 
         const sourceType = document.createElement("span");
 
-        sourceType.className = "connection-entity-type";
-        sourceType.textContent = connection.source_label;
+        sourceType.className =
+            "connection-entity-type";
+
+        sourceType.textContent =
+            connection.source_label;
 
 
         const sourceName = document.createElement("span");
 
-        sourceName.className = "connection-entity-name";
-        sourceName.textContent = connection.source_name;
+        sourceName.className =
+            "connection-entity-name";
+
+        sourceName.textContent =
+            connection.source_name;
 
 
         source.append(sourceType, sourceName);
 
 
-        const flow = document.createElement("div");
-
-        flow.className = "connection-flow";
-
+        /* RELATIONSHIP */
 
         const arrow = document.createElement("div");
 
@@ -471,17 +607,23 @@ function renderConnections(connections) {
 
         const relationship = document.createElement("span");
 
-        relationship.className = "connection-relationship";
-        relationship.textContent = connection.relationship;
+        relationship.className =
+            "connection-relationship";
+
+        relationship.textContent =
+            connection.relationship;
 
 
         const arrowLine = document.createElement("div");
 
-        arrowLine.className = "connection-arrow-line";
+        arrowLine.className =
+            "connection-arrow-line";
 
 
         arrow.append(relationship, arrowLine);
 
+
+        /* TARGET ENTITY */
 
         const target = document.createElement("div");
 
@@ -491,31 +633,48 @@ function renderConnections(connections) {
 
         const targetType = document.createElement("span");
 
-        targetType.className = "connection-entity-type";
-        targetType.textContent = connection.target_label;
+        targetType.className =
+            "connection-entity-type";
+
+        targetType.textContent =
+            connection.target_label;
 
 
         const targetName = document.createElement("span");
 
-        targetName.className = "connection-entity-name";
-        targetName.textContent = connection.target_name;
+        targetName.className =
+            "connection-entity-name";
+
+        targetName.textContent =
+            connection.target_name;
 
 
         target.append(targetType, targetName);
 
 
+        /* CONNECTION FLOW */
+
+        const flow = document.createElement("div");
+
+        flow.className = "connection-flow";
+
         flow.append(source, arrow, target);
 
+        card.appendChild(flow);
 
-        card.append(source, flow);
 
+        /* DESCRIPTION */
 
         if (connection.description) {
 
-            const description = document.createElement("p");
+            const description =
+                document.createElement("p");
 
-            description.className = "connection-description";
-            description.textContent = connection.description;
+            description.className =
+                "connection-description";
+
+            description.textContent =
+                connection.description;
 
             card.appendChild(description);
 
@@ -546,29 +705,44 @@ function renderConnectionPagination() {
     }
 
 
-    // Previous button
+    /* PREVIOUS BUTTON */
 
-    const previousButton = document.createElement("button");
+    const previousButton =
+        document.createElement("button");
 
     previousButton.textContent = "←";
-    previousButton.disabled = connectionCurrentPage === 1;
+
+    previousButton.disabled =
+        connectionCurrentPage === 1;
 
     previousButton.addEventListener("click", () => {
 
-        changeConnectionPage(connectionCurrentPage - 1);
+        changeConnectionPage(
+            connectionCurrentPage - 1
+        );
 
     });
 
-    connectionPagination.appendChild(previousButton);
+    connectionPagination.appendChild(
+        previousButton
+    );
 
 
-    // Page numbers
+    /* PAGE NUMBERS */
 
     const pages = [];
 
     for (
-        let page = Math.max(1, connectionCurrentPage - 2);
-        page <= Math.min(totalPages, connectionCurrentPage + 2);
+        let page = Math.max(
+            1,
+            connectionCurrentPage - 2
+        );
+
+        page <= Math.min(
+            totalPages,
+            connectionCurrentPage + 2
+        );
+
         page++
     ) {
 
@@ -597,8 +771,13 @@ function renderConnectionPagination() {
 
     if (pages[pages.length - 1] < totalPages) {
 
-        if (pages[pages.length - 1] < totalPages - 1) {
+        if (
+            pages[pages.length - 1] <
+            totalPages - 1
+        ) {
+
             addConnectionEllipsis();
+
         }
 
         addConnectionPageButton(totalPages);
@@ -606,27 +785,35 @@ function renderConnectionPagination() {
     }
 
 
-    // Next button
+    /* NEXT BUTTON */
 
-    const nextButton = document.createElement("button");
+    const nextButton =
+        document.createElement("button");
 
     nextButton.textContent = "→";
-    nextButton.disabled = connectionCurrentPage === totalPages;
+
+    nextButton.disabled =
+        connectionCurrentPage === totalPages;
 
     nextButton.addEventListener("click", () => {
 
-        changeConnectionPage(connectionCurrentPage + 1);
+        changeConnectionPage(
+            connectionCurrentPage + 1
+        );
 
     });
 
-    connectionPagination.appendChild(nextButton);
+    connectionPagination.appendChild(
+        nextButton
+    );
 
 }
 
 
 function addConnectionPageButton(page) {
 
-    const button = document.createElement("button");
+    const button =
+        document.createElement("button");
 
     button.textContent = page;
 
@@ -647,11 +834,16 @@ function addConnectionPageButton(page) {
 
 function addConnectionEllipsis() {
 
-    const ellipsis = document.createElement("span");
+    const ellipsis =
+        document.createElement("span");
 
     ellipsis.textContent = "...";
-    ellipsis.style.color = "var(--text-muted)";
+
+    ellipsis.style.color =
+        "var(--text-muted)";
+
     ellipsis.style.padding = "8px 3px";
+
     ellipsis.style.fontSize = "11px";
 
     connectionPagination.appendChild(ellipsis);
@@ -681,7 +873,8 @@ function updateConnectionCount() {
 
     if (connectionTotal === 0) {
 
-        connectionCount.textContent = "No connections found";
+        connectionCount.textContent =
+            "No connections found";
 
         return;
 
@@ -689,10 +882,12 @@ function updateConnectionCount() {
 
 
     const from =
-        (connectionCurrentPage - 1) * CONNECTION_PAGE_SIZE + 1;
+        (connectionCurrentPage - 1) *
+        CONNECTION_PAGE_SIZE + 1;
 
     const to = Math.min(
-        connectionCurrentPage * CONNECTION_PAGE_SIZE,
+        connectionCurrentPage *
+        CONNECTION_PAGE_SIZE,
         connectionTotal
     );
 
@@ -757,6 +952,7 @@ function showConnectionError(message) {
     const title = document.createElement("div");
 
     title.className = "connection-error-title";
+
     title.textContent = "Something went wrong";
 
 
