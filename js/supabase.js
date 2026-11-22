@@ -1,13 +1,15 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 const SUPABASE_URL = "https://ilbgawqnzetwcitbwntq.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_4-_OkDIZFKoudJltuwJJ5g_NMxT6VXa";
+    "YOUR_EXISTING_PUBLISHABLE_KEY";
 
-window.supabaseClient = createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+if (!window.supabase) {
+    console.error("ERROR: Supabase library did not load.");
+} else {
+    window.supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
 
-console.log("Supabase client initialized:", !!window.supabaseClient);
+    console.log("SUCCESS: Supabase client initialized.");
+}
