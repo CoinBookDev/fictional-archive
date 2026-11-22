@@ -1,0 +1,393 @@
+
+/* =========================================
+   FICTIONAL ARCHIVE
+   OBJECTS & ARTIFACTS DIRECTORY
+========================================= */
+
+
+/* =========================================
+   DIRECTORY
+========================================= */
+
+.object-directory {
+    padding: 40px;
+    max-width: 1500px;
+    margin: 0 auto;
+    animation: objectFadeIn 0.35s ease;
+}
+
+.object-directory > .eyebrow {
+    margin-top: 10px;
+}
+
+.object-controls {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 190px 190px;
+    gap: 12px;
+    margin: 30px 0 22px;
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.object-search {
+    position: relative;
+    width: 100%;
+}
+
+.object-search input {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px 0 43px;
+    background: var(--surface, #151b25);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 8px;
+    color: var(--text, #e8e8e8);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.object-search input:focus {
+    border-color: var(--gold-muted, #897653);
+}
+
+.object-search input::placeholder {
+    color: var(--text-muted, #9299a5);
+}
+
+.object-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted, #9299a5);
+    font-size: 23px;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.object-controls select {
+    width: 100%;
+    height: 46px;
+    padding: 0 13px;
+    background: var(--surface, #151b25);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 8px;
+    color: var(--text, #e8e8e8);
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.object-controls select:focus {
+    border-color: var(--gold-muted, #897653);
+}
+
+.object-controls select option {
+    background: var(--surface, #151b25);
+    color: var(--text, #e8e8e8);
+}
+
+
+/* =========================================
+   RESULTS HEADER
+========================================= */
+
+.object-results-header {
+    margin-bottom: 17px;
+    color: var(--text-muted, #9299a5);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================
+   OBJECT GRID
+========================================= */
+
+.object-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.object-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 235px;
+    padding: 21px;
+    overflow: hidden;
+    background: var(--surface, #151b25);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 10px;
+    color: var(--text, #e8e8e8);
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.object-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(197, 164, 109, 0.4);
+    background: var(--surface-light, #1c2430);
+}
+
+.object-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.object-card-type {
+    color: var(--gold, #c5a46d);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.object-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 20px;
+    color: var(--text-muted, #9299a5);
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.object-status::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted, #9299a5);
+}
+
+.object-status.status-active::before {
+    background: #79b58a;
+}
+
+.object-status.status-destroyed::before {
+    background: #b77b7b;
+}
+
+.object-status.status-lost::before {
+    background: #c5a46d;
+}
+
+.object-card-name {
+    margin: 0 0 12px;
+    color: var(--text, #e8e8e8);
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.object-card-description {
+    display: -webkit-box;
+    margin: 0 0 20px;
+    overflow: hidden;
+    color: var(--text-muted, #9299a5);
+    font-size: 11px;
+    line-height: 1.7;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.object-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 14px;
+    margin-top: auto;
+    padding-top: 13px;
+    border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+}
+
+.object-card-meta {
+    color: var(--text-muted, #9299a5);
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.object-card-meta strong {
+    color: var(--text, #e8e8e8);
+    font-weight: 500;
+}
+
+.object-card-arrow {
+    position: absolute;
+    right: 19px;
+    bottom: 17px;
+    color: var(--gold-muted, #897653);
+    font-size: 16px;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: 0.2s ease;
+}
+
+.object-card:hover .object-card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+/* =========================================
+   LOADING / EMPTY / ERROR
+========================================= */
+
+.object-loading,
+.object-empty,
+.object-error {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    gap: 12px;
+    color: var(--text-muted, #9299a5);
+    font-size: 12px;
+    text-align: center;
+}
+
+.object-loading-spinner {
+    width: 23px;
+    height: 23px;
+    border: 2px solid var(--border, rgba(255,255,255,0.08));
+    border-top-color: var(--gold, #c5a46d);
+    border-radius: 50%;
+    animation: objectSpin 0.8s linear infinite;
+}
+
+.object-empty-title,
+.object-error-title {
+    color: var(--text, #e8e8e8);
+    font-family: "Playfair Display", serif;
+    font-size: 19px;
+}
+
+.object-error {
+    color: #d49a8b;
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+#objectPagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 32px;
+}
+
+#objectPagination button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    background: var(--surface, #151b25);
+    border: 1px solid var(--border, rgba(255,255,255,0.08));
+    border-radius: 6px;
+    color: var(--text-muted, #9299a5);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#objectPagination button:hover:not(:disabled) {
+    border-color: var(--gold-muted, #897653);
+    color: var(--text, #e8e8e8);
+}
+
+#objectPagination button.active {
+    background: rgba(197, 164, 109, 0.12);
+    border-color: var(--gold-muted, #897653);
+    color: var(--gold, #c5a46d);
+}
+
+#objectPagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes objectSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes objectFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+    .object-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .object-controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .object-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 550px) {
+    .object-directory {
+        padding: 20px;
+    }
+
+    .object-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .object-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .object-search {
+        grid-column: auto;
+    }
+}
+
