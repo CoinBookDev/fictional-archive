@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Connections | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/connections.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-symbol">F</div>
+            <div>
+                <h2>FICTIONAL</h2>
+                <span>ARCHIVE</span>
+            </div>
+        </div>
+
+        <div class="nav-label">MAIN MENU</div>
+
+        <nav>
+            <a href="../index.html" class="nav-item">Overview</a>
+            <a href="universes.html" class="nav-item">Universes</a>
+            <a href="franchises.html" class="nav-item">Franchises</a>
+            <a href="characters.html" class="nav-item">Characters</a>
+            <a href="locations.html" class="nav-item">Locations</a>
+            <a href="organisations.html" class="nav-item">Organisations</a>
+            <a href="objects.html" class="nav-item">Objects & Artifacts</a>
+        </nav>
+
+        <div class="nav-label">EXPLORE</div>
+
+        <nav>
+            <a href="timelines.html" class="nav-item">Timelines</a>
+            <a href="connections.html" class="nav-item active">Connections</a>
+        </nav>
+
+        <div class="nav-label">ABOUT</div>
+
+        <nav>
+            <a href="contact.html" class="nav-item">Contact</a>
+            <a href="admin.html" class="nav-item">Admin</a>
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div class="breadcrumb">
+                ARCHIVE / CONNECTIONS
+            </div>
+
+            <div class="topbar-right">
+                DATABASE STATUS: <span>ONLINE</span>
+            </div>
+
+        </header>
+
+
+        <section class="directory connection-directory">
+
+            <div class="eyebrow">DATABASE / RELATIONSHIPS</div>
+
+            <h1 class="page-title">Connections</h1>
+
+            <p class="page-description">
+                Explore the relationships linking characters, organisations,
+                objects, locations and other entities across fictional realities.
+            </p>
+
+
+            <!-- FILTERS -->
+
+            <div class="directory-controls connection-controls">
+
+                <div class="connection-search">
+                    <span class="connection-search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        id="connectionSearch"
+                        placeholder="Search relationships or descriptions..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <select id="connectionSourceFilter">
+                    <option value="">All source types</option>
+                </select>
+
+                <select id="connectionTargetFilter">
+                    <option value="">All target types</option>
+                </select>
+
+            </div>
+
+
+            <!-- RESULTS COUNT -->
+
+            <div class="connection-results-header">
+                <div id="connectionCount" class="directory-count">
+                    Loading connections...
+                </div>
+            </div>
+
+
+            <!-- DIRECTORY -->
+
+            <div id="connectionDirectory" class="directory-grid connection-grid">
+
+                <div class="connection-loading">
+                    Loading connections...
+                </div>
+
+            </div>
+
+
+            <!-- PAGINATION -->
+
+            <div id="connectionPagination" class="directory-pagination"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/connections.js"></script>
+
+</body>
+</html>
