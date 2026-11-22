@@ -1,183 +1,18 @@
 
 /* =========================================
    FICTIONAL ARCHIVE
-   TIMELINE ENGINE
+   SUPABASE TIMELINE ENGINE
 ========================================= */
 
 
 /* =========================================
-   SAMPLE TIMELINE DATABASE
+   CONFIGURATION
 ========================================= */
 
-const timelineData = [
+const CURRENT_TIMELINE = "mcu";
 
-    {
-        id: "mcu-001",
-        title: "Captain America: The First Avenger",
-        type: "film",
-        year: 1943,
-        endYear: 1945,
-        releaseYear: 2011,
-        franchise: "Captain America",
-        description:
-            "Steve Rogers becomes Captain America during World War II. His involvement in the conflict against HYDRA and the Red Skull establishes the origins of one of the MCU's most important heroes."
-    },
-
-    {
-        id: "mcu-002",
-        title: "Captain Marvel",
-        type: "film",
-        year: 1995,
-        releaseYear: 2019,
-        franchise: "Captain Marvel",
-        description:
-            "Carol Danvers discovers her true identity and becomes Captain Marvel. The events introduce the Skrull conflict and establish important connections to the wider cosmic history of the MCU."
-    },
-
-    {
-        id: "mcu-003",
-        title: "Iron Man",
-        type: "film",
-        year: 2010,
-        releaseYear: 2008,
-        franchise: "Iron Man",
-        description:
-            "Tony Stark builds his first Iron Man suit after being captured. His return marks the beginning of his transformation into a superhero and the emergence of a new era."
-    },
-
-    {
-        id: "mcu-004",
-        title: "Iron Man 2",
-        type: "film",
-        year: 2011,
-        releaseYear: 2010,
-        franchise: "Iron Man",
-        description:
-            "Tony Stark faces the consequences of revealing his identity as Iron Man. The story introduces Natasha Romanoff and expands the early Avengers initiative."
-    },
-
-    {
-        id: "mcu-005",
-        title: "Thor",
-        type: "film",
-        year: 2011,
-        releaseYear: 2011,
-        franchise: "Thor",
-        description:
-            "Thor is banished to Earth by Odin. His journey introduces Asgard, the Nine Realms and the conflict surrounding the royal family."
-    },
-
-    {
-        id: "mcu-006",
-        title: "The Avengers",
-        type: "film",
-        year: 2012,
-        releaseYear: 2012,
-        franchise: "Avengers",
-        description:
-            "Earth's first generation of Avengers assemble to stop Loki and the Chitauri invasion of New York. The Battle of New York changes the world permanently."
-    },
-
-    {
-        id: "mcu-007",
-        title: "Guardians of the Galaxy",
-        type: "film",
-        year: 2014,
-        releaseYear: 2014,
-        franchise: "Guardians of the Galaxy",
-        description:
-            "A group of unlikely individuals unite after discovering the Orb, an Infinity Stone. Their actions introduce the wider cosmic side of the MCU."
-    },
-
-    {
-        id: "mcu-008",
-        title: "Avengers: Age of Ultron",
-        type: "film",
-        year: 2015,
-        releaseYear: 2015,
-        franchise: "Avengers",
-        description:
-            "The Avengers face Ultron, an artificial intelligence created by Tony Stark and Bruce Banner. The conflict leads to the creation of Vision and the destruction of Sokovia."
-    },
-
-    {
-        id: "mcu-009",
-        title: "Captain America: Civil War",
-        type: "film",
-        year: 2016,
-        releaseYear: 2016,
-        franchise: "Captain America",
-        description:
-            "Political pressure divides the Avengers. Steve Rogers and Tony Stark find themselves on opposing sides of the Sokovia Accords."
-    },
-
-    {
-        id: "mcu-010",
-        title: "Doctor Strange",
-        type: "film",
-        year: 2016,
-        releaseYear: 2016,
-        franchise: "Doctor Strange",
-        description:
-            "Stephen Strange discovers the mystic arts and becomes involved in the protection of Earth from supernatural threats."
-    },
-
-    {
-        id: "mcu-011",
-        title: "Avengers: Infinity War",
-        type: "film",
-        year: 2018,
-        releaseYear: 2018,
-        franchise: "Avengers",
-        description:
-            "Thanos begins his campaign to collect all six Infinity Stones. Heroes across the universe attempt to prevent the destruction of half of all life."
-    },
-
-    {
-        id: "mcu-012",
-        title: "The Blip",
-        type: "event",
-        year: 2018,
-        releaseYear: 2018,
-        franchise: "Avengers",
-        description:
-            "Thanos uses the completed Infinity Gauntlet to eliminate half of all life in the universe. The event fundamentally changes the course of countless civilizations."
-    },
-
-    {
-        id: "mcu-013",
-        title: "Avengers: Endgame",
-        type: "film",
-        year: 2023,
-        releaseYear: 2019,
-        franchise: "Avengers",
-        description:
-            "Five years after the Blip, the surviving Avengers attempt to reverse Thanos' actions. Their mission culminates in the Battle of Earth."
-    },
-
-    {
-        id: "mcu-014",
-        title: "WandaVision",
-        type: "series",
-        year: 2023,
-        releaseYear: 2021,
-        franchise: "WandaVision",
-        description:
-            "Wanda Maximoff creates an unusual reality surrounding the town of Westview. The events explore her grief and the development of her powers."
-    },
-
-    {
-        id: "mcu-015",
-        title: "Loki",
-        type: "series",
-        year: 2012,
-        releaseYear: 2021,
-        franchise: "Loki",
-        description:
-            "An alternate version of Loki is taken into custody by the Time Variance Authority. His journey introduces the wider multiverse and the mechanics of branching timelines."
-    }
-
-];
+let timelineData = [];
+let currentTimeline = null;
 
 
 /* =========================================
@@ -187,7 +22,6 @@ const timelineData = [
 const timelineEvents = document.getElementById("timelineEvents");
 const timelineViewport = document.getElementById("timelineViewport");
 const timelineCanvas = document.getElementById("timelineCanvas");
-
 const timelineCount = document.getElementById("timelineCount");
 
 const intelligencePanel =
@@ -213,8 +47,128 @@ const zoomLabel =
 let currentOrder = "chronological";
 let currentFilter = "all";
 let currentZoom = 1;
-
 let selectedEvent = null;
+
+
+/* =========================================
+   DATABASE CONNECTION
+========================================= */
+
+async function loadTimeline() {
+
+    if (!window.supabaseClient) {
+        showError("Supabase client could not be found. Check your script loading order.");
+        return;
+    }
+
+    showLoading();
+
+    try {
+
+        // Find the selected timeline
+        const { data: timeline, error: timelineError } =
+            await window.supabaseClient
+                .from("timelines")
+                .select("*")
+                .eq("slug", CURRENT_TIMELINE)
+                .eq("status", "published")
+                .single();
+
+        if (timelineError) throw timelineError;
+
+        currentTimeline = timeline;
+
+        // Retrieve its published events
+        const { data: events, error: eventsError } =
+            await window.supabaseClient
+                .from("timeline_events")
+                .select("*")
+                .eq("timeline_id", timeline.id)
+                .eq("status", "published");
+
+        if (eventsError) throw eventsError;
+
+        // Convert database records into timeline objects
+        timelineData = events.map(event => {
+
+            const releaseYear = event.release_date
+                ? Number(event.release_date.substring(0, 4))
+                : null;
+
+            return {
+                id: String(event.id),
+                title: event.title,
+                type: event.event_type,
+
+                year: Number(event.chronology_sort),
+
+                chronologyLabel:
+                    event.chronology_label || null,
+
+                releaseYear: releaseYear,
+
+                releaseDate: event.release_date,
+
+                franchise: event.franchise_id
+                    ? `FRANCHISE #${event.franchise_id}`
+                    : "UNASSIGNED",
+
+                description: event.description || "No description available.",
+
+                imageUrl: event.image_url || null
+            };
+
+        });
+
+        renderTimeline();
+
+    } catch (error) {
+
+        console.error("Timeline loading error:", error);
+
+        showError(
+            "Unable to load timeline data. Check your Supabase connection and database permissions."
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   LOADING AND ERROR STATES
+========================================= */
+
+function showLoading() {
+
+    timelineEvents.innerHTML = "";
+
+    const message = document.createElement("div");
+
+    message.className = "timeline-message";
+    message.textContent = "ACCESSING ARCHIVE DATABASE...";
+
+    timelineEvents.appendChild(message);
+
+    timelineCount.textContent = "LOADING";
+
+}
+
+
+function showError(message) {
+
+    timelineEvents.innerHTML = "";
+
+    const error = document.createElement("div");
+
+    error.className = "timeline-message";
+    error.textContent = message;
+
+    timelineEvents.appendChild(error);
+
+    timelineCount.textContent = "DATABASE ERROR";
+
+}
 
 
 /* =========================================
@@ -234,14 +188,19 @@ function getSortedEvents() {
 
     } else {
 
-        events.sort((a, b) =>
-            a.releaseYear - b.releaseYear ||
-            a.title.localeCompare(b.title)
-        );
+        events.sort((a, b) => {
+
+            if (a.releaseDate === null) return 1;
+            if (b.releaseDate === null) return -1;
+
+            return a.releaseDate.localeCompare(b.releaseDate);
+
+        });
 
     }
 
     return events;
+
 }
 
 
@@ -257,25 +216,30 @@ function getFilteredEvents() {
         return events;
     }
 
-    return events.filter(event => {
-
-        if (currentFilter === "event") {
-            return event.type === "event";
-        }
-
-        return event.type === currentFilter;
-
-    });
+    return events.filter(event =>
+        event.type === currentFilter
+    );
 
 }
 
 
 /* =========================================
-   FORMAT DATE
+   DATE FORMATTING
 ========================================= */
 
-function formatYear(year) {
-    return year + " CE";
+function formatYear(event) {
+
+    if (currentOrder === "release") {
+
+        return event.releaseYear
+            ? String(event.releaseYear)
+            : "UNKNOWN RELEASE DATE";
+
+    }
+
+    return event.chronologyLabel ||
+        `${Math.floor(event.year)} CE`;
+
 }
 
 
@@ -285,13 +249,13 @@ function formatYear(year) {
 
 function createTimelineEvent(event, index) {
 
-    const position = index % 2 === 0 ? "above" : "below";
+    const position = index % 2 === 0
+        ? "above"
+        : "below";
 
     const element = document.createElement("article");
 
-    element.className =
-        `timeline-event ${position}`;
-
+    element.className = `timeline-event ${position}`;
     element.dataset.id = event.id;
 
     let typeLabel = "FEATURE FILM";
@@ -312,42 +276,43 @@ function createTimelineEvent(event, index) {
                 : "";
 
     element.innerHTML = `
-
         <div class="event-connector"></div>
 
         <div class="event-node ${nodeClass}"></div>
 
         <button class="event-card event-type-${event.type}"
-                type="button"
-                aria-label="Explore ${event.title}">
+                type="button">
 
-            <div class="event-type">
-                ${typeLabel}
-            </div>
+            <div class="event-type"></div>
 
-            <h3>${event.title}</h3>
+            <h3></h3>
 
-            <div class="event-date">
-                ${formatYear(event.year)}
-            </div>
+            <div class="event-date"></div>
 
-            <div class="event-franchise">
-                ${event.franchise.toUpperCase()}
-            </div>
+            <div class="event-franchise"></div>
 
         </button>
 
-        <div class="event-year">
-            ${event.year}
-        </div>
-
+        <div class="event-year"></div>
     `;
 
-    const card = element.querySelector(".event-card");
+    // Insert database values safely
+    element.querySelector(".event-type").textContent = typeLabel;
+    element.querySelector("h3").textContent = event.title;
 
-    card.addEventListener("click", () => {
-        openEvent(event.id);
-    });
+    element.querySelector(".event-date").textContent =
+        formatYear(event);
+
+    element.querySelector(".event-franchise").textContent =
+        event.franchise;
+
+    element.querySelector(".event-year").textContent =
+        formatYear(event);
+
+    element.querySelector(".event-card").addEventListener(
+        "click",
+        () => openEvent(event.id)
+    );
 
     return element;
 
@@ -363,6 +328,17 @@ function renderTimeline() {
     const events = getFilteredEvents();
 
     timelineEvents.innerHTML = "";
+
+    if (events.length === 0) {
+
+        const message = document.createElement("div");
+
+        message.className = "timeline-message";
+        message.textContent = "NO RECORDS FOUND";
+
+        timelineEvents.appendChild(message);
+
+    }
 
     events.forEach((event, index) => {
 
@@ -403,18 +379,20 @@ function renderTimeline() {
 
 function openEvent(id) {
 
-    const event = timelineData.find(item => item.id === id);
+    const event = timelineData.find(
+        item => item.id === String(id)
+    );
 
     if (!event) return;
 
-    selectedEvent = id;
+    selectedEvent = event.id;
 
     document.querySelectorAll(".timeline-event").forEach(node => {
         node.classList.remove("selected");
     });
 
     const selectedNode = document.querySelector(
-        `.timeline-event[data-id="${id}"]`
+        `.timeline-event[data-id="${event.id}"]`
     );
 
     if (selectedNode) {
@@ -428,18 +406,11 @@ function openEvent(id) {
     };
 
     panelContent.innerHTML = `
+        <div class="panel-category"></div>
 
-        <div class="panel-category">
-            ${typeLabels[event.type]}
-        </div>
+        <h2 class="panel-title"></h2>
 
-        <h2 class="panel-title">
-            ${event.title}
-        </h2>
-
-        <div class="panel-date">
-            ${formatYear(event.year)}
-        </div>
+        <div class="panel-date"></div>
 
         <hr class="panel-divider">
 
@@ -447,30 +418,28 @@ function openEvent(id) {
             HISTORICAL OVERVIEW
         </div>
 
-        <p class="panel-description">
-            ${event.description}
-        </p>
+        <p class="panel-description"></p>
 
         <div class="panel-meta">
 
             <div class="panel-meta-item">
                 <span>ARCHIVE ID</span>
-                <strong>${event.id.toUpperCase()}</strong>
+                <strong class="meta-id"></strong>
             </div>
 
             <div class="panel-meta-item">
                 <span>FRANCHISE</span>
-                <strong>${event.franchise}</strong>
+                <strong class="meta-franchise"></strong>
             </div>
 
             <div class="panel-meta-item">
                 <span>CHRONOLOGICAL DATE</span>
-                <strong>${event.year}</strong>
+                <strong class="meta-chronology"></strong>
             </div>
 
             <div class="panel-meta-item">
                 <span>RELEASE YEAR</span>
-                <strong>${event.releaseYear}</strong>
+                <strong class="meta-release"></strong>
             </div>
 
         </div>
@@ -483,11 +452,33 @@ function openEvent(id) {
 
         <p class="panel-description">
             Additional character, location and event relationships
-            will become available when this timeline is connected
-            to the Fictional Archive database.
+            will become available as the archive database expands.
         </p>
-
     `;
+
+    panelContent.querySelector(".panel-category").textContent =
+        typeLabels[event.type] || "ARCHIVE RECORD";
+
+    panelContent.querySelector(".panel-title").textContent =
+        event.title;
+
+    panelContent.querySelector(".panel-date").textContent =
+        formatYear(event);
+
+    panelContent.querySelector(".panel-description").textContent =
+        event.description;
+
+    panelContent.querySelector(".meta-id").textContent =
+        event.id.toUpperCase();
+
+    panelContent.querySelector(".meta-franchise").textContent =
+        event.franchise;
+
+    panelContent.querySelector(".meta-chronology").textContent =
+        event.chronologyLabel || `${Math.floor(event.year)} CE`;
+
+    panelContent.querySelector(".meta-release").textContent =
+        event.releaseYear || "UNKNOWN";
 
     intelligencePanel.classList.add("open");
     panelOverlay.classList.add("open");
@@ -617,7 +608,6 @@ document.getElementById("zoomOut").addEventListener("click", () => {
    INITIALISE
 ========================================= */
 
-renderTimeline();
+loadTimeline();
 
 updateZoom();
-
