@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NEXUS | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/nexus.css">
+</head>
+
+<body>
+
+<div class="nexus-app">
+
+    <!-- SIDEBAR -->
+    <aside class="nexus-sidebar">
+
+        <div class="nexus-brand">
+            <div class="nexus-symbol">N</div>
+            <div>
+                <h2>NEXUS</h2>
+                <span>ARCHIVE INTELLIGENCE</span>
+            </div>
+        </div>
+
+        <div class="sidebar-label">INTELLIGENCE</div>
+
+        <nav class="nexus-navigation">
+            <a href="#overview" class="nav-link active" data-view="overview">
+                <span class="nav-icon">◈</span> Overview
+            </a>
+            <a href="#assistant" class="nav-link" data-view="assistant">
+                <span class="nav-icon">◎</span> Intelligence
+            </a>
+            <a href="#research" class="nav-link" data-view="research">
+                <span class="nav-icon">⌕</span> Research
+            </a>
+            <a href="#data-engine" class="nav-link" data-view="data-engine">
+                <span class="nav-icon">▤</span> Data Engine
+            </a>
+            <a href="#analytics" class="nav-link" data-view="analytics">
+                <span class="nav-icon">⌘</span> Analytics
+            </a>
+        </nav>
+
+        <div class="sidebar-label">SYSTEM</div>
+
+        <nav class="nexus-navigation">
+            <a href="#activity" class="nav-link" data-view="activity">
+                <span class="nav-icon">◷</span> Activity Logs
+            </a>
+            <a href="#settings" class="nav-link" data-view="settings">
+                <span class="nav-icon">⚙</span> Configuration
+            </a>
+            <a href="../index.html" class="nav-link">
+                <span class="nav-icon">←</span> Return to Archive
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="system-indicator">
+                <span class="status-dot" id="sidebar-status"></span>
+                <div>
+                    <strong id="sidebar-status-text">CONNECTING</strong>
+                    <small>NEXUS CORE</small>
+                </div>
+            </div>
+            <div class="version-label">NEXUS SYSTEMS / V1.0</div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="nexus-main">
+
+        <header class="nexus-topbar">
+            <div>
+                <span class="topbar-label">FICTIONAL ARCHIVE</span>
+                <span class="topbar-separator">/</span>
+                <span id="breadcrumb">OVERVIEW</span>
+            </div>
+
+            <div class="topbar-right">
+                <span id="connection-label">DATABASE CHECKING</span>
+                <span class="topbar-divider"></span>
+                <span class="system-dot"></span>
+                <span>NEXUS V1.0</span>
+            </div>
+        </header>
+
+
+        <!-- OVERVIEW -->
+        <section class="nexus-view active" id="view-overview">
+
+            <div class="overview-header">
+                <div>
+                    <div class="eyebrow">CENTRAL INTELLIGENCE SYSTEM</div>
+                    <h1>Good day.</h1>
+                    <p>NEXUS intelligence systems are standing by.</p>
+                </div>
+
+                <div class="core-status">
+                    <div class="core-orbit">
+                        <div class="core-inner">
+                            <span>N</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="eyebrow">CORE STATUS</span>
+                        <h3 id="core-status-text">INITIALISING</h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="intelligence-banner">
+
+                <div class="banner-content">
+                    <div class="eyebrow">NEXUS INTELLIGENCE</div>
+                    <h2>Your archive.<br>One central intelligence.</h2>
+                    <p>
+                        Discover information, analyse fictional universes
+                        and manage the Fictional Archive through a single
+                        intelligent interface.
+                    </p>
+
+                    <button class="primary-button" data-open="assistant">
+                        Open Intelligence <span>→</span>
+                    </button>
+                </div>
+
+                <div class="banner-visual">
+                    <div class="visual-ring ring-one"></div>
+                    <div class="visual-ring ring-two"></div>
+                    <div class="visual-ring ring-three"></div>
+                    <div class="visual-core">N</div>
+                    <div class="visual-orbit orbit-one"></div>
+                    <div class="visual-orbit orbit-two"></div>
+                </div>
+
+            </div>
+
+
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">SYSTEM OVERVIEW</div>
+                    <h2>Intelligence modules</h2>
+                </div>
+                <span class="section-meta">06 MODULES</span>
+            </div>
+
+
+            <div class="module-grid">
+
+                <article class="module-card" data-open="assistant">
+                    <div class="module-icon">◎</div>
+                    <span class="module-state">CORE MODULE</span>
+                    <h3>Intelligence</h3>
+                    <p>Conversational interface and AI reasoning.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+                <article class="module-card" data-open="research">
+                    <div class="module-icon">⌕</div>
+                    <span class="module-state">RESEARCH</span>
+                    <h3>Research</h3>
+                    <p>Discover and collect external information.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+                <article class="module-card" data-open="data-engine">
+                    <div class="module-icon">▤</div>
+                    <span class="module-state">DATABASE</span>
+                    <h3>Data Engine</h3>
+                    <p>Generate, classify and import archive records.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+                <article class="module-card" data-open="analytics">
+                    <div class="module-icon">⌘</div>
+                    <span class="module-state">ANALYSIS</span>
+                    <h3>Analytics</h3>
+                    <p>Explore relationships and identify patterns.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+                <article class="module-card" data-open="activity">
+                    <div class="module-icon">◷</div>
+                    <span class="module-state">MONITORING</span>
+                    <h3>Activity</h3>
+                    <p>Monitor system operations and task history.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+                <article class="module-card" data-open="settings">
+                    <div class="module-icon">⚙</div>
+                    <span class="module-state">CONFIGURATION</span>
+                    <h3>System</h3>
+                    <p>Manage NEXUS configuration and permissions.</p>
+                    <span class="module-arrow">↗</span>
+                </article>
+
+            </div>
+
+
+            <div class="overview-bottom">
+
+                <div class="panel activity-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="eyebrow">MONITORING</div>
+                            <h3>Recent activity</h3>
+                        </div>
+                        <button class="text-button" data-open="activity">VIEW ALL →</button>
+                    </div>
+
+                    <div id="overview-activity" class="activity-list">
+                        <div class="empty-state">
+                            Waiting for system activity...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="eyebrow">INFRASTRUCTURE</div>
+                            <h3>System status</h3>
+                        </div>
+                    </div>
+
+                    <div class="status-row">
+                        <span>Interface</span>
+                        <span class="status-value online">OPERATIONAL</span>
+                    </div>
+
+                    <div class="status-row">
+                        <span>Supabase</span>
+                        <span class="status-value" id="database-status">CHECKING</span>
+                    </div>
+
+                    <div class="status-row">
+                        <span>AI Core</span>
+                        <span class="status-value offline">NOT CONNECTED</span>
+                    </div>
+
+                    <div class="status-row">
+                        <span>Task Engine</span>
+                        <span class="status-value offline">NOT CONNECTED</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INTELLIGENCE -->
+        <section class="nexus-view" id="view-assistant">
+
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS CORE / INTERFACE</div>
+                <h1>Intelligence</h1>
+                <p>Conversational access to Fictional Archive intelligence.</p>
+            </div>
+
+            <div class="assistant-layout">
+
+                <div class="chat-panel">
+
+                    <div class="chat-header">
+                        <div class="chat-avatar">N</div>
+                        <div>
+                            <strong>NEXUS</strong>
+                            <span>NETWORKED INTELLIGENCE</span>
+                        </div>
+                        <span class="chat-status">CORE OFFLINE</span>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message nexus-message">
+                            <div class="message-avatar">N</div>
+                            <div class="message-content">
+                                <strong>NEXUS</strong>
+                                <p>
+                                    Welcome to the NEXUS interface.
+                                    The command centre is operational,
+                                    but my AI reasoning engine has not
+                                    yet been connected.
+                                </p>
+                                <span class="message-time">SYSTEM INITIALISATION</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="chat-input-area" id="chat-form">
+                        <input
+                            type="text"
+                            id="chat-input"
+                            placeholder="Enter a command..."
+                            autocomplete="off"
+                        >
+                        <button type="submit" aria-label="Send message">↑</button>
+                    </form>
+
+                    <div class="chat-disclaimer">
+                        NEXUS AI BACKEND NOT YET CONFIGURED
+                    </div>
+
+                </div>
+
+
+                <aside class="assistant-side-panel">
+
+                    <div class="panel">
+                        <div class="eyebrow">INTELLIGENCE STATUS</div>
+                        <div class="side-core">N</div>
+                        <h3>NEXUS CORE</h3>
+                        <p>Awaiting AI model connection.</p>
+                    </div>
+
+                    <div class="panel">
+                        <div class="eyebrow">AVAILABLE COMMANDS</div>
+
+                        <div class="command-item">
+                            <code>help</code>
+                            <span>Show available commands</span>
+                        </div>
+
+                        <div class="command-item">
+                            <code>status</code>
+                            <span>Check system status</span>
+                        </div>
+
+                        <div class="command-item">
+                            <code>clear</code>
+                            <span>Clear conversation</span>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+
+        <!-- OTHER MODULES -->
+        <section class="nexus-view" id="view-research">
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS / DISCOVERY</div>
+                <h1>Research</h1>
+                <p>External information discovery and source analysis.</p>
+            </div>
+            <div class="coming-soon">
+                <span>⌕</span>
+                <h2>Research subsystem</h2>
+                <p>Awaiting integration with the NEXUS intelligence core.</p>
+            </div>
+        </section>
+
+        <section class="nexus-view" id="view-data-engine">
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS / DATABASE OPERATIONS</div>
+                <h1>Data Engine</h1>
+                <p>Autonomous archive initialization and data management.</p>
+            </div>
+            <div class="coming-soon">
+                <span>▤</span>
+                <h2>Data Engine</h2>
+                <p>Automated discovery, validation and importing will be implemented here.</p>
+            </div>
+        </section>
+
+        <section class="nexus-view" id="view-analytics">
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS / INTELLIGENCE ANALYSIS</div>
+                <h1>Analytics</h1>
+                <p>Relationships, patterns and universe analysis.</p>
+            </div>
+            <div class="coming-soon">
+                <span>⌘</span>
+                <h2>Analytics subsystem</h2>
+                <p>Awaiting database integration.</p>
+            </div>
+        </section>
+
+        <section class="nexus-view" id="view-activity">
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS / SYSTEM MONITORING</div>
+                <h1>Activity logs</h1>
+                <p>Recorded events from the NEXUS command centre.</p>
+            </div>
+            <div class="panel full-panel">
+                <div class="panel-heading">
+                    <h3>System activity</h3>
+                    <span class="section-meta">CURRENT SESSION</span>
+                </div>
+                <div id="full-activity" class="activity-list">
+                    <div class="empty-state">No activity recorded yet.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="nexus-view" id="view-settings">
+            <div class="page-heading">
+                <div class="eyebrow">NEXUS / CONFIGURATION</div>
+                <h1>System configuration</h1>
+                <p>Intelligence settings and operational permissions.</p>
+            </div>
+
+            <div class="panel full-panel">
+                <div class="setting-row">
+                    <div>
+                        <strong>Autonomy level</strong>
+                        <p>Control how NEXUS handles operations.</p>
+                    </div>
+                    <span class="setting-value">BALANCED</span>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <strong>Database connection</strong>
+                        <p>Supabase connectivity.</p>
+                    </div>
+                    <span class="setting-value" id="settings-db">CHECKING</span>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <strong>AI provider</strong>
+                        <p>Language model integration.</p>
+                    </div>
+                    <span class="setting-value">NOT CONFIGURED</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="nexus-footer">
+            FICTIONAL ARCHIVE INTELLIGENCE SYSTEM
+            <span>NEXUS V1.0</span>
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- Supabase client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://ilbgawqnzetwcitbwntq.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_4-_OkDIZFKoudJltuwJJ5g_NMxT6VXa";
+
+    window.supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+</script>
+
+<script src="../js/nexus.js"></script>
+
+</body>
+</html>
