@@ -1,0 +1,402 @@
+
+/* =========================================
+   FICTIONAL ARCHIVE
+   CONNECTIONS DIRECTORY
+========================================= */
+
+
+/* =========================================
+   DIRECTORY LAYOUT
+========================================= */
+
+.connection-directory {
+    animation: connectionFadeIn 0.35s ease;
+}
+
+.connection-directory .page-description {
+    margin-bottom: 34px;
+}
+
+.connection-controls {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 190px 190px;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.connection-search {
+    position: relative;
+    width: 100%;
+}
+
+.connection-search input {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px 0 43px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.connection-search input:focus {
+    border-color: var(--gold-muted);
+}
+
+.connection-search input::placeholder {
+    color: var(--text-muted);
+}
+
+.connection-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 23px;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.connection-controls select {
+    width: 100%;
+    height: 46px;
+    padding: 0 13px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.connection-controls select:focus {
+    border-color: var(--gold-muted);
+}
+
+.connection-controls select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+
+/* =========================================
+   RESULTS HEADER
+========================================= */
+
+.connection-results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 17px;
+}
+
+.connection-results-header .directory-count {
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================
+   CONNECTION GRID
+========================================= */
+
+.connection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.connection-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.connection-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(197, 164, 109, 0.4);
+    background: var(--surface-light);
+}
+
+
+/* =========================================
+   ENTITY ROW
+========================================= */
+
+.connection-entity {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.connection-entity-type {
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.connection-entity-name {
+    color: var(--text);
+    font-family: "Playfair Display", serif;
+    font-size: 18px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.connection-entity-source .connection-entity-name {
+    color: var(--gold);
+}
+
+
+/* =========================================
+   RELATIONSHIP
+========================================= */
+
+.connection-flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 13px;
+    margin: 20px 0;
+}
+
+.connection-flow-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 85px;
+}
+
+.connection-arrow-line {
+    width: 100%;
+    height: 1px;
+    background: var(--gold-muted);
+    position: relative;
+}
+
+.connection-arrow-line::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -4px;
+    width: 8px;
+    height: 8px;
+    border-top: 1px solid var(--gold-muted);
+    border-right: 1px solid var(--gold-muted);
+    transform: rotate(45deg);
+}
+
+.connection-relationship {
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.connection-entity-target {
+    text-align: right;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.connection-description {
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+
+/* =========================================
+   LOADING / EMPTY / ERROR
+========================================= */
+
+.connection-loading,
+.connection-empty,
+.connection-error {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.connection-loading-spinner {
+    width: 23px;
+    height: 23px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: connectionSpin 0.8s linear infinite;
+}
+
+.connection-empty-title,
+.connection-error-title {
+    color: var(--text);
+    font-family: "Playfair Display", serif;
+    font-size: 19px;
+}
+
+.connection-error {
+    color: #d49a8b;
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+#connectionPagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 32px;
+}
+
+#connectionPagination button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#connectionPagination button:hover:not(:disabled) {
+    border-color: var(--gold-muted);
+    color: var(--text);
+}
+
+#connectionPagination button.active {
+    background: rgba(197, 164, 109, 0.12);
+    border-color: var(--gold-muted);
+    color: var(--gold);
+}
+
+#connectionPagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes connectionSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes connectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .connection-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    .connection-controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .connection-search {
+        grid-column: 1 / -1;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .connection-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .connection-search {
+        grid-column: auto;
+    }
+
+    .connection-flow {
+        gap: 8px;
+    }
+
+    .connection-flow-arrow {
+        min-width: 65px;
+    }
+
+    .connection-entity-name {
+        font-size: 15px;
+    }
+
+}
