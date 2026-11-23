@@ -141,27 +141,29 @@
             </div>
 
 
-            <div class="timeline-filters">
+<div class="timeline-filters">
 
-                <span class="filter-label">FILTER:</span>
+    <div class="filter-group">
+        <span class="filter-label">DISPLAY STATUS</span>
 
-                <button class="filter-button active"
-                        data-filter="all">ALL EVENTS</button>
+        <button class="status-filter active" data-status="published">
+            Published
+        </button>
 
-                <button class="filter-button"
-                        data-filter="film">FILMS</button>
+        <button class="status-filter active" data-status="future">
+            Future
+        </button>
 
-                <button class="filter-button"
-                        data-filter="series">SERIES</button>
+        <button class="status-filter" data-status="canceled">
+            Canceled
+        </button>
 
-                <button class="filter-button"
-                        data-filter="event">MAJOR EVENTS</button>
+        <button class="status-filter" data-status="draft">
+            Draft
+        </button>
+    </div>
 
-                <div class="timeline-count" id="timelineCount">
-                    0 RECORDS
-                </div>
-
-            </div>
+</div>
 
 
             <div class="timeline-viewport" id="timelineViewport">
