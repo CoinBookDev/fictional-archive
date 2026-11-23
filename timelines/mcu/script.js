@@ -362,7 +362,7 @@ function openEvent(id) {
         event.franchiseId ?? "UNASSIGNED";
 
     panelContent.querySelector(".meta-chronology").textContent =
-        event.chronologyLabel || event.chronologySort ?? "UNKNOWN";
+       event.chronologyLabel || (event.chronologySort ?? "UNKNOWN");
 
     panelContent.querySelector(".meta-release").textContent =
         event.releaseDate || "UNKNOWN";
