@@ -67,3 +67,71 @@ filteredUniverses.forEach(universe => {
 
     renderUniverses();
 }
+
+/* =========================================
+   MOBILE SIDEBAR
+========================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const sidebar = document.getElementById("site-sidebar");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const backdrop = document.getElementById("sidebar-backdrop");
+
+    if (!sidebar || !toggle || !backdrop) return;
+
+    function openSidebar() {
+        sidebar.classList.add("open");
+        backdrop.classList.add("visible");
+
+        document.body.classList.add("menu-open");
+
+        toggle.setAttribute("aria-expanded", "true");
+        toggle.setAttribute("aria-label", "Close navigation");
+        toggle.textContent = "×";
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove("open");
+        backdrop.classList.remove("visible");
+
+        document.body.classList.remove("menu-open");
+
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open navigation");
+        toggle.textContent = "☰";
+    }
+
+    toggle.addEventListener("click", () => {
+
+        if (sidebar.classList.contains("open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+
+    });
+
+    backdrop.addEventListener("click", closeSidebar);
+
+    sidebar.querySelectorAll(".nav-item").forEach(link => {
+        link.addEventListener("click", closeSidebar);
+    });
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+
+    });
+
+    window.addEventListener("resize", () => {
+
+        if (window.innerWidth > 800) {
+            closeSidebar();
+        }
+
+    });
+
+});
