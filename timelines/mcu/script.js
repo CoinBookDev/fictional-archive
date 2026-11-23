@@ -15,7 +15,9 @@ let timelineData = [];
 let currentTimeline = null;
 
 let currentOrder = "chronological";
-let currentFilter = "all";
+let currentType = "all";
+let enabledStatuses = new Set(["published", "future"]);
+
 let currentZoom = 1;
 let selectedEvent = null;
 
@@ -133,11 +135,25 @@ function getFilteredEvents() {
 
     const events = getSortedEvents();
 
-    if (currentFilter === "all") return events;
+    return events.filter(event => {
 
-    return events.filter(event =>
-        event.type === currentFilter
-    );
+        const eventType = (event.type || "").toLowerCase();
+        const eventStatus = (event.status || "draft").toLowerCase();
+
+        // EVENT TYPE FILTER
+
+        const matchesType =
+            currentType === "all" ||
+            eventType === currentType ||
+            (currentType === "movie" && eventType === "film");
+
+        // EVENT STATUS FILTER
+
+        const matchesStatus = enabledStatuses.has(eventStatus);
+
+        return matchesType && matchesStatus;
+
+    });
 
 }
 
@@ -163,6 +179,26 @@ function formatYear(event) {
 
 
 /* =========================================
+   EVENT LABELS
+========================================= */
+
+function getTypeLabel(type) {
+
+    const labels = {
+        movie: "FEATURE FILM",
+        film: "FEATURE FILM",
+        series: "TELEVISION SERIES",
+        short: "SHORT FILM",
+        special: "SPECIAL PRESENTATION",
+        event: "MAJOR HISTORICAL EVENT"
+    };
+
+    return labels[type] || "ARCHIVE RECORD";
+
+}
+
+
+/* =========================================
    CREATE EVENT
 ========================================= */
 
@@ -172,18 +208,16 @@ function createTimelineEvent(event, index) {
 
     const element = document.createElement("article");
 
+    const eventType = (event.type || "unknown").toLowerCase();
+    const eventStatus = (event.status || "draft").toLowerCase();
+
     element.className = `timeline-event ${position}`;
     element.dataset.id = event.id;
+    element.dataset.status = eventStatus;
 
-    const typeLabels = {
-        film: "FEATURE FILM",
-        series: "TELEVISION SERIES",
-        event: "MAJOR EVENT"
-    };
-
-    const nodeClass = event.type === "series"
+    const nodeClass = eventType === "series"
         ? "series-node"
-        : event.type === "event"
+        : eventType === "event"
             ? "event-node-major"
             : "";
 
@@ -191,8 +225,9 @@ function createTimelineEvent(event, index) {
         <div class="event-connector"></div>
         <div class="event-node ${nodeClass}"></div>
 
-        <button class="event-card event-type-${event.type}" type="button">
+        <button class="event-card event-type-${eventType}" type="button">
             <div class="event-type"></div>
+            <div class="event-status"></div>
             <h3></h3>
             <div class="event-date"></div>
         </button>
@@ -201,7 +236,10 @@ function createTimelineEvent(event, index) {
     `;
 
     element.querySelector(".event-type").textContent =
-        typeLabels[event.type] || "ARCHIVE RECORD";
+        getTypeLabel(eventType);
+
+    element.querySelector(".event-status").textContent =
+        eventStatus.toUpperCase();
 
     element.querySelector("h3").textContent = event.title;
 
@@ -250,6 +288,8 @@ function renderTimeline() {
     });
 
     timelineCount.textContent = `${events.length} RECORDS`;
+
+    // Close the panel only if its selected event is no longer visible.
 
     if (selectedEvent &&
         !events.some(event => event.id === selectedEvent)) {
@@ -311,6 +351,11 @@ function openEvent(id) {
             </div>
 
             <div class="panel-meta-item">
+                <span>EVENT STATUS</span>
+                <strong class="meta-status"></strong>
+            </div>
+
+            <div class="panel-meta-item">
                 <span>FRANCHISE ID</span>
                 <strong class="meta-franchise"></strong>
             </div>
@@ -338,14 +383,8 @@ function openEvent(id) {
         </div>
     `;
 
-    const labels = {
-        film: "FEATURE FILM",
-        series: "TELEVISION SERIES",
-        event: "MAJOR HISTORICAL EVENT"
-    };
-
     panelContent.querySelector(".panel-category").textContent =
-        labels[event.type] || "ARCHIVE RECORD";
+        getTypeLabel(event.type);
 
     panelContent.querySelector(".panel-title").textContent =
         event.title;
@@ -358,11 +397,14 @@ function openEvent(id) {
 
     panelContent.querySelector(".meta-id").textContent = event.id;
 
+    panelContent.querySelector(".meta-status").textContent =
+        (event.status || "draft").toUpperCase();
+
     panelContent.querySelector(".meta-franchise").textContent =
         event.franchiseId ?? "UNASSIGNED";
 
     panelContent.querySelector(".meta-chronology").textContent =
-       event.chronologyLabel || (event.chronologySort ?? "UNKNOWN");
+        event.chronologyLabel || (event.chronologySort ?? "UNKNOWN");
 
     panelContent.querySelector(".meta-release").textContent =
         event.releaseDate || "UNKNOWN";
@@ -442,22 +484,52 @@ document.querySelectorAll(".view-button").forEach(button => {
 
 
 /* =========================================
-   FILTER SWITCH
+   EVENT TYPE FILTERS
 ========================================= */
 
-document.querySelectorAll(".filter-button").forEach(button => {
+document.querySelectorAll(".type-filter").forEach(button => {
 
     button.addEventListener("click", () => {
 
-        document.querySelectorAll(".filter-button").forEach(item => {
+        document.querySelectorAll(".type-filter").forEach(item => {
             item.classList.remove("active");
         });
 
         button.classList.add("active");
 
-        currentFilter = button.dataset.filter;
+        currentType = button.dataset.type;
 
-        closePanel();
+        renderTimeline();
+
+        timelineViewport.scrollLeft = 0;
+
+    });
+
+});
+
+
+/* =========================================
+   EVENT STATUS FILTERS
+========================================= */
+
+document.querySelectorAll(".status-filter").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const status = button.dataset.status;
+
+        if (enabledStatuses.has(status)) {
+
+            enabledStatuses.delete(status);
+            button.classList.remove("active");
+
+        } else {
+
+            enabledStatuses.add(status);
+            button.classList.add("active");
+
+        }
+
         renderTimeline();
 
         timelineViewport.scrollLeft = 0;
