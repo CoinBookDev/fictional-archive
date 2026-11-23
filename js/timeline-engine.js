@@ -21,7 +21,6 @@ const TimelineEngine = {
             .from("timelines")
             .select("*")
             .eq("slug", slug)
-            .eq("status", "published")
             .single();
 
         if (error) throw error;
@@ -40,7 +39,6 @@ const TimelineEngine = {
             .from("timeline_events")
             .select("*")
             .eq("timeline_id", timelineId)
-            .eq("status", "published");
 
         if (error) throw error;
 
