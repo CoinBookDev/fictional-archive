@@ -1262,3 +1262,166 @@ a {
     }
 
 }
+
+/* =========================================
+   MOBILE NAVIGATION
+   FICTIONAL ARCHIVE
+========================================= */
+
+/* Desktop defaults */
+
+.mobile-menu-toggle {
+    display: none;
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+
+/* =========================================
+   MOBILE / TABLET
+========================================= */
+
+@media (max-width: 800px) {
+
+    /* Main content uses the full screen */
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+
+    /* Sidebar becomes a slide-out drawer */
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 260px !important;
+        height: 100dvh;
+        min-height: 100dvh;
+
+        z-index: 1001;
+
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+
+        overflow-y: auto;
+
+        box-shadow: none;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.35);
+    }
+
+
+    /* Restore the full sidebar navigation */
+
+    .sidebar .brand h2,
+    .sidebar .brand span,
+    .sidebar .nav-label,
+    .sidebar .nav-item {
+        display: block;
+    }
+
+
+    /* Background overlay */
+
+    .sidebar-backdrop {
+        display: block;
+
+        position: fixed;
+        inset: 0;
+
+        z-index: 1000;
+
+        background: rgba(0, 0, 0, 0.65);
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition: opacity 0.3s ease,
+                    visibility 0.3s ease;
+    }
+
+    .sidebar-backdrop.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+
+    /* Topbar */
+
+    .topbar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 40px;
+        height: 40px;
+
+        flex-shrink: 0;
+
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+
+        background: var(--card-background);
+        color: var(--text-primary);
+
+        font-size: 21px;
+        cursor: pointer;
+    }
+
+    .mobile-menu-toggle:active {
+        transform: scale(0.95);
+    }
+
+
+    /* Prevent background scrolling */
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+
+    /* General mobile spacing */
+
+    .main-content {
+        padding: 20px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 450px) {
+
+    .topbar {
+        gap: 10px;
+    }
+
+    .topbar-right {
+        font-size: 9px;
+    }
+
+    .breadcrumb {
+        font-size: 10px;
+    }
+
+}
