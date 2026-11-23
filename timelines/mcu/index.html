@@ -143,8 +143,38 @@
 
 <div class="timeline-filters">
 
+    <!-- EVENT TYPE -->
     <div class="filter-group">
-        <span class="filter-label">DISPLAY STATUS</span>
+
+        <span class="filter-label">EVENT TYPE</span>
+
+        <button class="type-filter active" data-type="all">
+            All events
+        </button>
+
+        <button class="type-filter" data-type="movie">
+            Film
+        </button>
+
+        <button class="type-filter" data-type="series">
+            Series
+        </button>
+
+        <button class="type-filter" data-type="short">
+            Short
+        </button>
+
+        <button class="type-filter" data-type="special">
+            Special
+        </button>
+
+    </div>
+
+
+    <!-- EVENT STATUS -->
+    <div class="filter-group">
+
+        <span class="filter-label">EVENT STATUS</span>
 
         <button class="status-filter active" data-status="published">
             Published
@@ -161,10 +191,10 @@
         <button class="status-filter" data-status="draft">
             Draft
         </button>
+
     </div>
 
 </div>
-
 
             <div class="timeline-viewport" id="timelineViewport">
 
