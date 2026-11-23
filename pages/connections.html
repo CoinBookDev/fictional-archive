@@ -16,63 +16,65 @@
 
 <div id="app">
 
-    <!-- SIDEBAR -->
+<aside class="sidebar" id="site-sidebar">
 
-    <aside class="sidebar">
-
-        <div class="brand">
-            <div class="brand-symbol">F</div>
-            <div>
-                <h2>FICTIONAL</h2>
-                <span>ARCHIVE</span>
-            </div>
+    <div class="brand">
+        <div class="brand-symbol">F</div>
+        <div>
+            <h2>FICTIONAL</h2>
+            <span>ARCHIVE</span>
         </div>
+    </div>
 
-        <div class="nav-label">MAIN MENU</div>
+    <div class="nav-label">MAIN MENU</div>
 
-        <nav>
-            <a href="../index.html" class="nav-item">Overview</a>
-            <a href="universes.html" class="nav-item">Universes</a>
-            <a href="franchises.html" class="nav-item">Franchises</a>
-            <a href="characters.html" class="nav-item">Characters</a>
-            <a href="locations.html" class="nav-item">Locations</a>
-            <a href="organisations.html" class="nav-item">Organisations</a>
-            <a href="objects.html" class="nav-item">Objects & Artifacts</a>
-        </nav>
+    <nav>
+        <a href="../index.html" class="nav-item">Overview</a>
+        <a href="universes.html" class="nav-item">Universes</a>
+        <a href="franchises.html" class="nav-item">Franchises</a>
+        <a href="characters.html" class="nav-item active">Characters</a>
+        <a href="locations.html" class="nav-item">Locations</a>
+        <a href="organisations.html" class="nav-item">Organisations</a>
+        <a href="objects.html" class="nav-item">Objects & Artifacts</a>
+    </nav>
 
-        <div class="nav-label">EXPLORE</div>
+    <div class="nav-label">EXPLORE</div>
 
-        <nav>
-            <a href="timelines.html" class="nav-item">Timelines</a>
-            <a href="connections.html" class="nav-item active">Connections</a>
-        </nav>
+    <nav>
+        <a href="timelines.html" class="nav-item">Timelines</a>
+        <a href="connections.html" class="nav-item">Connections</a>
+    </nav>
 
-        <div class="nav-label">ABOUT</div>
+    <div class="nav-label">ABOUT</div>
 
-        <nav>
-            <a href="contact.html" class="nav-item">Contact</a>
-            <a href="admin.html" class="nav-item">Admin</a>
-        </nav>
+    <nav>
+        <a href="contact.html" class="nav-item">Contact</a>
+        <a href="admin.html" class="nav-item">Admin</a>
+    </nav>
 
-    </aside>
+</aside>
 
-
-    <!-- MAIN CONTENT -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
     <main class="main-content">
 
-        <header class="topbar">
+<header class="topbar">
 
-            <div class="breadcrumb">
-                ARCHIVE / CONNECTIONS
-            </div>
+    <button class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            aria-label="Open navigation"
+            aria-controls="site-sidebar"
+            aria-expanded="false">
+        ☰
+    </button>
 
-            <div class="topbar-right">
-                DATABASE STATUS: <span>ONLINE</span>
-            </div>
+    <div class="breadcrumb">ARCHIVE / CHARACTER / PROFILE</div>
 
-        </header>
+    <div class="topbar-right">
+        DATABASE STATUS: <span>INITIALISING</span>
+    </div>
 
+</header>
 
         <section class="directory connection-directory">
 
@@ -146,6 +148,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase.js"></script>
 <script src="../js/connections.js"></script>
+<script src="../js/app.js"></script>
 
 </body>
 </html>
