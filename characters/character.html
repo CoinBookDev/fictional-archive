@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Character Profile | Fictional Archive</title>
+    <title>Fictional Archive | Characters</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -27,28 +27,28 @@
     <div class="nav-label">MAIN MENU</div>
 
     <nav>
-        <a href="../index.html" class="nav-item">Overview</a>
-        <a href="universes.html" class="nav-item">Universes</a>
-        <a href="franchises.html" class="nav-item">Franchises</a>
-        <a href="characters.html" class="nav-item active">Characters</a>
-        <a href="locations.html" class="nav-item">Locations</a>
-        <a href="organisations.html" class="nav-item">Organisations</a>
-        <a href="objects.html" class="nav-item">Objects & Artifacts</a>
+        <a href="../" class="nav-item">Overview</a>
+        <a href="../universes/" class="nav-item">Universes</a>
+        <a href="../franchises/" class="nav-item">Franchises</a>
+        <a href="/fictional-archive/characters/" class="nav-item active">Characters</a>
+        <a href="../locations/" class="nav-item">Locations</a>
+        <a href="../organisations/" class="nav-item">Organisations</a>
+        <a href="../objects/" class="nav-item">Objects & Artifacts</a>
     </nav>
 
     <div class="nav-label">EXPLORE</div>
 
     <nav>
-        <a href="timelines.html" class="nav-item">Timelines</a>
-        <a href="connections.html" class="nav-item">Connections</a>
-        <a href="map.html" class="nav-item">Earth Explorer</a>
+        <a href="../timelines/" class="nav-item">Timelines</a>
+        <a href="../connections/" class="nav-item">Connections</a>
+        <a href="../map/" class="nav-item">Earth Explorer</a>
     </nav>
 
     <div class="nav-label">ABOUT</div>
 
     <nav>
-        <a href="contact.html" class="nav-item">Contact</a>
-        <a href="admin.html" class="nav-item">Admin</a>
+        <a href="../contact/" class="nav-item">Contact</a>
+        <a href="../admin/" class="nav-item">Admin</a>
     </nav>
 
 </aside>
@@ -67,7 +67,7 @@
         ☰
     </button>
 
-    <div class="breadcrumb">ARCHIVE / CHARACTER / PROFILE</div>
+    <div class="breadcrumb">ARCHIVE / CHARACTERS</div>
 
     <div class="topbar-right">
         DATABASE STATUS: <span>INITIALISING</span>
@@ -75,22 +75,13 @@
 
 </header>
 
-    <!-- =====================================
-         MAIN CONTENT
-    ====================================== -->
-
-        <!-- PAGE CONTENT -->
-
+        <a href="/fictional-archive/characters/" class="back-link">
+            ← BACK TO CHARACTER DIRECTORY
+        </a>
+        
         <section class="page-content">
 
-
-            <!-- =====================================
-                 CHARACTER HERO
-            ====================================== -->
-
             <section class="character-hero">
-
-                <!-- CHARACTER IMAGE -->
 
                 <div class="character-portrait">
 
@@ -102,9 +93,6 @@
                     >
 
                 </div>
-
-
-                <!-- CHARACTER OVERVIEW -->
 
                 <div class="character-overview">
 
@@ -123,9 +111,6 @@
                         </p>
 
                     </div>
-
-
-                    <!-- CHARACTER INFORMATION -->
 
                     <div class="character-information-grid">
 
@@ -161,7 +146,6 @@
 
                     </div>
 
-
                              <div class="character-hero-footer">
                         
                             <div class="character-footer-item">
@@ -185,11 +169,6 @@
 
             </section>
 
-
-<!-- =====================================
-     CHARACTER VERSIONS
-====================================== -->
-
 <section class="profile-section">
 
     <div class="section-heading">
@@ -210,13 +189,9 @@
 
 </section>
 
-<!-- =====================================
-     SCRIPTS
-====================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase.js"></script>
-<script src="../js/character.js"></script>
+<script src="character.js"></script>
 <script src="../js/app.js"></script>
 
 </body>
