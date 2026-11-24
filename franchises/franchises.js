@@ -1,4 +1,3 @@
-
 const directory = document.getElementById("franchiseDirectory");
 const searchInput = document.getElementById("franchiseSearch");
 const franchiseCount = document.getElementById("franchiseCount");
