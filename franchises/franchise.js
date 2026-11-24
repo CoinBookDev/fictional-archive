@@ -1,4 +1,3 @@
-
 const parameters = new URLSearchParams(window.location.search);
 const franchiseId = Number(parameters.get("id"));
 
