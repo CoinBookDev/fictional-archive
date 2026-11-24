@@ -1,11 +1,9 @@
-
 /* =========================================
    FICTIONAL ARCHIVE - CHARACTER PROFILE
 ========================================= */
 
 const parameters = new URLSearchParams(window.location.search);
 const characterId = parameters.get("id");
-
 
 /* =========================================
    HELPER FUNCTIONS
@@ -24,7 +22,6 @@ function displayValue(value) {
     return value;
 
 }
-
 
 /* =========================================
    LOAD CHARACTER
