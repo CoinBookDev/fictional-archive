@@ -1,7 +1,3 @@
-/* =========================================
-   CHARACTER DIRECTORY
-========================================= */
-
 const directory = document.getElementById("characterDirectory");
 const searchInput = document.getElementById("characterSearch");
 const characterCount = document.getElementById("characterCount");
@@ -10,11 +6,6 @@ const pagination = document.getElementById("characterPagination");
 let currentPage = 1;
 const pageSize = 50;
 let searchTerm = "";
-
-
-/* =========================================
-   LOAD CHARACTERS
-========================================= */
 
 async function loadCharacters() {
 
@@ -71,11 +62,6 @@ async function loadCharacters() {
     }
 }
 
-
-/* =========================================
-   RENDER CHARACTERS
-========================================= */
-
 function renderCharacters(characters) {
 
     directory.innerHTML = "";
@@ -119,11 +105,6 @@ function renderCharacters(characters) {
     });
 }
 
-
-/* =========================================
-   PAGINATION
-========================================= */
-
 function renderPagination(totalCharacters) {
 
     pagination.innerHTML = "";
@@ -163,14 +144,12 @@ function renderPagination(totalCharacters) {
         pagination.appendChild(button);
     }
 
-    // Previous button
     createButton(
         "Previous",
         currentPage - 1,
         currentPage === 1
     );
 
-    // Numbered buttons
     for (let page = 1; page <= totalPages; page++) {
 
         createButton(
@@ -182,18 +161,12 @@ function renderPagination(totalCharacters) {
 
     }
 
-    // Next button
     createButton(
         "Next",
         currentPage + 1,
         currentPage === totalPages
     );
 }
-
-
-/* =========================================
-   SEARCH
-========================================= */
 
 searchInput.addEventListener("input", () => {
 
@@ -205,10 +178,5 @@ searchInput.addEventListener("input", () => {
     loadCharacters();
 
 });
-
-
-/* =========================================
-   INITIAL LOAD
-========================================= */
 
 loadCharacters();
