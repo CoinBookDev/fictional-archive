@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,110 +8,73 @@
     <title>Organisations | Fictional Archive</title>
 
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/organisations.css">
+    <link rel="stylesheet" href="organisations.css">
 </head>
 
 <body>
 
 <div id="app">
 
-    <aside class="sidebar">
+<aside class="sidebar" id="site-sidebar">
 
-        <div class="brand">
-            <div class="brand-symbol">F</div>
-            <div class="brand-text">
-                <span class="brand-title">FICTIONAL</span>
-                <span class="brand-subtitle">ARCHIVE</span>
-            </div>
+    <div class="brand">
+        <div class="brand-symbol">F</div>
+        <div>
+            <h2>FICTIONAL</h2>
+            <span>ARCHIVE</span>
         </div>
+    </div>
 
-        <nav class="sidebar-nav">
+    <div class="nav-label">MAIN MENU</div>
 
-            <div class="nav-section">
-                <span class="nav-section-title">DATABASE</span>
+    <nav>
+        <a href="../" class="nav-item">Overview</a>
+        <a href="../universes/" class="nav-item">Universes</a>
+        <a href="../franchises/" class="nav-item">Franchises</a>
+        <a href="../characters/" class="nav-item">Characters</a>
+        <a href="../locations/" class="nav-item">Locations</a>
+        <a href="/fictional-archive/organisations/" class="nav-item active">Organisations</a>
+        <a href="../objects/" class="nav-item">Objects & Artifacts</a>
+    </nav>
 
-                <a href="../index.html" class="nav-link">
-                    <span class="nav-icon">⌂</span>
-                    <span>Overview</span>
-                </a>
+    <div class="nav-label">EXPLORE</div>
 
-                <a href="universes.html" class="nav-link">
-                    <span class="nav-icon">◉</span>
-                    <span>Universes</span>
-                </a>
+    <nav>
+        <a href="../timelines/" class="nav-item">Timelines</a>
+        <a href="../connections/" class="nav-item">Connections</a>
+        <a href="../map/" class="nav-item">Earth Explorer</a>
+    </nav>
 
-                <a href="franchises.html" class="nav-link">
-                    <span class="nav-icon">▤</span>
-                    <span>Franchises</span>
-                </a>
+    <div class="nav-label">ABOUT</div>
 
-                <a href="characters.html" class="nav-link">
-                    <span class="nav-icon">♙</span>
-                    <span>Characters</span>
-                </a>
+    <nav>
+        <a href="../contact/" class="nav-item">Contact</a>
+        <a href="../admin/" class="nav-item">Admin</a>
+    </nav>
 
-                <a href="locations.html" class="nav-link">
-                    <span class="nav-icon">⌖</span>
-                    <span>Locations</span>
-                </a>
+</aside>
 
-                <a href="organisations.html" class="nav-link active">
-                    <span class="nav-icon">⬡</span>
-                    <span>Organisations</span>
-                </a>
-
-                <a href="objects.html" class="nav-link">
-                    <span class="nav-icon">◇</span>
-                    <span>Objects & Artifacts</span>
-                </a>
-
-                <a href="timelines.html" class="nav-link">
-                    <span class="nav-icon">◷</span>
-                    <span>Timelines</span>
-                </a>
-
-                <a href="connections.html" class="nav-link">
-                    <span class="nav-icon">⌘</span>
-                    <span>Connections</span>
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <span class="nav-section-title">OTHER</span>
-
-                <a href="contact.html" class="nav-link">
-                    <span class="nav-icon">✉</span>
-                    <span>Contact</span>
-                </a>
-
-                <a href="admin.html" class="nav-link">
-                    <span class="nav-icon">⚙</span>
-                    <span>Administration</span>
-                </a>
-            </div>
-
-        </nav>
-
-        <div class="sidebar-footer">
-            <span class="sidebar-footer-label">FICTIONAL ARCHIVE</span>
-            <span class="sidebar-footer-version">DATABASE SYSTEM</span>
-        </div>
-
-    </aside>
-
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
     <main class="main-content">
 
-        <header class="topbar">
-            <div class="breadcrumb">
-                Database <span>/</span> Organisations
-            </div>
+<header class="topbar">
 
-            <div class="topbar-right">
-                <span class="topbar-label">DATABASE DIRECTORY</span>
-            </div>
-        </header>
+    <button class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            aria-label="Open navigation"
+            aria-controls="site-sidebar"
+            aria-expanded="false">
+        ☰
+    </button>
 
+    <div class="breadcrumb">ARCHIVE / CHARACTERS</div>
+
+    <div class="topbar-right">
+        DATABASE STATUS: <span>INITIALISING</span>
+    </div>
+
+</header>
 
         <section class="directory organisation-directory">
 
@@ -182,7 +144,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase.js"></script>
-<script src="../js/organisations.js"></script>
+<script src="organisations.js"></script>
+<script src="../js/app.js"></script>
 
 </body>
 </html>
