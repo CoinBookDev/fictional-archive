@@ -1,7 +1,6 @@
 
 /* =========================================
-   FICTIONAL ARCHIVE
-   CONNECTIONS DIRECTORY
+   FICTIONAL ARCHIVEio   CONNECTIONS DIRECTORY
    UNIVERSAL ENTITY SYSTEM
 ========================================= */
 
