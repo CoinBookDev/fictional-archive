@@ -67,7 +67,23 @@ window.TimelineEngine = {
         return {
             timeline,
             events: events.map(event => this.normalizeEvent(event))
-        };
+        },
+
+       async getAllTimelines() {
+
+    if (!window.supabaseClient) {
+        throw new Error("Supabase client unavailable.");
+    }
+
+    const { data, error } = await window.supabaseClient
+        .from("timelines")
+        .select("*")
+        .eq("status", "published");
+
+    if (error) throw error;
+
+    return data || [];
+};
     },
 
 
