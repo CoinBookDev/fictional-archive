@@ -9,7 +9,7 @@
    DATABASE ACCESS
 ========================================= */
 
-const TimelineEngine = {
+window.TimelineEngine = {
 
     async getTimeline(slug) {
 
@@ -21,9 +21,15 @@ const TimelineEngine = {
             .from("timelines")
             .select("*")
             .eq("slug", slug)
-            .single();
+            .maybeSingle();
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
+
+        if (!data) {
+            throw new Error(`Timeline "${slug}" not found.`);
+        }
 
         return data;
     },
@@ -38,13 +44,19 @@ const TimelineEngine = {
         const { data, error } = await window.supabaseClient
             .from("timeline_events")
             .select("*")
-            .eq("timeline_id", timelineId)
+            .eq("timeline_id", timelineId);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         return data || [];
     },
 
+
+    /* =====================================
+       LOAD TIMELINE
+    ===================================== */
 
     async load(slug) {
 
@@ -56,19 +68,24 @@ const TimelineEngine = {
             timeline,
             events: events.map(event => this.normalizeEvent(event))
         };
-
     },
 
 
+    /* =====================================
+       NORMALISE EVENT DATA
+    ===================================== */
+
     normalizeEvent(event) {
+
+        const chronologySort = event.chronology_sort;
 
         return {
 
             id: String(event.id),
 
-            title: event.title,
+            title: event.title || "Untitled Record",
 
-            type: event.event_type,
+            type: event.event_type || "unknown",
 
             description:
                 event.description || "No description available.",
@@ -77,54 +94,59 @@ const TimelineEngine = {
                 event.chronology_label || null,
 
             chronologySort:
-                event.chronology_sort !== null
-                    ? Number(event.chronology_sort)
+                chronologySort !== null &&
+                chronologySort !== undefined &&
+                Number.isFinite(Number(chronologySort))
+                    ? Number(chronologySort)
                     : null,
 
             releaseDate: event.release_date || null,
 
-            franchiseId: event.franchise_id,
+            franchiseId: event.franchise_id ?? null,
 
-            realityId: event.reality_id,
+            realityId: event.reality_id ?? null,
 
-            entityId: event.entity_id,
+            entityId: event.entity_id ?? null,
 
             imageUrl: event.image_url || null,
 
-            status: event.status
+            status: event.status || "draft"
 
         };
-
     },
 
+
+    /* =====================================
+       CHRONOLOGICAL SORTING
+    ===================================== */
 
     sortChronologically(events) {
 
         return [...events].sort((a, b) => {
 
             if (a.chronologySort === null) return 1;
-
             if (b.chronologySort === null) return -1;
 
             return a.chronologySort - b.chronologySort;
 
         });
-
     },
 
+
+    /* =====================================
+       RELEASE SORTING
+    ===================================== */
 
     sortByRelease(events) {
 
         return [...events].sort((a, b) => {
 
             if (!a.releaseDate) return 1;
-
             if (!b.releaseDate) return -1;
 
             return a.releaseDate.localeCompare(b.releaseDate);
 
         });
-
     }
 
 };
