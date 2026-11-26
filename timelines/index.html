@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Timelines | Fictional Archive</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-symbol">F</div>
+            <div>
+                <h2>FICTIONAL</h2>
+                <span>ARCHIVE</span>
+            </div>
+        </div>
+
+        <div class="nav-label">MAIN MENU</div>
+
+        <nav>
+            <a href="../index.html" class="nav-item">Dashboard</a>
+            <a href="../universes/index.html" class="nav-item">Universes</a>
+            <a href="index.html" class="nav-item active">Timelines</a>
+            <a href="../characters/index.html" class="nav-item">Characters</a>
+            <a href="../organisations/index.html" class="nav-item">Organisations</a>
+            <a href="../locations/index.html" class="nav-item">Locations</a>
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">DATABASE / CHRONOLOGY</span>
+                <h1>Timelines</h1>
+                <p>
+                    Explore the chronological histories of fictional universes.
+                </p>
+            </div>
+        </header>
+
+
+        <!-- OVERVIEW STATS -->
+        <section class="timeline-overview-stats">
+
+            <div class="overview-stat">
+                <span class="stat-label">AVAILABLE TIMELINES</span>
+                <strong id="timelineTotal">--</strong>
+            </div>
+
+        </section>
+
+
+        <!-- TIMELINE COLLECTION -->
+        <section class="timeline-section">
+
+            <div class="section-header">
+                <div>
+                    <span class="eyebrow">EXPLORE</span>
+                    <h2>Available Timelines</h2>
+                </div>
+
+                <input
+                    type="search"
+                    id="timelineSearch"
+                    placeholder="Search timelines..."
+                >
+            </div>
+
+
+            <div id="timelineGrid" class="timeline-grid">
+
+                <div class="timeline-loading">
+                    Loading timelines...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/timeline-engine.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
