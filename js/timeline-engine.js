@@ -11,6 +11,11 @@
 
 window.TimelineEngine = {
 
+
+    /* =====================================
+       GET ONE TIMELINE
+    ===================================== */
+
     async getTimeline(slug) {
 
         if (!window.supabaseClient) {
@@ -34,6 +39,33 @@ window.TimelineEngine = {
         return data;
     },
 
+
+    /* =====================================
+       GET ALL PUBLISHED TIMELINES
+    ===================================== */
+
+    async getAllTimelines() {
+
+        if (!window.supabaseClient) {
+            throw new Error("Supabase client unavailable.");
+        }
+
+        const { data, error } = await window.supabaseClient
+            .from("timelines")
+            .select("*")
+            .eq("status", "published");
+
+        if (error) {
+            throw error;
+        }
+
+        return data || [];
+    },
+
+
+    /* =====================================
+       GET TIMELINE EVENTS
+    ===================================== */
 
     async getEvents(timelineId) {
 
@@ -67,23 +99,7 @@ window.TimelineEngine = {
         return {
             timeline,
             events: events.map(event => this.normalizeEvent(event))
-        },
-
-       async getAllTimelines() {
-
-    if (!window.supabaseClient) {
-        throw new Error("Supabase client unavailable.");
-    }
-
-    const { data, error } = await window.supabaseClient
-        .from("timelines")
-        .select("*")
-        .eq("status", "published");
-
-    if (error) throw error;
-
-    return data || [];
-};
+        };
     },
 
 
